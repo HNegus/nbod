@@ -1,0 +1,14 @@
+*.zip
+main
+a.out
+*.o
+.clangd
+*.png
+*.jpg
+.atom-beautify*
+vendor
+*.d
+*.ini
+.idea
+profile
+*.json
