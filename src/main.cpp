@@ -93,70 +93,44 @@ void toggle_gui () {
 }
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
+    Camera *cam = (Camera *) glfwGetWindowUserPointer(window);
+    glm::vec3 move(0, 0, 0);
+
 
     float scalex = 0.01 * ZOOMX;
     float scaley = 0.01 * ZOOMY;
 
     if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
-        MOVE.x -= scalex * 1;
+        move.x -= 1;
     } else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
-        MOVE.x += scalex * 1;
+        move.x += 1;
     } else if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
-        MOVE.y += scaley * 1;
+        move.y += 1;
     } else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
-        MOVE.y -= scaley * 1;
+        move.y -= 1;
     } else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
         play_pause();
     } else if (key == GLFW_KEY_G && action == GLFW_PRESS) {
         toggle_gui();
+    } else if (key == GLFW_KEY_G && action == GLFW_PRESS) {
+        cam.Center();
     }
     if (key == GLFW_KEY_LEFT && action == GLFW_REPEAT) {
-        MOVE.x -= scalex * 5;
+        move.x -=  5;
     } else if (key == GLFW_KEY_RIGHT && action == GLFW_REPEAT) {
-        MOVE.x += scalex * 5;
+        move.x += 5;
     } else if (key == GLFW_KEY_UP && action == GLFW_REPEAT) {
-        MOVE.y += scaley * 5;
+        move.y += 5;
     } else if (key == GLFW_KEY_DOWN && action == GLFW_REPEAT) {
-        MOVE.y -= scaley * 5;
+        move.y -= 5;
     }
+
+    cam->Move(move);
 }
 
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-    // std::cout << yoffset << std::endl;
 
-    // float scale = 1.0f;
-    //
-    // if (ZOOM_LEVEL < 100) {
-    //     scale = 10.0f;
-    // } else if (ZOOM_LEVEL < 200) {
-    //     scale = 10.0f;
-    // } else if (ZOOM_LEVEL < 300) {
-    //     scale = 10.0f;
-    // } else if (ZOOM_LEVEL < 400) {
-    //     scale = 3.0f;
-    // }
-    // scale = ZOOMX * 0.1;
-    // float scale = 5.0f;
-    // ZOOM_LEVEL += scale * yoffset;
-
-    // if (ZOOM_LEVEL >= SCREEN_HEIGHT - ZOOMY - 1) {
-        // ZOOM_LEVEL -= scale * yoffset;
-    // } else {
-        // ZOOMX = ZOOM_RATIO * ZOOM_LEVEL;
-        // ZOOMY = ZOOM_LEVEL;
-    // }
-
-    // std::cout << "Zoom level: " << ZOOM_LEVEL << std::endl;
-    // std::cout << "scale: " << scale << std::endl;
-    // std::cout << "Zoom ratio:" << ZOOM_RATIO << std::endl;
-    // std::cout << "X:" << ZOOMX << std::endl;
-    // std::cout << "Y:" << ZOOMY << std::endl;
-    // std::cout << SCREEN_HEIGHT - ZOOMY << std::endl;
-    //
-    // std::cout << std::endl;
-
-    // void *ptr = NULL;
     Camera *cam = (Camera *) glfwGetWindowUserPointer(window);
     cam->Zoom(yoffset);
 
@@ -242,7 +216,7 @@ int main(void) {
         // world.Bodies();
 
         glfwSetScrollCallback(window, scroll_callback);
-        // glfwSetKeyCallback(window, key_callback);
+        glfwSetKeyCallback(window, key_callback);
         // proj = glm::ortho(0.0f + ZOOMX, (float) SCREEN_WIDTH - ZOOMX, 0.0f + ZOOMY, (float) SCREEN_HEIGHT - ZOOMY, -1.0f, 1.0f);
         // view = glm::translate(glm::mat4(1.0f), translate + MOVE);
         // model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));

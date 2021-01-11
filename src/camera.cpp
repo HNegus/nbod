@@ -38,5 +38,12 @@ void Camera::Update() {
 
 }
 
+void Camera::Move(glm::vec3 translation) {
+    glm::vec3 scale(0.01 * m_zoomx, 0.01 * m_zoomy, 0.0f);
+
+    m_translation += translation * scale;
+    Update();
+};
+
 // void ZoomInFast();
 // void ZoomOutFast();

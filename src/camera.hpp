@@ -26,8 +26,9 @@ public:
     void ZoomOutFast();
 
     void Update();
+    void Center();
 
-    void Move(glm::vec3 translation) { m_translation += translation; };
+    void Move(glm::vec3 translation);
     int ScreenWidth() const { return m_screen_width; };
     int ScreenHeight() const { return m_screen_height; };
 
