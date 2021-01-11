@@ -11,6 +11,7 @@
 
 #include "renderer.hpp"
 #include "gui.hpp"
+#include "camera.hpp"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -18,6 +19,7 @@
 
 #include "body.hpp"
 #include "world.hpp"
+
 
 E_ErrorLevels ERROR_LEVEL = HIGH;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
@@ -41,14 +43,6 @@ static GLFWwindow* init() {
         return nullptr;
     }
 
-    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-
-    const GLFWvidmode* return_struct = glfwGetVideoMode(monitor);
-    SCREEN_WIDTH = return_struct->width;
-    SCREEN_HEIGHT = return_struct->height;
-    ZOOM_RATIO = (float) SCREEN_WIDTH / SCREEN_HEIGHT;
-    ZOOMX = ZOOM_RATIO * ZOOM_LEVEL;
-    ZOOMY = ZOOM_LEVEL;
     /* Hint correct OpenGL version to GLFW. */
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -57,8 +51,11 @@ static GLFWwindow* init() {
 
 
     /* Create a windowed mode window and its OpenGL context */
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* return_struct = glfwGetVideoMode(monitor);
+
     // window = glfwCreateWindow(1920, 1080, "Hello World", glfwGetPrimaryMonitor(), nullptr);
-    window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hello World", nullptr, nullptr);
+    window = glfwCreateWindow(return_struct->width, return_struct->height, "Hello World", nullptr, nullptr);
 
     if (!window)
     {
@@ -126,38 +123,42 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-    std::cout << yoffset << std::endl;
+    // std::cout << yoffset << std::endl;
 
-    float scale = 1.0f;
-
-    if (ZOOM_LEVEL < 100) {
-        scale = 10.0f;
-    } else if (ZOOM_LEVEL < 200) {
-        scale = 10.0f;
-    } else if (ZOOM_LEVEL < 300) {
-        scale = 10.0f;
-    } else if (ZOOM_LEVEL < 400) {
-        scale = 3.0f;
-    }
-    scale = ZOOMX * 0.1;
+    // float scale = 1.0f;
+    //
+    // if (ZOOM_LEVEL < 100) {
+    //     scale = 10.0f;
+    // } else if (ZOOM_LEVEL < 200) {
+    //     scale = 10.0f;
+    // } else if (ZOOM_LEVEL < 300) {
+    //     scale = 10.0f;
+    // } else if (ZOOM_LEVEL < 400) {
+    //     scale = 3.0f;
+    // }
+    // scale = ZOOMX * 0.1;
     // float scale = 5.0f;
-    ZOOM_LEVEL += scale * yoffset;
+    // ZOOM_LEVEL += scale * yoffset;
 
-    if (ZOOM_LEVEL >= SCREEN_HEIGHT - ZOOMY - 1) {
-        ZOOM_LEVEL -= scale * yoffset;
-    } else {
-        ZOOMX = ZOOM_RATIO * ZOOM_LEVEL;
-        ZOOMY = ZOOM_LEVEL;
-    }
+    // if (ZOOM_LEVEL >= SCREEN_HEIGHT - ZOOMY - 1) {
+        // ZOOM_LEVEL -= scale * yoffset;
+    // } else {
+        // ZOOMX = ZOOM_RATIO * ZOOM_LEVEL;
+        // ZOOMY = ZOOM_LEVEL;
+    // }
 
-    std::cout << "Zoom level: " << ZOOM_LEVEL << std::endl;
-    std::cout << "scale: " << scale << std::endl;
-    std::cout << "Zoom ratio:" << ZOOM_RATIO << std::endl;
-    std::cout << "X:" << ZOOMX << std::endl;
-    std::cout << "Y:" << ZOOMY << std::endl;
-    std::cout << SCREEN_HEIGHT - ZOOMY << std::endl;
+    // std::cout << "Zoom level: " << ZOOM_LEVEL << std::endl;
+    // std::cout << "scale: " << scale << std::endl;
+    // std::cout << "Zoom ratio:" << ZOOM_RATIO << std::endl;
+    // std::cout << "X:" << ZOOMX << std::endl;
+    // std::cout << "Y:" << ZOOMY << std::endl;
+    // std::cout << SCREEN_HEIGHT - ZOOMY << std::endl;
+    //
+    // std::cout << std::endl;
 
-    std::cout << std::endl;
+    // void *ptr = NULL;
+    Camera *cam = (Camera *) glfwGetWindowUserPointer(window);
+    cam->Zoom(yoffset);
 
     return;
 }
@@ -168,14 +169,22 @@ int main(void) {
 
     if (!window) return -1;
 
+
+
+    Camera *camera = new Camera;
+    std::cout << camera << std::endl;
+
+    // camera.Do();
+    glfwSetWindowUserPointer(window, (void *) camera);
+
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 
 
-    float xmid = SCREEN_WIDTH / 2;
-    float ymid = SCREEN_HEIGHT / 2;
+    float xmid = camera->ScreenWidth() / 2;
+    float ymid = camera->ScreenHeight() / 2;
     float radius = 1.0f;
 
     World world;
@@ -207,12 +216,7 @@ int main(void) {
 
     Shader shader(sources);
     shader.Bind();
-    glm::vec3 translate(0, 0, 0);
-    glm::mat4 proj = glm::ortho(0.0f, (float) SCREEN_WIDTH, 0.0f, (float) SCREEN_HEIGHT, -1.0f, 1.0f);
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), translate);
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-    glm::mat4 mvp = proj * view * model;
-    shader.SetUniformMat4f("u_MVP", mvp);
+    shader.SetUniformMat4f("u_MVP", camera->MVP());
 
     Gui gui(window);
     Renderer renderer;
@@ -238,13 +242,13 @@ int main(void) {
         // world.Bodies();
 
         glfwSetScrollCallback(window, scroll_callback);
-        glfwSetKeyCallback(window, key_callback);
-        proj = glm::ortho(0.0f + ZOOMX, (float) SCREEN_WIDTH - ZOOMX, 0.0f + ZOOMY, (float) SCREEN_HEIGHT - ZOOMY, -1.0f, 1.0f);
-        view = glm::translate(glm::mat4(1.0f), translate + MOVE);
-        model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-        mvp = proj * view * model;
+        // glfwSetKeyCallback(window, key_callback);
+        // proj = glm::ortho(0.0f + ZOOMX, (float) SCREEN_WIDTH - ZOOMX, 0.0f + ZOOMY, (float) SCREEN_HEIGHT - ZOOMY, -1.0f, 1.0f);
+        // view = glm::translate(glm::mat4(1.0f), translate + MOVE);
+        // model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+        // mvp = proj * view * model;
         shader.Bind();
-        shader.SetUniformMat4f("u_MVP", mvp);
+        shader.SetUniformMat4f("u_MVP", camera->MVP());
         renderer.Clear();
 
         renderer.Draw(va, ib, shader);
