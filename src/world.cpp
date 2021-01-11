@@ -24,7 +24,6 @@ void World::Step() {
     glm::vec2 pos1, pos2;
     glm::vec2 force(0.0f, 0.0f);
     double r, F, fx, fy, theta;
-    double G = 6.674 * pow(10, -11);
 
     std::ofstream file;
     file.open ("output.txt");
@@ -113,6 +112,29 @@ void World::Bodies() {
 //     m_va.Bind();
 //     m_ib.Bind();
 // }
+
+double World::KineticEnergy() {
+    double total = 0.0;
+    for (Body *b: m_bodies) {
+        total += b->Mass() * pow(b->Velocity(), 2) * 0.5;
+    }
+    return total;
+}
+
+double World::PotentialEnergy() {
+    double total = 0.0;
+    float r;
+    for (Body *b1: m_bodies) {
+        for (Body *b2: m_bodies) {
+            if (b1 == b2) continue;
+            r = sqrt(pow(b2->X() - b1->X(), 2) + pow(b2->Y() - b1->Y(), 2));
+            total += - G * (b1->Mass() / r) * b2->Mass();
+            // total += b->Mass() * pow(b->Velocity(), 2) * 0.5;
+
+        }
+    }
+    return total / 2;
+}
 
 void World::SetVertices() {
     std::vector<float> data;

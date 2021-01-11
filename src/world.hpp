@@ -46,6 +46,9 @@ public:
     unsigned int* ibdata() { return m_ibdata.data(); }
     unsigned int vbsize() { return m_vbsize; }
     unsigned int ibsize() { return m_ibsize; }
+    double PotentialEnergy();
+    double KineticEnergy();
+    double TotalEnergy() { return PotentialEnergy() + KineticEnergy(); }
 
 
     // IndexBuffer ib() { return m_ib; }

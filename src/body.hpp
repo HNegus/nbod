@@ -29,8 +29,9 @@ public:
     float Y() const { return m_ypos; };
     float Radius() const { return m_radius; };
     float Mass() const {return m_mass; }
+    float Velocity() const { return sqrt((m_vx * m_vx) + (m_vy * m_vy)); };
     void PrintVelocity() { std::cout << m_id << " v x: " << m_vx << " y: " << m_vy << std::endl; };
     void PrintPosition() { std::cout << m_id << " pos x: " << m_xpos << " y: " << m_ypos << std::endl; };
-    
+
 
 };

@@ -22,6 +22,7 @@
 E_ErrorLevels ERROR_LEVEL = HIGH;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
 float ZOOM_LEVEL = -4.0f * pow(10, 8);
+// float ZOOM_LEVEL = 0.0f;
 float ZOOM_RATIO, ZOOMX, ZOOMY;
 glm::vec3 MOVE(0, 0, 0);
 
@@ -96,29 +97,30 @@ void toggle_gui () {
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
 
-    float scale = -ZOOM_LEVEL;
+    float scalex = 0.01 * ZOOMX;
+    float scaley = 0.01 * ZOOMY;
+
     if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
-        MOVE.x += scale * 1;
+        MOVE.x -= scalex * 1;
     } else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
-        MOVE.x -= scale * 1;
+        MOVE.x += scalex * 1;
     } else if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
-        MOVE.y -= scale * 1;
+        MOVE.y += scaley * 1;
     } else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
-        MOVE.y += scale * 1;
+        MOVE.y -= scaley * 1;
     } else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
         play_pause();
-    } else if (key == GLFW_KEY_G
-         && action == GLFW_PRESS) {
+    } else if (key == GLFW_KEY_G && action == GLFW_PRESS) {
         toggle_gui();
     }
     if (key == GLFW_KEY_LEFT && action == GLFW_REPEAT) {
-        MOVE.x += scale * 5;
+        MOVE.x -= scalex * 5;
     } else if (key == GLFW_KEY_RIGHT && action == GLFW_REPEAT) {
-        MOVE.x -= scale * 5;
+        MOVE.x += scalex * 5;
     } else if (key == GLFW_KEY_UP && action == GLFW_REPEAT) {
-        MOVE.y -= scale * 5;
+        MOVE.y += scaley * 5;
     } else if (key == GLFW_KEY_DOWN && action == GLFW_REPEAT) {
-        MOVE.y += scale * 5;
+        MOVE.y -= scaley * 5;
     }
 }
 
@@ -137,7 +139,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     } else if (ZOOM_LEVEL < 400) {
         scale = 3.0f;
     }
-    scale = DISTANCE_MOON_EARTH / 1000.0f;
+    scale = ZOOMX * 0.1;
     // float scale = 5.0f;
     ZOOM_LEVEL += scale * yoffset;
 
@@ -172,70 +174,27 @@ int main(void) {
     glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 
 
-    // float positions[32] = {20.0f,    20.0f,       0.0f, 0.0f,     1.0f, 0.0f, 0.0f, 0.8f,
-    //                        40.0f,  20.0f,       1.0f, 0.0f,     0.0f, 0.0f, 1.0f, 0.8f,
-    //                        40.0f,  40.0f,     1.0f, 1.0f,     1.0f, 0.0f, 1.0f, 0.8f,
-    //                        20.0f,    40.0f,     0.0f, 1.0f,     0.0f, 1.0f, 0.0f, 0.8f
-    // };
-
-
-
-
     float xmid = SCREEN_WIDTH / 2;
     float ymid = SCREEN_HEIGHT / 2;
     float radius = 1.0f;
 
     World world;
+    // world.AddBody("earth", -20, ymid, 100, MASS_EARTH, 0, 0);
+    // world.AddBody("moon", 200, ymid, 10, MASS_MOON, 0, VELOCITY_MOON);
+
     world.AddBody("earth", -DISTANCE_MOON_EARTH / 2, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
     world.AddBody("moon", DISTANCE_MOON_EARTH / 2, 0, RADIUS_MOON, MASS_MOON, 0, VELOCITY_MOON);
-    world.AddBody("earth2", DISTANCE_MOON_EARTH / 2, DISTANCE_MOON_EARTH / 2, RADIUS_EARTH, MASS_EARTH, 0, 0);
-    world.AddBody("earth3", DISTANCE_MOON_EARTH / 2, -DISTANCE_MOON_EARTH / 1.3, RADIUS_EARTH, MASS_EARTH * 0.8, 0, 0);
+    // world.AddBody("moon2", -DISTANCE_MOON_EARTH, 0, RADIUS_MOON, MASS_MOON, 0, -VELOCITY_MOON);
 
-    // world.AddBody(xmid + 20, ymid + 20, radius + 2, radius);
-
-    world.Bodies();
+    // world.AddBody("earth2", DISTANCE_MOON_EARTH, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
+    // world.AddBody("earth3", DISTANCE_MOON_EARTH / 2, -DISTANCE_MOON_EARTH / 1.3, RADIUS_EARTH, MASS_EARTH * 0.8, 0, 0);
 
 
-    std::cout << SCREEN_HEIGHT << std::endl;
-
-    float positions[40] = {xmid - radius, ymid - radius, radius, xmid, ymid,
-                          xmid + radius, ymid - radius, radius, xmid, ymid,
-                          xmid - radius, ymid + radius, radius, xmid, ymid,
-                          xmid + radius, ymid + radius, radius, xmid, ymid,
-
-                          xmid - radius + 10, ymid - radius + 10, radius, xmid + 10, ymid + 10,
-                          xmid + radius + 10, ymid - radius + 10, radius, xmid + 10, ymid + 10,
-                          xmid - radius + 10, ymid + radius + 10, radius, xmid + 10, ymid + 10,
-                          xmid + radius + 10, ymid + radius + 10, radius, xmid + 10, ymid + 10
-                          };
-
-
-
-    unsigned int indices[12] = {0, 1, 2,
-                               1, 3, 2,
-                               4, 5, 6,
-                               5, 7, 6};
-
-
-  // for (int i = 0; i < 40; i++) {
-  //     std::cout << positions[i] << " ";
-  // }
-  // world.Renew();
-
-  std::cout << std::endl;
-   // VertexArray va;
    VertexArray va;
 
-   // VertexBuffer vb(positions, 2 * 5 * 4 * sizeof (float));
    VertexBuffer vb(world.vbdata(), world.vbsize());
-   // VertexBuffer vb(positions, world.vbsize());
-
-   // VertexBuffer vb2(world.Data().data(), 40);
-   // IndexBuffer ib(indices, 2 * 6);
    IndexBuffer ib(world.ibdata(), world.ibsize());
-   // IndexBuffer ib(indices, world.ibsize());
 
-   // VertexBufferLayout layout;
    VertexBufferLayout layout;
    layout.Push<float>(2);
    layout.Push<float>(1);
@@ -248,7 +207,6 @@ int main(void) {
 
     Shader shader(sources);
     shader.Bind();
-    // shader.SetUniform4f("u_Color", 0.9, 0.0, 0.0, 0.5);
     glm::vec3 translate(0, 0, 0);
     glm::mat4 proj = glm::ortho(0.0f, (float) SCREEN_WIDTH, 0.0f, (float) SCREEN_HEIGHT, -1.0f, 1.0f);
     glm::mat4 view = glm::translate(glm::mat4(1.0f), translate);
@@ -263,18 +221,14 @@ int main(void) {
     ib.Bind();
 
     int i = 0;
+    double t = world.TotalEnergy();
+    double k = world.KineticEnergy();
+    double p = world.PotentialEnergy();
+    double total, kinetic, potential;
+
     while (!glfwWindowShouldClose(window)) {
-        // if (i % 80 == 0) {
-        //     world.Do();
-        //     vb.Renew(world.vbdata(), world.vbsize());
-        //     ib.Renew(world.ibdata(), world.ibsize());
-        //     va.Renew(vb, layout);
-        //     va.Bind();
-        //     ib.Bind();
-        //
-        // }
+
         i++;
-        std::cout << play << std::endl;
         if (play) {
             world.Step();
             vb.Renew(world.vbdata(), world.vbsize());
@@ -301,8 +255,29 @@ int main(void) {
 
             gui.Render();
         }
-        // return;
 
+        // std::cout.precision(20);
+        // total = world.TotalEnergy();
+        // kinetic = world.KineticEnergy();
+        // potential = world.PotentialEnergy();
+        // if (t != total) {
+        //     std::cout << "Total: " << total << " | ";
+        // }
+        // if (k != kinetic) {
+        //     std::cout << "Kinetic: " << kinetic << " | ";
+        // }
+        // if (p != potential) {
+        //     std::cout << "Potential:" << potential;
+        // }
+        // if (p != potential || k != kinetic || t != total) {
+        //     t = total;
+        //     k = kinetic;
+        //     p = potential;
+        //     std::cout << std::endl << i << std::endl;
+        //     i = 0;
+        // }
+
+        // std::cout << world.TotalEnergy() << " " << world.PotentialEnergy() << " " << world.KineticEnergy() << std::endl;
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
