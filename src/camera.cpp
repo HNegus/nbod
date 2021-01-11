@@ -1,6 +1,7 @@
 #include "camera.hpp"
 
-Camera::Camera() : m_zoom_level(-4.0f * pow(10, 8)), m_translation(0.0f, 0.0f, 0.0f) {
+// Camera::Camera() : m_zoom_level(-4.0f * pow(10, 8)), m_translation(0.0f, 0.0f, 0.0f) {
+Camera::Camera() : m_zoom_level(0), m_translation(0.0f, 0.0f, 0.0f) {
 
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* return_struct = glfwGetVideoMode(monitor);
@@ -15,7 +16,14 @@ Camera::Camera() : m_zoom_level(-4.0f * pow(10, 8)), m_translation(0.0f, 0.0f, 0
 
 
 void Camera::Zoom(const int direction) {
-    float scale = m_zoomx * 0.05;
+    float scale;
+    if (m_zoomx >= 0 && m_zoomx < 200) {
+        scale = 10.0f;
+    } else if (m_zoomx < 0 && m_zoomx > -200) {
+        scale = 10.0f;
+    }  else {
+        scale = abs(m_zoomx * 0.05);
+    }
 
     m_zoom_level += scale * direction;
 
@@ -39,11 +47,38 @@ void Camera::Update() {
 }
 
 void Camera::Move(glm::vec3 translation) {
-    glm::vec3 scale(0.01 * m_zoomx, 0.01 * m_zoomy, 0.0f);
+    float scalex, scaley;
+    if (m_zoomx >= 0 && m_zoomx < 200) {
+        scalex = 5.0f;
+    } else if (m_zoomx < 0 && m_zoomx > -200) {
+        scalex = 5.0f;
+    }  else {
+        scalex = abs(m_zoomx * 0.01);
+    }
+
+    if (m_zoomy >= 0 && m_zoomy < 200) {
+        scaley = 5.0f;
+    } else if (m_zoomx < 0 && m_zoomy > -200) {
+        scaley = 5.0f;
+    }  else {
+        scaley = abs(m_zoomy * 0.01);
+    }
+
+    glm::vec3 scale(scalex, scaley, 0.0f);
 
     m_translation += translation * scale;
     Update();
 };
+
+void Camera::Info() {
+
+    std::cout << "zoomx: " << m_zoomx << " | " << m_screen_width - m_zoomx << std::endl;
+}
+
+void Camera::Center() {
+    m_translation = glm::vec3(0, 0, 0);
+    Update();
+}
 
 // void ZoomInFast();
 // void ZoomOutFast();

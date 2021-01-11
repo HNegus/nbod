@@ -94,16 +94,16 @@ void toggle_gui () {
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
     Camera *cam = (Camera *) glfwGetWindowUserPointer(window);
-    glm::vec3 move(0, 0, 0);
+    glm::vec3 move(0.0f, 0.0f, 0.0f);
 
 
     float scalex = 0.01 * ZOOMX;
     float scaley = 0.01 * ZOOMY;
 
     if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
-        move.x -= 1;
-    } else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
         move.x += 1;
+    } else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
+        move.x -= 1;
     } else if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
         move.y += 1;
     } else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
@@ -112,17 +112,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         play_pause();
     } else if (key == GLFW_KEY_G && action == GLFW_PRESS) {
         toggle_gui();
-    } else if (key == GLFW_KEY_G && action == GLFW_PRESS) {
-        cam.Center();
+    } else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
+        cam->Center();
     }
     if (key == GLFW_KEY_LEFT && action == GLFW_REPEAT) {
-        move.x -=  5;
+        move.x +=  5;
     } else if (key == GLFW_KEY_RIGHT && action == GLFW_REPEAT) {
-        move.x += 5;
+        move.x -= 5;
     } else if (key == GLFW_KEY_UP && action == GLFW_REPEAT) {
-        move.y += 5;
-    } else if (key == GLFW_KEY_DOWN && action == GLFW_REPEAT) {
         move.y -= 5;
+    } else if (key == GLFW_KEY_DOWN && action == GLFW_REPEAT) {
+        move.y += 5;
     }
 
     cam->Move(move);
@@ -162,11 +162,11 @@ int main(void) {
     float radius = 1.0f;
 
     World world;
-    // world.AddBody("earth", -20, ymid, 100, MASS_EARTH, 0, 0);
-    // world.AddBody("moon", 200, ymid, 10, MASS_MOON, 0, VELOCITY_MOON);
+    world.AddBody("earth", -20, ymid, 100, MASS_EARTH, 0, 0);
+    world.AddBody("moon", 200, ymid, 10, MASS_MOON, 0, VELOCITY_MOON);
 
-    world.AddBody("earth", -DISTANCE_MOON_EARTH / 2, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
-    world.AddBody("moon", DISTANCE_MOON_EARTH / 2, 0, RADIUS_MOON, MASS_MOON, 0, VELOCITY_MOON);
+    // world.AddBody("earth", -DISTANCE_MOON_EARTH / 2, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
+    // world.AddBody("moon", DISTANCE_MOON_EARTH / 2, 0, RADIUS_MOON, MASS_MOON, 0, VELOCITY_MOON);
     // world.AddBody("moon2", -DISTANCE_MOON_EARTH, 0, RADIUS_MOON, MASS_MOON, 0, -VELOCITY_MOON);
 
     // world.AddBody("earth2", DISTANCE_MOON_EARTH, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
@@ -233,7 +233,9 @@ int main(void) {
 
             gui.Render();
         }
-
+        if (i % 60 == 0) {
+            camera->Info();
+        }
         // std::cout.precision(20);
         // total = world.TotalEnergy();
         // kinetic = world.KineticEnergy();

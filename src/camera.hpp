@@ -27,6 +27,7 @@ public:
 
     void Update();
     void Center();
+    void Info();
 
     void Move(glm::vec3 translation);
     int ScreenWidth() const { return m_screen_width; };
