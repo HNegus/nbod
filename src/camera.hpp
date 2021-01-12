@@ -8,7 +8,7 @@ private:
     float m_zoom_level, m_zoom_ratio, m_zoomx, m_zoomy;
 
     glm::mat4 m_proj, m_view, m_model;
-    glm::vec3 m_translation;
+    glm::vec3 m_translation, m_center;
 
 public:
 
@@ -27,9 +27,10 @@ public:
 
     void Update();
     void Center();
+    void SetCenter(glm::vec3 center);
     void Info();
 
-    void Move(glm::vec3 translation);
+    void Move(const glm::vec3 translation);
     int ScreenWidth() const { return m_screen_width; };
     int ScreenHeight() const { return m_screen_height; };
 

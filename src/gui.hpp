@@ -13,6 +13,7 @@ private:
 
 
 public:
+    Gui() {};
     Gui(GLFWwindow *window);
     ~Gui();
 

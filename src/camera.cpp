@@ -1,7 +1,8 @@
 #include "camera.hpp"
 
-// Camera::Camera() : m_zoom_level(-4.0f * pow(10, 8)), m_translation(0.0f, 0.0f, 0.0f) {
-Camera::Camera() : m_zoom_level(0), m_translation(0.0f, 0.0f, 0.0f) {
+Camera::Camera() : m_zoom_level(-4.0f * pow(10, 8)),
+                   m_translation(0.0f, 0.0f, 0.0f), m_center(0.0f, 0.0f, 0.0f) {
+// Camera::Camera() : m_zoom_level(0), m_translation(0.0f, 0.0f, 0.0f) {
 
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* return_struct = glfwGetVideoMode(monitor);
@@ -76,9 +77,19 @@ void Camera::Info() {
 }
 
 void Camera::Center() {
-    m_translation = glm::vec3(0, 0, 0);
+    // std::cout << "translation: " << m_translation.x << " " << m_translation.y << std::endl;
+
+    m_translation = m_center;
     Update();
 }
+
+void Camera::SetCenter(glm::vec3 center) {
+//     std::cout << centervec.x << std::endl;
+    m_center = -center;
+    Update();
+    Center();
+}
+
 
 // void ZoomInFast();
 // void ZoomOutFast();

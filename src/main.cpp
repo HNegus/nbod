@@ -11,7 +11,8 @@
 
 #include "renderer.hpp"
 #include "gui.hpp"
-#include "camera.hpp"
+#include "simulation.hpp"
+#include "input.hpp"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -22,15 +23,6 @@
 
 
 E_ErrorLevels ERROR_LEVEL = HIGH;
-int SCREEN_WIDTH, SCREEN_HEIGHT;
-float ZOOM_LEVEL = -4.0f * pow(10, 8);
-// float ZOOM_LEVEL = 0.0f;
-float ZOOM_RATIO, ZOOMX, ZOOMY;
-glm::vec3 MOVE(0, 0, 0);
-
-static bool play = 0;
-static bool show_gui = 1;
-
 
 
 static GLFWwindow* init() {
@@ -84,58 +76,9 @@ static GLFWwindow* init() {
     return window;
 }
 
-void play_pause() {
-    play = !play;
-}
-
-void toggle_gui () {
-    show_gui = !show_gui;
-}
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-
-    Camera *cam = (Camera *) glfwGetWindowUserPointer(window);
-    glm::vec3 move(0.0f, 0.0f, 0.0f);
 
 
-    float scalex = 0.01 * ZOOMX;
-    float scaley = 0.01 * ZOOMY;
 
-    if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
-        move.x += 1;
-    } else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
-        move.x -= 1;
-    } else if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
-        move.y += 1;
-    } else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
-        move.y -= 1;
-    } else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-        play_pause();
-    } else if (key == GLFW_KEY_G && action == GLFW_PRESS) {
-        toggle_gui();
-    } else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
-        cam->Center();
-    }
-    if (key == GLFW_KEY_LEFT && action == GLFW_REPEAT) {
-        move.x +=  5;
-    } else if (key == GLFW_KEY_RIGHT && action == GLFW_REPEAT) {
-        move.x -= 5;
-    } else if (key == GLFW_KEY_UP && action == GLFW_REPEAT) {
-        move.y -= 5;
-    } else if (key == GLFW_KEY_DOWN && action == GLFW_REPEAT) {
-        move.y += 5;
-    }
-
-    cam->Move(move);
-}
-
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-
-    Camera *cam = (Camera *) glfwGetWindowUserPointer(window);
-    cam->Zoom(yoffset);
-
-    return;
-}
 
 int main(void) {
 
@@ -143,13 +86,13 @@ int main(void) {
 
     if (!window) return -1;
 
+    Gui gui(window);
+    Simulation simulation(window, gui);
 
-
-    Camera *camera = new Camera;
-    std::cout << camera << std::endl;
+    // std::cout << camera << std::endl;
 
     // camera.Do();
-    glfwSetWindowUserPointer(window, (void *) camera);
+    glfwSetWindowUserPointer(window, (void *) &simulation);
 
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_BLEND);
@@ -157,16 +100,17 @@ int main(void) {
     glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 
 
-    float xmid = camera->ScreenWidth() / 2;
-    float ymid = camera->ScreenHeight() / 2;
+    float xmid = 1920 / 2;
+    float ymid = 1080 / 2;
     float radius = 1.0f;
 
     World world;
-    world.AddBody("earth", -20, ymid, 100, MASS_EARTH, 0, 0);
-    world.AddBody("moon", 200, ymid, 10, MASS_MOON, 0, VELOCITY_MOON);
+    // world.AddBody("earth", -20, ymid, 100, MASS_EARTH, 0, 0);
+    // world.AddBody("moon", 200, ymid, 10, MASS_MOON, 0, VELOCITY_MOON);
 
-    // world.AddBody("earth", -DISTANCE_MOON_EARTH / 2, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
-    // world.AddBody("moon", DISTANCE_MOON_EARTH / 2, 0, RADIUS_MOON, MASS_MOON, 0, VELOCITY_MOON);
+    world.AddBody("earth", -DISTANCE_MOON_EARTH / 2, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
+    world.AddBody("moon", DISTANCE_MOON_EARTH / 2, 0, RADIUS_MOON, MASS_MOON, 0, VELOCITY_MOON);
+    simulation.CameraSetCenter(glm::vec3(-DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f));
     // world.AddBody("moon2", -DISTANCE_MOON_EARTH, 0, RADIUS_MOON, MASS_MOON, 0, -VELOCITY_MOON);
 
     // world.AddBody("earth2", DISTANCE_MOON_EARTH, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
@@ -190,9 +134,8 @@ int main(void) {
 
     Shader shader(sources);
     shader.Bind();
-    shader.SetUniformMat4f("u_MVP", camera->MVP());
+    shader.SetUniformMat4f("u_MVP", simulation.MVP());
 
-    Gui gui(window);
     Renderer renderer;
 
     va.Bind();
@@ -207,7 +150,7 @@ int main(void) {
     while (!glfwWindowShouldClose(window)) {
 
         i++;
-        if (play) {
+        if (simulation.Running()) {
             world.Step();
             vb.Renew(world.vbdata(), world.vbsize());
             ib.Renew(world.ibdata(), world.ibsize());
@@ -217,24 +160,16 @@ int main(void) {
 
         glfwSetScrollCallback(window, scroll_callback);
         glfwSetKeyCallback(window, key_callback);
-        // proj = glm::ortho(0.0f + ZOOMX, (float) SCREEN_WIDTH - ZOOMX, 0.0f + ZOOMY, (float) SCREEN_HEIGHT - ZOOMY, -1.0f, 1.0f);
-        // view = glm::translate(glm::mat4(1.0f), translate + MOVE);
-        // model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-        // mvp = proj * view * model;
+
         shader.Bind();
-        shader.SetUniformMat4f("u_MVP", camera->MVP());
+        shader.SetUniformMat4f("u_MVP", simulation.MVP());
         renderer.Clear();
 
         renderer.Draw(va, ib, shader);
-        if (show_gui) {
-            gui.NewFrame();
-            ImGui::ShowDemoWindow();
-            ImGui::Checkbox("Play", &play);
+        simulation.GuiRender();
 
-            gui.Render();
-        }
         if (i % 60 == 0) {
-            camera->Info();
+            // camera.Info();
         }
         // std::cout.precision(20);
         // total = world.TotalEnergy();
