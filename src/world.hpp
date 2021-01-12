@@ -20,7 +20,7 @@ private:
     // IndexBuffer m_ib;
     // VertexBufferLayout m_layout;
 
-    int m_index;
+    unsigned int m_index;
     unsigned int m_vbsize;
     unsigned int m_ibsize;
 
@@ -29,14 +29,16 @@ public:
     World();
     ~World();
 
-    void AddBody(std::string id, float x, float y, float radius, float mass, float vx, float vy);
-    void Bodies();
+    void AddBody(std::string name, float x, float y, float radius, float mass,
+                 float vx, float vy);
+    std::vector<Body*> Bodies();
 
     void Do();
 
 
     // void Renew();
-    void Update();
+    void UpdateWorld();
+    void UpdateBodies();
     void Step();
     void SetVertices();
     void SetIndices();

@@ -3,35 +3,40 @@
 
 class Body {
 private:
-    std::string m_id;
-    float m_xpos, m_ypos, m_radius, m_mass, m_vx, m_vy, m_fx, m_fy;
+    inline static unsigned int id_counter = 0;
+    std::string m_name;
+    glm::vec3 m_position, m_force, m_velocity;
+    float m_radius, m_mass;
+    const unsigned int m_id;
 
 public:
 
-    Body(std::string id, float xpos, float ypos, float radius,
+    Body(std::string name, float xpos, float ypos, float radius,
          float mass, float vx, float vy) :
-         m_id(id),
-         m_xpos(xpos), m_ypos(ypos),
+         m_name(name), m_position(xpos, ypos, 0.0f), m_force(vx, vy, 0.0f),
+         m_velocity(vx, vy, 0.0f),
          m_radius(radius), m_mass(mass),
-         m_vx(vx), m_vy(vy), m_fx(0), m_fy(0) {};
+        m_id(id_counter++) {};
     ~Body() {};
 
 
-    void Move(float x,  float y);
+    void Move(glm::vec3 translation);
 
     void Update();
-    void ApplyForce(float fx, float fy);
-    void Position(float x, float y);
+    void ApplyForce(glm::vec3 f);
     void Resize(float radius);
 
-    std::string id() { return m_id; };
-    float X() const { return m_xpos; };
-    float Y() const { return m_ypos; };
+    unsigned int ID() const { return m_id; }
+    std::string Name() const { return m_name; };
+
+    glm::vec3 GetPosition() { return m_position; };
+
     float Radius() const { return m_radius; };
     float Mass() const {return m_mass; }
-    float Velocity() const { return sqrt((m_vx * m_vx) + (m_vy * m_vy)); };
-    void PrintVelocity() { std::cout << m_id << " v x: " << m_vx << " y: " << m_vy << std::endl; };
-    void PrintPosition() { std::cout << m_id << " pos x: " << m_xpos << " y: " << m_ypos << std::endl; };
+    float Velocity() const { return glm::length(m_velocity); };
+    void PrintVelocity() { std::cout << m_name << ": " <<  glm::to_string(m_velocity) << std::endl; };
+    // TODO print glm::vec
+    void PrintPosition() { std::cout << m_name << ": " << glm::to_string(m_position) << std::endl; };
 
 
 };

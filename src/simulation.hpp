@@ -32,7 +32,8 @@ private:
     VertexBufferLayout m_vblayout;
     Shader m_shader;
 
-    std::vector<std::string> m_body_ids;
+    std::vector<Body*> m_bodies;
+    std::vector<std::string> m_body_names;
 
 public:
 
@@ -50,7 +51,7 @@ public:
     void CameraMove(const glm::vec3 translation);
     void CameraSetCenter(glm::vec3 center);
 
-    void WorldAddBody(std::string id, glm::vec3 position, float radius,
+    void WorldAddBody(std::string name, glm::vec3 position, float radius,
         float mass, glm::vec3 velocity);
 
 
@@ -63,6 +64,7 @@ public:
     bool Running() const { return m_run_simulation; };
 
     // TODO remove
+    void Do() { m_world.Do(); };
     glm::mat4 MVP() const { return m_camera.MVP(); };
     float* WorldVbData() { return m_world.vbdata(); };
     unsigned int WorldVbSize() { return m_world.vbsize(); };

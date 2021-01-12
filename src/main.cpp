@@ -92,9 +92,14 @@ int main(void) {
     glm::vec3 moon_pos(DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
     glm::vec3 moon_v(0.0f, VELOCITY_MOON, 0.0f);
 
-    simulation.WorldAddBody("earth", earth_pos, MASS_EARTH, RADIUS_EARTH, glm::vec3(0.0f));
-    simulation.WorldAddBody("moon", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
+    simulation.WorldAddBody("earth", earth_pos, MASS_EARTH, 10*RADIUS_EARTH, glm::vec3(0.0f));
+    simulation.WorldAddBody("moon", moon_pos, MASS_MOON, 10*RADIUS_MOON, moon_v);
+    // simulation.WorldAddBody("moon2", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
+    // simulation.WorldAddBody("moon3", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
+    // simulation.WorldAddBody("moon4", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
+
     simulation.CameraSetCenter(earth_pos);
+    simulation.Render();
 
     // world.AddBody("earth", -DISTANCE_MOON_EARTH / 2, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
     // world.AddBody("moon", DISTANCE_MOON_EARTH / 2, 0, RADIUS_MOON, MASS_MOON, 0, VELOCITY_MOON);
@@ -102,10 +107,13 @@ int main(void) {
 
     // world.AddBody("earth2", DISTANCE_MOON_EARTH, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
     // world.AddBody("earth3", DISTANCE_MOON_EARTH / 2, -DISTANCE_MOON_EARTH / 1.3, RADIUS_EARTH, MASS_EARTH * 0.8, 0, 0);
-
+    // simulation.Do();
+    // exit(0);
 
 
     glfwSetWindowUserPointer(window, (void *) &simulation);
+    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetKeyCallback(window, key_callback);
 
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_BLEND);
@@ -119,6 +127,7 @@ int main(void) {
 
 
     int i = 0;
+    glfwSwapBuffers(window);
 
 
     while (!glfwWindowShouldClose(window)) {
@@ -128,11 +137,9 @@ int main(void) {
             simulation.Step();
         }
 
-        glfwSetScrollCallback(window, scroll_callback);
-        glfwSetKeyCallback(window, key_callback);
+
 
         simulation.Render();
-        simulation.GuiRender();
 
         if (i % 60 == 0) {
             // camera.Info();

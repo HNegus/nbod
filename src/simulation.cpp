@@ -38,6 +38,8 @@ void Simulation::Render() {
     m_renderer.Clear();
 
     m_renderer.Draw(m_va, m_ib, m_shader);
+
+    GuiRender();
 }
 
 void Simulation::CameraZoom(const int direction) {
@@ -57,12 +59,12 @@ void Simulation::CameraMove(const glm::vec3 translation) {
     m_camera.Move(translation);
 }
 
-void Simulation::WorldAddBody(std::string id, glm::vec3 position, float radius,
+void Simulation::WorldAddBody(std::string name, glm::vec3 position, float radius,
                               float mass, glm::vec3 velocity) {
 
-    m_body_ids.push_back(id);
+    // .push_back(id);
 
-    m_world.AddBody(id, position.x, position.y, mass, radius, velocity.x, velocity.y);
+    m_world.AddBody(name, position.x, position.y, mass, radius, velocity.x, velocity.y);
 }
 
 
@@ -82,11 +84,14 @@ void Simulation::GuiRender() {
 
     if (ImGui::CollapsingHeader("Bodies", ImGuiTreeNodeFlags_None))
     {
+        std::vector<Body*> bodies = m_world.Bodies();
+        Body *body;
 
-        for (std::size_t i = 0; i < m_body_ids.size(); i++) {
+        for (std::size_t i = 0; i < bodies.size(); i++) {
 
-            if (ImGui::TreeNode((void*)(intptr_t)i, "%s", m_body_ids[i].c_str())) {
-                ImGui::Text("", i);
+            body = bodies[i];
+            if (ImGui::TreeNode((void*)(intptr_t)i, "%s", body->Name().c_str())) {
+                ImGui::Text("Blabla", i);
                 ImGui::TreePop();
             }
         }
@@ -107,7 +112,8 @@ void Simulation::GuiRender() {
         ImGui::End();
         return;
     }
-    ImGui::Checkbox("Play2", &m_run_simulation);
+    bool a;
+    ImGui::Checkbox("Play2", &a);
 
 
     ImGui::End();

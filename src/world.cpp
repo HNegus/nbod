@@ -14,40 +14,43 @@ World::~World() {
 
 void World::Do() {
     for (Body *body : m_bodies) {
-        body->Move(DISTANCE_MOON_EARTH / 100, 0);
-        std::cout << body->X();
+        // body->Id();
+        std::cout << body->ID() << " " << body->Name() << std::endl;
     }
-    Update();
+    std::cout << std::endl;
+    UpdateWorld();
 }
 
 void World::Step() {
-    glm::vec2 pos1, pos2;
-    glm::vec2 force(0.0f, 0.0f);
+    glm::vec3 pos1, pos2, diff;
+    glm::vec3 force;
     double r, F, fx, fy, theta;
 
-    std::ofstream file;
-    file.open ("output.txt");
+    // std::ofstream file;
+    // file.open ("output.txt");
 
+    // TODO this
     for (int i = 0; i < 1; i++) {
 
+
         for (Body *b1: m_bodies) {
-            pos1.x = b1->X();
-            pos1.y = b1->Y();
+            force = glm::vec3(0.0f);
+            pos1 = b1->GetPosition();
 
             for (Body *b2: m_bodies) {
                 if (b1 == b2) continue;
-                pos2.x = b2->X();
-                pos2.y = b2->Y();
+                pos2 = b2->GetPosition();
+                diff = pos2 - pos1;
 
 
-                r = sqrt(pow(pos2.x - pos1.x, 2) + pow(pos2.y - pos1.y, 2));
+                r = length(diff);
 
 
                 F = G * (b2->Mass() / pow(r, 2)) * b1->Mass();
                 // std::cout << b1->id() << "r: " << r << std::endl;
 
 
-                theta = atan2(pos2.y - pos1.y, pos2.x - pos1.x);
+                theta = atan2(diff.y, diff.x);
                 fx = F * cos(theta);
                 fy = F * sin(theta);
 
@@ -55,12 +58,12 @@ void World::Step() {
                 // exit(0);
                 force.x += fx;
                 force.y += fy;
-                b1->ApplyForce(fx, fy);
+                b1->ApplyForce(force);
 
             }
-            if (b1->id() == "moon") {
-                file << fx << std::endl;
-            }
+            // if (b1->id() == "moon") {
+                // file << fx << std::endl;
+            // }
             // b1->ApplyForce(force.x, force.y);
             // std::cout << b1->id() << "y: " << pos1.x << std::endl;
             // b1->PrintVelocity();
@@ -73,33 +76,38 @@ void World::Step() {
 
     }
 
-    file.close();
+    // file.close();
 
-    for (Body *body: m_bodies) {
-        body->Update();
-    }
-    Update();
+    UpdateWorld();
 }
 
 
-void World::AddBody(std::string id, float x, float y, float radius,
+void World::AddBody(std::string name, float x, float y, float radius,
                    float mass, float vx, float vy) {
-    Body *body = new Body(id, x, y, radius, mass, vx, vy);
+    Body *body = new Body(name, x, y, radius, mass, vx, vy);
     m_bodies.push_back(body);
     m_index++;
-    Update();
+    UpdateWorld();
 }
 
-void World::Update() {
+void World::UpdateWorld() {
+    UpdateBodies();
     SetVertices();
     SetIndices();
 }
 
-
-void World::Bodies() {
-    for (Body *body : m_bodies) {
-        std::cout << body->X() << std::endl;
+void World::UpdateBodies() {
+    for (Body *body: m_bodies) {
+        body->Update();
     }
+}
+
+std::vector<Body*> World::Bodies() {
+    std::vector<Body*> result;
+    for (Body *body: m_bodies) {
+        result.push_back(body);
+    }
+    return result;
 }
 
 // void World::Renew() {
@@ -127,7 +135,7 @@ double World::PotentialEnergy() {
     for (Body *b1: m_bodies) {
         for (Body *b2: m_bodies) {
             if (b1 == b2) continue;
-            r = sqrt(pow(b2->X() - b1->X(), 2) + pow(b2->Y() - b1->Y(), 2));
+            r = length(b2->GetPosition() - b1->GetPosition());
             total += - G * (b1->Mass() / r) * b2->Mass();
             // total += b->Mass() * pow(b->Velocity(), 2) * 0.5;
 
@@ -138,10 +146,13 @@ double World::PotentialEnergy() {
 
 void World::SetVertices() {
     std::vector<float> data;
+    glm::vec3 pos(0.0f);
     float x, y, r;
+    // TODO clean
     for (Body *body : m_bodies) {
-        x = body->X();
-        y = body->Y();
+        pos = body->GetPosition();
+        x = pos.x;
+        y = pos.y;
         r = body->Radius();
 
         data.insert(end(data), {x - r, y - r, r, x, y});
