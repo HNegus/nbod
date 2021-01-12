@@ -1,10 +1,16 @@
 #include "simulation.hpp"
 
-Simulation::Simulation(GLFWwindow *window, const Gui &gui) : m_window(window), m_gui(gui) {
+Simulation::Simulation(GLFWwindow *window, const Gui &gui) :
+        m_window(window), m_gui(gui)
+{
 
 }
 
 Simulation::~Simulation() {
+}
+
+void Simulation::Step() {
+    m_world.Step();
 }
 
 void Simulation::CameraZoom(const int direction) {
@@ -22,6 +28,12 @@ void Simulation::CameraSetCenter(glm::vec3 center) {
 void Simulation::CameraMove(const glm::vec3 translation) {
     m_camera.Move(translation);
 }
+
+void Simulation::WorldAddBody(std::string id, glm::vec3 position, float radius,
+    float mass, glm::vec3 velocity) {
+    m_world.AddBody(id, position.x, position.y, mass, radius, velocity.x, velocity.y);
+}
+
 
 
 void Simulation::GuiRender() {

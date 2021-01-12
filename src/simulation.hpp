@@ -3,6 +3,7 @@
 #include "utils.hpp"
 #include "camera.hpp"
 #include "gui.hpp"
+#include "world.hpp"
 
 class Simulation {
 
@@ -10,6 +11,7 @@ private:
     GLFWwindow *m_window;
     const Gui &m_gui;
     Camera m_camera;
+    World m_world;
 
     bool m_show_gui = true;
     bool m_run_simulation = false;
@@ -24,13 +26,17 @@ public:
     ~Simulation();
 
 
+    void Step();
+
     void CameraZoom(const int direction);
     void CameraCenter();
     void CameraMove(const glm::vec3 translation);
     void CameraSetCenter(glm::vec3 center);
 
-    // TODO remove
-    glm::mat4 MVP() const { return m_camera.MVP(); };
+    void WorldAddBody(std::string id, glm::vec3 position, float radius,
+        float mass, glm::vec3 velocity);
+
+
 
     void GuiRender();
     void GuiToggle();
@@ -38,5 +44,13 @@ public:
     void TogglePlay();
 
     bool Running() const { return m_run_simulation; };
+
+    // TODO remove
+    glm::mat4 MVP() const { return m_camera.MVP(); };
+    float* WorldVbData() { return m_world.vbdata(); };
+    unsigned int WorldVbSize() { return m_world.vbsize(); };
+    unsigned int* WorldIbData() { return m_world.ibdata(); };
+    unsigned int WorldIbSize() { return m_world.ibsize(); };
+
 
 };

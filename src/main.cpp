@@ -88,10 +88,23 @@ int main(void) {
 
     Gui gui(window);
     Simulation simulation(window, gui);
+    glm::vec3 earth_pos(-DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
+    glm::vec3 moon_pos(DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
+    glm::vec3 moon_v(0.0f, VELOCITY_MOON, 0.0f);
 
-    // std::cout << camera << std::endl;
+    simulation.WorldAddBody("earth", earth_pos, MASS_EARTH, RADIUS_EARTH, glm::vec3(0.0f));
+    simulation.WorldAddBody("moon", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
+    simulation.CameraSetCenter(earth_pos);
 
-    // camera.Do();
+    // world.AddBody("earth", -DISTANCE_MOON_EARTH / 2, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
+    // world.AddBody("moon", DISTANCE_MOON_EARTH / 2, 0, RADIUS_MOON, MASS_MOON, 0, VELOCITY_MOON);
+    // world.AddBody("moon2", -DISTANCE_MOON_EARTH, 0, RADIUS_MOON, MASS_MOON, 0, -VELOCITY_MOON);
+
+    // world.AddBody("earth2", DISTANCE_MOON_EARTH, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
+    // world.AddBody("earth3", DISTANCE_MOON_EARTH / 2, -DISTANCE_MOON_EARTH / 1.3, RADIUS_EARTH, MASS_EARTH * 0.8, 0, 0);
+
+
+
     glfwSetWindowUserPointer(window, (void *) &simulation);
 
     glEnable(GL_MULTISAMPLE);
@@ -104,23 +117,12 @@ int main(void) {
     float ymid = 1080 / 2;
     float radius = 1.0f;
 
-    World world;
-    // world.AddBody("earth", -20, ymid, 100, MASS_EARTH, 0, 0);
-    // world.AddBody("moon", 200, ymid, 10, MASS_MOON, 0, VELOCITY_MOON);
-
-    world.AddBody("earth", -DISTANCE_MOON_EARTH / 2, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
-    world.AddBody("moon", DISTANCE_MOON_EARTH / 2, 0, RADIUS_MOON, MASS_MOON, 0, VELOCITY_MOON);
-    simulation.CameraSetCenter(glm::vec3(-DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f));
-    // world.AddBody("moon2", -DISTANCE_MOON_EARTH, 0, RADIUS_MOON, MASS_MOON, 0, -VELOCITY_MOON);
-
-    // world.AddBody("earth2", DISTANCE_MOON_EARTH, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
-    // world.AddBody("earth3", DISTANCE_MOON_EARTH / 2, -DISTANCE_MOON_EARTH / 1.3, RADIUS_EARTH, MASS_EARTH * 0.8, 0, 0);
 
 
    VertexArray va;
 
-   VertexBuffer vb(world.vbdata(), world.vbsize());
-   IndexBuffer ib(world.ibdata(), world.ibsize());
+   VertexBuffer vb(simulation.WorldVbData(), simulation.WorldVbSize());
+   IndexBuffer ib(simulation.WorldIbData(), simulation.WorldIbSize());
 
    VertexBufferLayout layout;
    layout.Push<float>(2);
@@ -142,18 +144,18 @@ int main(void) {
     ib.Bind();
 
     int i = 0;
-    double t = world.TotalEnergy();
-    double k = world.KineticEnergy();
-    double p = world.PotentialEnergy();
-    double total, kinetic, potential;
+    // double t = world.TotalEnergy();
+    // double k = world.KineticEnergy();
+    // double p = world.PotentialEnergy();
+    // double total, kinetic, potential;
 
     while (!glfwWindowShouldClose(window)) {
 
         i++;
         if (simulation.Running()) {
-            world.Step();
-            vb.Renew(world.vbdata(), world.vbsize());
-            ib.Renew(world.ibdata(), world.ibsize());
+            simulation.Step();
+            vb.Renew(simulation.WorldVbData(), simulation.WorldVbSize());
+            ib.Renew(simulation.WorldIbData(), simulation.WorldIbSize());
             va.Renew(vb, layout);
         }
         // world.Bodies();
