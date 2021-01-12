@@ -1,6 +1,14 @@
 #pragma once
 
 #include "utils.hpp"
+
+#include "vertexbufferlayout.hpp"
+#include "vertexbuffer.hpp"
+#include "indexbuffer.hpp"
+#include "vertexarray.hpp"
+#include "shader.hpp"
+
+#include "renderer.hpp"
 #include "camera.hpp"
 #include "gui.hpp"
 #include "world.hpp"
@@ -10,13 +18,19 @@ class Simulation {
 private:
     GLFWwindow *m_window;
     const Gui &m_gui;
+    const Renderer m_renderer;
     Camera m_camera;
     World m_world;
 
     bool m_show_gui = true;
     bool m_run_simulation = false;
     // const Gui &m_gui;
-    // const Renderer &m_renderer;
+
+    VertexArray m_va;
+    VertexBuffer m_vb;
+    IndexBuffer m_ib;
+    VertexBufferLayout m_vblayout;
+    Shader m_shader;
 
 public:
 
@@ -27,6 +41,7 @@ public:
 
 
     void Step();
+    void Render();
 
     void CameraZoom(const int direction);
     void CameraCenter();

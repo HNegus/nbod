@@ -1,10 +1,10 @@
 # TODO
-
+- [ ] **3D??**
 - [ ] **write proposal**
-- [ ] **start making menu**
-    - camera control
-        - [ ] zoom
-        - [ ] position
+- [X] camera control
+- **start making menu**
+    - [ ] zoom
+    - [ ] position
     - **body params control**
       - [ ] velocity
       - [ ] position
@@ -13,6 +13,8 @@
       - [ ] color?
     - [ ] timestep control
     - [ ] control number of calculations per frame
+    - [ ] **fps counter**
+    - [ ] time display
     - [ ] **add/remove body**
 
 - [ ] figure out how to center

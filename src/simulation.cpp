@@ -3,7 +3,15 @@
 Simulation::Simulation(GLFWwindow *window, const Gui &gui) :
         m_window(window), m_gui(gui)
 {
+    m_vblayout.Push<float>(2);
+    m_vblayout.Push<float>(1);
+    m_vblayout.Push<float>(2);
+    m_va.AddBuffer(m_vb, m_vblayout);
 
+    ShaderSources sources = Shader::GetShaderSources("vertex.glsl", "fragment.glsl");
+    m_shader = Shader(sources);
+    m_shader.Bind();
+    m_shader.SetUniformMat4f("u_MVP", MVP());
 }
 
 Simulation::~Simulation() {
@@ -11,6 +19,19 @@ Simulation::~Simulation() {
 
 void Simulation::Step() {
     m_world.Step();
+
+
+}
+
+void Simulation::Render() {
+    m_vb.Renew(WorldVbData(), WorldVbSize());
+    m_ib.Renew(WorldIbData(), WorldIbSize());
+    m_va.Renew(m_vb, m_vblayout);
+
+    m_renderer.Clear();
+    m_shader.Bind();
+    m_shader.SetUniformMat4f("u_MVP", MVP());
+    m_renderer.Draw(m_va, m_ib, m_shader);
 }
 
 void Simulation::CameraZoom(const int direction) {
@@ -20,6 +41,7 @@ void Simulation::CameraZoom(const int direction) {
 void Simulation::CameraCenter() {
     m_camera.Center();
 }
+
 
 void Simulation::CameraSetCenter(glm::vec3 center) {
     m_camera.SetCenter(center);

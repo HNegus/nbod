@@ -3,13 +3,13 @@
 #include "errors.hpp"
 
 #include "shader.hpp"
-#include "vertexbufferlayout.hpp"
-#include "vertexbuffer.hpp"
-#include "indexbuffer.hpp"
-#include "vertexarray.hpp"
+// #include "vertexbufferlayout.hpp"
+// #include "vertexbuffer.hpp"
+// #include "indexbuffer.hpp"
+// #include "vertexarray.hpp"
 #include "texture.hpp"
 
-#include "renderer.hpp"
+// #include "renderer.hpp"
 #include "gui.hpp"
 #include "simulation.hpp"
 #include "input.hpp"
@@ -119,29 +119,29 @@ int main(void) {
 
 
 
-   VertexArray va;
+   // VertexArray va;
+   //
+   // VertexBuffer vb(simulation.WorldVbData(), simulation.WorldVbSize());
+   // IndexBuffer ib(simulation.WorldIbData(), simulation.WorldIbSize());
+   //
+   // VertexBufferLayout layout;
+   // layout.Push<float>(2);
+   // layout.Push<float>(1);
+   // layout.Push<float>(2);
+   // va.AddBuffer(vb, layout);
+   //
+   //
+   //  ShaderSources sources = Shader::GetShaderSources("vertex.glsl",
+   //                                                   "fragment.glsl");
+   //
+   //  Shader shader(sources);
+   //  shader.Bind();
+   //  shader.SetUniformMat4f("u_MVP", simulation.MVP());
 
-   VertexBuffer vb(simulation.WorldVbData(), simulation.WorldVbSize());
-   IndexBuffer ib(simulation.WorldIbData(), simulation.WorldIbSize());
+    // Renderer renderer;
 
-   VertexBufferLayout layout;
-   layout.Push<float>(2);
-   layout.Push<float>(1);
-   layout.Push<float>(2);
-   va.AddBuffer(vb, layout);
-
-
-    ShaderSources sources = Shader::GetShaderSources("vertex.glsl",
-                                                     "fragment.glsl");
-
-    Shader shader(sources);
-    shader.Bind();
-    shader.SetUniformMat4f("u_MVP", simulation.MVP());
-
-    Renderer renderer;
-
-    va.Bind();
-    ib.Bind();
+    // va.Bind();
+    // ib.Bind();
 
     int i = 0;
     // double t = world.TotalEnergy();
@@ -154,20 +154,21 @@ int main(void) {
         i++;
         if (simulation.Running()) {
             simulation.Step();
-            vb.Renew(simulation.WorldVbData(), simulation.WorldVbSize());
-            ib.Renew(simulation.WorldIbData(), simulation.WorldIbSize());
-            va.Renew(vb, layout);
+            // vb.Renew(simulation.WorldVbData(), simulation.WorldVbSize());
+            // ib.Renew(simulation.WorldIbData(), simulation.WorldIbSize());
+            // va.Renew(vb, layout);
         }
         // world.Bodies();
 
         glfwSetScrollCallback(window, scroll_callback);
         glfwSetKeyCallback(window, key_callback);
 
-        shader.Bind();
-        shader.SetUniformMat4f("u_MVP", simulation.MVP());
-        renderer.Clear();
+        // shader.Bind();
+        // shader.SetUniformMat4f("u_MVP", simulation.MVP());
+        // renderer.Clear();
 
-        renderer.Draw(va, ib, shader);
+        // renderer.Draw(va, ib, shader);
+        simulation.Render();
         simulation.GuiRender();
 
         if (i % 60 == 0) {
