@@ -24,8 +24,6 @@ Simulation::~Simulation() {
 
 void Simulation::Step() {
     m_world.Step();
-
-
 }
 
 void Simulation::Render() {
@@ -70,20 +68,39 @@ void Simulation::WorldAddBody(std::string name, glm::vec3 position, float radius
 
 
 void Simulation::GuiRender() {
+
     if (!m_show_gui) return;
     m_gui.NewFrame();
 
     ImGui::ShowDemoWindow();
 
-    if (!ImGui::Begin("Debug 1")) {
+    ShowDebug();
+
+    ShowDebug2();
+
+
+
+
+
+    m_world.UpdateWorld();
+
+
+    m_gui.Render();
+
+}
+
+void Simulation::ShowDebug() {
+
+    if (!ImGui::Begin("Debug")) {
         ImGui::End();
         return;
     }
+
     ImGui::Checkbox("Play", &m_run_simulation);
 
 
-    if (ImGui::CollapsingHeader("Bodies", ImGuiTreeNodeFlags_None))
-    {
+    if (ImGui::CollapsingHeader("Bodies", ImGuiTreeNodeFlags_None)) {
+
         std::vector<Body*> bodies = m_world.Bodies();
         Body *body;
 
@@ -91,37 +108,62 @@ void Simulation::GuiRender() {
 
             body = bodies[i];
             if (ImGui::TreeNode((void*)(intptr_t)i, "%s", body->Name().c_str())) {
-                ImGui::Text("Blabla", i);
+
+                float *radius = body->RadiusPtr();
+                float *mass = body->MassPtr();
+                glm::vec3 *position = body->PositionPtr();
+
+
+                // ImGui::Text("Blabla", i);
+                const float max_radius = 10*RADIUS_EARTH;
+                const float radius_step = 0.01 * (*radius);
+
+                const float max_mass = 10*MASS_EARTH;
+                const float mass_step = 0.01 * (*mass);
+
+                const float min_pos = -10*RADIUS_EARTH;
+                const float max_pos = 10*RADIUS_EARTH;
+                const float position_step = 0.01 * max_pos;
+
+
+                ImGui::InputScalar("Radius (enter value)",   ImGuiDataType_Float,  radius, &radius_step);
+                ImGui::SliderScalar("Radius (drag values)", ImGuiDataType_Float, radius, &FLOAT_ZERO, &max_radius, "%e", 2.0f);
+
+                ImGui::Spacing();
+
+                ImGui::InputFloat3("Position xyz (enter values)", (float *) position);
+                ImGui::DragFloat3("Position xyz (drag numbers)", (float *) position, position_step, min_pos, max_pos);
+
+                ImGui::InputScalar("Mass (enter value)",   ImGuiDataType_Float,  mass, &mass_step);
+                ImGui::SliderScalar("Mass (drag values)", ImGuiDataType_Float, mass, &FLOAT_ZERO, &max_mass, "%e", 2.0f);
+
+
                 ImGui::TreePop();
             }
         }
-
-
     }
 
-
-    // ImGui::TreePop();
-    // int but = 0;
     if (ImGui::Button("Add world")) {
-        std::cout << "Add world" << std::endl;
+        WorldAddBody("three ", glm::vec3(0.0f), RADIUS_EARTH, MASS_MOON, glm::vec3(0.0f));
     }
 
     ImGui::End();
+}
+
+void Simulation::ShowDebug2() {
 
     if (!ImGui::Begin("Debug 2")) {
         ImGui::End();
         return;
     }
+
     bool a;
     ImGui::Checkbox("Play2", &a);
 
-
     ImGui::End();
 
-
-    m_gui.Render();
-
 }
+
 
 void Simulation::GuiToggle() {
     m_show_gui = !m_show_gui;

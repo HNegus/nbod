@@ -29,10 +29,14 @@ public:
     unsigned int ID() const { return m_id; }
     std::string Name() const { return m_name; };
 
-    glm::vec3 GetPosition() { return m_position; };
+    glm::vec3 GetPosition() const { return m_position; };
+    glm::vec3 *PositionPtr() { return &m_position; };
 
     float Radius() const { return m_radius; };
-    float Mass() const {return m_mass; }
+    float* RadiusPtr() { return &m_radius; };
+
+    float Mass() const { return m_mass; }
+    float *MassPtr() { return &m_mass; }
     float Velocity() const { return glm::length(m_velocity); };
     void PrintVelocity() { std::cout << m_name << ": " <<  glm::to_string(m_velocity) << std::endl; };
     // TODO print glm::vec

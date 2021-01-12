@@ -77,7 +77,7 @@ void World::Step() {
     }
 
     // file.close();
-
+    UpdateBodies();
     UpdateWorld();
 }
 
@@ -91,7 +91,6 @@ void World::AddBody(std::string name, float x, float y, float radius,
 }
 
 void World::UpdateWorld() {
-    UpdateBodies();
     SetVertices();
     SetIndices();
 }

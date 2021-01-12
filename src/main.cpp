@@ -92,8 +92,8 @@ int main(void) {
     glm::vec3 moon_pos(DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
     glm::vec3 moon_v(0.0f, VELOCITY_MOON, 0.0f);
 
-    simulation.WorldAddBody("earth", earth_pos, MASS_EARTH, 10*RADIUS_EARTH, glm::vec3(0.0f));
-    simulation.WorldAddBody("moon", moon_pos, MASS_MOON, 10*RADIUS_MOON, moon_v);
+    simulation.WorldAddBody("earth", earth_pos, MASS_EARTH, RADIUS_EARTH, glm::vec3(0.0f));
+    simulation.WorldAddBody("moon", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
     // simulation.WorldAddBody("moon2", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
     // simulation.WorldAddBody("moon3", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
     // simulation.WorldAddBody("moon4", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);

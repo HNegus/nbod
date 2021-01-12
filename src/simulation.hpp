@@ -51,6 +51,8 @@ public:
     void CameraMove(const glm::vec3 translation);
     void CameraSetCenter(glm::vec3 center);
 
+    // TODO rename without world
+    void WorldAddBody();
     void WorldAddBody(std::string name, glm::vec3 position, float radius,
         float mass, glm::vec3 velocity);
 
@@ -58,6 +60,9 @@ public:
 
     void GuiRender();
     void GuiToggle();
+
+    void ShowDebug();
+    void ShowDebug2();
 
     void TogglePlay();
 
