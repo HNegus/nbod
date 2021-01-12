@@ -32,6 +32,8 @@ private:
     VertexBufferLayout m_vblayout;
     Shader m_shader;
 
+    std::vector<std::string> m_body_ids;
+
 public:
 
     Simulation(GLFWwindow *window, const Gui &gui);
