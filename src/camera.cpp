@@ -116,7 +116,3 @@ void Camera::SetCenter(glm::vec3 center) {
     Update();
     Center();
 }
-
-
-// void ZoomInFast();
-// void ZoomOutFast();

@@ -1,5 +1,6 @@
 #pragma once
 #include <math.h>
+// #include <limits>
 
 
 const double G = 6.674 * pow(10, -11);
@@ -13,3 +14,11 @@ const float RADIUS_MOON = 1737 * pow(10, 3);
 const float VELOCITY_MOON = 1 * pow(10, 3);
 const float DELTA_TIME = 86400 / 60;
 // const float DELTA_TIME = 0.01;
+
+
+// const float MAX_MASS = 10 * MASS_EARTH;
+const float MAX_MASS = (FLT_MAX - 1)/2;
+const float FLOAT_MAX = (FLT_MAX - 1)/2;
+
+// const float MAX_RADIUS = 10 * RADIUS_EARTH;
+const float MAX_RADIUS = (FLT_MAX - 1)/2;

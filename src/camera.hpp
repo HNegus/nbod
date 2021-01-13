@@ -30,6 +30,8 @@ public:
     void Center();
     void Fit(glm::vec2 lbound, glm::vec2 rbound);
     void SetCenter(glm::vec3 center);
+    glm::vec3 GetPosition() const { return m_center + m_translation; };
+
     void Info();
 
     void Move(const glm::vec3 translation);

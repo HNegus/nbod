@@ -14,10 +14,6 @@
 #include "simulation.hpp"
 #include "input.hpp"
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
 #include "body.hpp"
 #include "world.hpp"
 
@@ -142,7 +138,7 @@ int main(void) {
     while (!glfwWindowShouldClose(window)) {
 
         simulation.Render();
-        
+
         i++;
         if (simulation.Running()) {
             simulation.Step();

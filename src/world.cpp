@@ -82,13 +82,15 @@ void World::Step() {
 }
 
 
-void World::AddBody(std::string name, float x, float y, float radius,
+Body* World::AddBody(std::string name, float x, float y, float radius,
                    float mass, float vx, float vy) {
     Body *body = new Body(name, x, y, radius, mass, vx, vy);
     m_bodies.push_back(body);
     m_index++;
     UpdateWorld();
+    return body;
 }
+
 
 void World::UpdateWorld() {
     SetVertices();
@@ -123,7 +125,7 @@ std::vector<Body*> World::Bodies() {
 double World::KineticEnergy() {
     double total = 0.0;
     for (Body *b: m_bodies) {
-        total += b->Mass() * pow(b->Velocity(), 2) * 0.5;
+        total += b->Mass() * pow(b->GetVelocityMagnitude(), 2) * 0.5;
     }
     return total;
 }

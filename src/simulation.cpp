@@ -41,6 +41,7 @@ void Simulation::Render() {
 }
 
 void Simulation::Init() {
+    m_config.RegisterCamera(&m_camera);
     CameraFit();
 }
 
@@ -84,8 +85,10 @@ void Simulation::WorldAddBody(std::string name, glm::vec3 position, float radius
                               float mass, glm::vec3 velocity) {
 
     // .push_back(id);
+    Body *body =  m_world.AddBody(name, position.x, position.y,
+                               mass, radius, velocity.x, velocity.y);
+    m_config.RegisterBody(body);
 
-    m_world.AddBody(name, position.x, position.y, mass, radius, velocity.x, velocity.y);
 }
 
 
@@ -93,6 +96,9 @@ void Simulation::WorldAddBody(std::string name, glm::vec3 position, float radius
 void Simulation::GuiRender() {
 
     if (!m_show_gui) return;
+
+    m_config.Update();
+
     m_gui.NewFrame();
 
     ImGui::ShowDemoWindow();
@@ -119,47 +125,76 @@ void Simulation::ShowDebug() {
         return;
     }
 
+    // std::cout << "!!" << ImGui::GetIO().WantCaptureMouse << std::endl;
+
     ImGui::Checkbox("Play", &m_run_simulation);
 
 
     if (ImGui::CollapsingHeader("Bodies", ImGuiTreeNodeFlags_None)) {
 
         // TODO Extract
-        std::vector<Body*> bodies = m_world.Bodies();
         Body *body;
+        float diff;
 
-        for (std::size_t i = 0; i < bodies.size(); i++) {
+        for (std::size_t i = 0; i < m_config.bodies.size(); i++) {
 
-            body = bodies[i];
+            body = m_config.bodies[i];
             if (ImGui::TreeNode((void*)(intptr_t)i, "%s", body->Name().c_str())) {
+
 
                 float *radius = body->RadiusPtr();
                 float *mass = body->MassPtr();
-                glm::vec3 *position = body->PositionPtr();
+                const glm::vec3 *position = body->PositionPtr();
 
 
                 // ImGui::Text("Blabla", i);
-                const float max_radius = 10*RADIUS_EARTH;
                 const float radius_step = 0.01 * (*radius);
-
-                const float max_mass = 10*MASS_EARTH;
                 const float mass_step = 0.01 * (*mass);
 
-                const float min_pos = -10 * abs(position->x);
-                const float max_pos = 10 * abs(position->x);
-                const float position_step = abs(max_pos) > 0 ? 0.01 * abs(max_pos) : 1.0f;
+                const float max_mass = m_config.max_mass;
+                const float max_radius = m_config.max_radius;
 
 
-                ImGui::InputScalar("Radius (enter value)",   ImGuiDataType_Float,  radius, &radius_step);
-                ImGui::SliderScalar("Radius (drag values)", ImGuiDataType_Float, radius, &FLOAT_ZERO, &max_radius, "%e", 2.0f);
+                const float xmin = m_config.min_position.x;
+                const float xmax = m_config.max_position.x;
+                diff = xmax - xmin;
+                const float xstep = diff > 0 ? diff : 1.0f;
+
+
+                const float ymin = m_config.min_position.x;
+                const float ymax = m_config.max_position.x;
+                diff = ymax - ymin;
+                const float ystep = diff > 0 ? diff : 1.0f;
+
+                ImGui::InputScalar("Radius (enter value)",   ImGuiDataType_Float, radius, &radius_step);
+                ImGui::SliderScalar("Radius (drag values)", ImGuiDataType_Float, radius, &FLOAT_ZERO, &max_radius, "%e", 1.0f);
 
                 ImGui::Spacing();
 
-                ImGui::InputFloat3("Position xyz (enter values)", (float *) position);
-                ImGui::DragFloat3("Position xyz (drag numbers)", (float *) position, position_step, min_pos, max_pos);
 
                 ImGui::InputScalar("Mass (enter value)",   ImGuiDataType_Float,  mass, &mass_step);
-                ImGui::SliderScalar("Mass (drag values)", ImGuiDataType_Float, mass, &FLOAT_ZERO, &max_mass, "%e", 2.0f);
+                ImGui::SliderScalar("Mass (drag values)", ImGuiDataType_Float, mass, &FLOAT_ZERO, &max_mass, "%e", 1.0f);
+
+                ImGui::Spacing();
+
+                ImGui::Text("X position");
+                ImGui::Text("Y position");
+
+                ImGui::Spacing();
+
+                // Only increase/decrease buttons?
+                ImGui::Text("X velocity");
+                ImGui::Text("Y velocity");
+
+                ImGui::Spacing();
+
+
+                ImGui::Text("Color");
+                ImGui::Spacing();
+
+
+                // ImGui::InputFloat3("Position xyz (enter values)", (float *) position);
+                // ImGui::DragFloat3("Position xyz (drag numbers)", (float *) position, position_step, min_pos, max_pos);
 
 
                 ImGui::TreePop();
@@ -186,8 +221,8 @@ void Simulation::ShowDebug2() {
         return;
     }
 
-    bool a;
-    ImGui::Checkbox("Play2", &a);
+    glm::vec3 position = m_config.camera_position;
+    ImGui::Text("Camera position\n x: %f \n y: %f", position.x, position.y);
 
     ImGui::End();
 

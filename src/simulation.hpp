@@ -12,6 +12,7 @@
 #include "camera.hpp"
 #include "gui.hpp"
 #include "world.hpp"
+#include "simdata.hpp"
 
 class Simulation {
 
@@ -32,9 +33,7 @@ private:
     VertexBufferLayout m_vblayout;
     Shader m_shader;
 
-    std::vector<Body*> m_bodies;
-    std::vector<std::string> m_body_names;
-
+    SimData m_config;
 public:
 
     Simulation(GLFWwindow *window, const Gui &gui);
@@ -59,6 +58,7 @@ public:
     void WorldAddBody();
     void WorldAddBody(std::string name, glm::vec3 position, float radius,
         float mass, glm::vec3 velocity);
+    void WorldRemoveBody(unsigned int id);
 
 
 

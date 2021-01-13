@@ -29,12 +29,11 @@ public:
     World();
     ~World();
 
-    void AddBody(std::string name, float x, float y, float radius, float mass,
+    Body* AddBody(std::string name, float x, float y, float radius, float mass,
                  float vx, float vy);
     std::vector<Body*> Bodies();
-
+    void RemoveBody(unsigned int id);
     void Do();
-
 
     // void Renew();
     void UpdateWorld();

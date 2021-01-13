@@ -16,7 +16,7 @@ public:
          m_name(name), m_position(xpos, ypos, 0.0f), m_force(vx, vy, 0.0f),
          m_velocity(vx, vy, 0.0f),
          m_radius(radius), m_mass(mass),
-        m_id(id_counter++) {};
+         m_id(id_counter++) {};
     ~Body() {};
 
 
@@ -32,14 +32,15 @@ public:
     glm::vec3 GetPosition() const { return m_position; };
     glm::vec3 *PositionPtr() { return &m_position; };
 
+// TODO rename to set get
     float Radius() const { return m_radius; };
     float* RadiusPtr() { return &m_radius; };
 
     float Mass() const { return m_mass; }
     float *MassPtr() { return &m_mass; }
-    float Velocity() const { return glm::length(m_velocity); };
+    float GetVelocityMagnitude() const { return glm::length(m_velocity); };
+    glm::vec3 GetVelocity() const { return m_velocity; };
     void PrintVelocity() { std::cout << m_name << ": " <<  glm::to_string(m_velocity) << std::endl; };
-    // TODO print glm::vec
     void PrintPosition() { std::cout << m_name << ": " << glm::to_string(m_position) << std::endl; };
 
 
