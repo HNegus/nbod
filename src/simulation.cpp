@@ -136,7 +136,18 @@ void Simulation::ShowDebug() {
         Body *body;
         float diff;
 
+        // TODO extract to configuration window
+        float *delta_position = &m_config.delta_position;
+        float *delta_velocity = &m_config.delta_velocity;
+        ImGui::Text("HELP TEXT TODO");
+        ImGui::InputScalar("delta position", ImGuiDataType_Float, delta_position);
+        ImGui::InputScalar("delta velocity", ImGuiDataType_Float, delta_velocity);
+
+
+
         for (std::size_t i = 0; i < m_config.bodies.size(); i++) {
+
+
 
             body = m_config.bodies[i];
             if (ImGui::TreeNode((void*)(intptr_t)i, "%s", body->Name().c_str())) {
@@ -144,7 +155,8 @@ void Simulation::ShowDebug() {
 
                 float *radius = body->RadiusPtr();
                 float *mass = body->MassPtr();
-                const glm::vec3 *position = body->PositionPtr();
+                glm::vec3 *position = body->PositionPtr();
+                glm::vec3 *velocity = body->VelocityPtr();
 
 
                 // ImGui::Text("Blabla", i);
@@ -155,41 +167,35 @@ void Simulation::ShowDebug() {
                 const float max_radius = m_config.max_radius;
 
 
-                const float xmin = m_config.min_position.x;
-                const float xmax = m_config.max_position.x;
-                diff = xmax - xmin;
-                const float xstep = diff > 0 ? diff : 1.0f;
+                // TODO sliders or no?
+                ImGui::Text("Radius:");
+                ImGui::InputScalar("",   ImGuiDataType_Float, radius, &radius_step);
+                // ImGui::SliderScalar("Radius (drag value)", ImGuiDataType_Float, radius, &FLOAT_ZERO, &max_radius, "%e", 1.0f);
+
+                ImGui::Spacing();
+
+                ImGui::Text("Mass:");
+                ImGui::InputScalar("",   ImGuiDataType_Float,  mass, &mass_step);
+                // ImGui::SliderScalar("",ImGuiDataType_Float, mass, &FLOAT_ZERO, &max_mass, "%e", 1.0f);
+
+                ImGui::Spacing();
+                ImGui::Spacing();
+
+                ImGui::Text("Coordinates:");
+                ImGui::InputScalar("x",   ImGuiDataType_Float,  &position->x, delta_position);
+                ImGui::InputScalar("y",   ImGuiDataType_Float,  &position->y, delta_position);
 
 
-                const float ymin = m_config.min_position.x;
-                const float ymax = m_config.max_position.x;
-                diff = ymax - ymin;
-                const float ystep = diff > 0 ? diff : 1.0f;
+                ImGui::Spacing();
 
-                ImGui::InputScalar("Radius (enter value)",   ImGuiDataType_Float, radius, &radius_step);
-                ImGui::SliderScalar("Radius (drag values)", ImGuiDataType_Float, radius, &FLOAT_ZERO, &max_radius, "%e", 1.0f);
+                ImGui::Text("Velocity:");
+                ImGui::InputScalar("x",   ImGuiDataType_Float,  &velocity->x, delta_position);
+                ImGui::InputScalar("y",   ImGuiDataType_Float,  &velocity->x, delta_position);
 
                 ImGui::Spacing();
 
 
-                ImGui::InputScalar("Mass (enter value)",   ImGuiDataType_Float,  mass, &mass_step);
-                ImGui::SliderScalar("Mass (drag values)", ImGuiDataType_Float, mass, &FLOAT_ZERO, &max_mass, "%e", 1.0f);
-
-                ImGui::Spacing();
-
-                ImGui::Text("X position");
-                ImGui::Text("Y position");
-
-                ImGui::Spacing();
-
-                // Only increase/decrease buttons?
-                ImGui::Text("X velocity");
-                ImGui::Text("Y velocity");
-
-                ImGui::Spacing();
-
-
-                ImGui::Text("Color");
+                ImGui::Text("Color:");
                 ImGui::Spacing();
 
 
@@ -200,11 +206,13 @@ void Simulation::ShowDebug() {
                 ImGui::TreePop();
             }
         }
+
+        if (ImGui::Button("Add world")) {
+            WorldAddBody("body ", glm::vec3(0.0f), RADIUS_EARTH, MASS_MOON, glm::vec3(0.0f));
+        }
     }
 
-    if (ImGui::Button("Add world")) {
-        WorldAddBody("three ", glm::vec3(0.0f), RADIUS_EARTH, MASS_MOON, glm::vec3(0.0f));
-    }
+
 
     if (ImGui::Button("Fit camera")) {
         CameraFit();

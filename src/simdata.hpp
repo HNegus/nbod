@@ -17,9 +17,7 @@ public:
     // TODO for each body, save configuration
     float radius, mass;
     // float max_radius, radius_step, max_mass, mass_step;
-    float max_radius, max_mass, mass_step;
-    glm::vec3 min_position, max_position,
-              min_velocity, max_velocity;
+    float max_radius, max_mass, mass_step, delta_position, delta_velocity;
 
     glm::vec3 camera_position;
 

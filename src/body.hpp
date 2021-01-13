@@ -30,16 +30,18 @@ public:
     std::string Name() const { return m_name; };
 
     glm::vec3 GetPosition() const { return m_position; };
-    glm::vec3 *PositionPtr() { return &m_position; };
+    glm::vec3* PositionPtr() { return &m_position; };
 
 // TODO rename to set get
     float Radius() const { return m_radius; };
     float* RadiusPtr() { return &m_radius; };
 
     float Mass() const { return m_mass; }
-    float *MassPtr() { return &m_mass; }
+    float* MassPtr() { return &m_mass; }
     float GetVelocityMagnitude() const { return glm::length(m_velocity); };
+
     glm::vec3 GetVelocity() const { return m_velocity; };
+    glm::vec3* VelocityPtr() { return &m_velocity; };
     void PrintVelocity() { std::cout << m_name << ": " <<  glm::to_string(m_velocity) << std::endl; };
     void PrintPosition() { std::cout << m_name << ": " << glm::to_string(m_position) << std::endl; };
 

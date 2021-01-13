@@ -18,7 +18,8 @@ const float DELTA_TIME = 86400 / 60;
 
 // const float MAX_MASS = 10 * MASS_EARTH;
 const float MAX_MASS = (FLT_MAX - 1)/2;
-const float FLOAT_MAX = (FLT_MAX - 1)/2;
+const float SLIDERFLOAT_MAX = FLT_MAX/2.0f;
+const float SLIDERFLOAT_MIN = -FLT_MAX/2.0f;
 
 // const float MAX_RADIUS = 10 * RADIUS_EARTH;
 const float MAX_RADIUS = (FLT_MAX - 1)/2;

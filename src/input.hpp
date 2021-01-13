@@ -46,8 +46,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 
-    Simulation *simulation = (Simulation *) glfwGetWindowUserPointer(window);
-    simulation->CameraZoom(yoffset);
+    if (!ImGui::GetIO().WantCaptureMouse) {
+        Simulation *simulation = (Simulation *) glfwGetWindowUserPointer(window);
+        simulation->CameraZoom(yoffset);
+    }
     ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
     return;
 }
