@@ -21,14 +21,13 @@ OBJS=$(patsubst %.cpp, %.o, $(CPPFILES))
 DEPENDS=$(OBJS:.o=.d)
 
 
--include $(DEPENDS)
 
 .DEFAULT: make
-.PHONY: make
+.PHONY: make main
 
 
 
-make:CPPFLAGS += $(DEBUG)
+make: CPPFLAGS += $(DEBUG)
 make: main
 
 # Verbose
@@ -46,6 +45,9 @@ main: $(OBJS)
 
 
 # Generate dependency files for recompilation on header file changes
+
+-include $(DEPENDS)
+
 %.o: %.cpp
 	$(CC) -c $(INC_PARAMS) $(CPPFLAGS) -MMD -MF $(patsubst %.o, %.d, $@)  -o $@ $<
 	@echo -------
