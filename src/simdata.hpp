@@ -17,7 +17,7 @@ public:
     // TODO for each body, save configuration
     float radius, mass;
     // float max_radius, radius_step, max_mass, mass_step;
-    float max_radius, max_mass, mass_step, delta_position, delta_velocity;
+    float max_radius, max_mass, delta_mass, delta_radius, delta_position, delta_velocity;
 
     glm::vec3 camera_position;
 
@@ -25,6 +25,7 @@ public:
     ~SimData() {};
 
     void RegisterBody(Body *body);
+    void DeregisterBody(unsigned int id);
     void DeregisterBody(Body *body);
     void RegisterCamera(Camera *camera);
     void Update();

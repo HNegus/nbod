@@ -43,6 +43,8 @@ void Camera::Zoom(const int direction) {
 
 void Camera::Fit(glm::vec2 lbound, glm::vec2 rbound) {
 
+    Center();
+
     float zoom_level;
     float zoomlevel_lbound = (lbound.x + m_translation.x) / m_zoom_ratio;
     float zoomlevel_rbound = -(rbound.x + m_translation.x) / m_zoom_ratio;

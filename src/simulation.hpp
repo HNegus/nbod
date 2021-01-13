@@ -67,6 +67,7 @@ public:
 
     void ShowDebug();
     void ShowDebug2();
+    void ShowConfig();
 
     void TogglePlay();
 

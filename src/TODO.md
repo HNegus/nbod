@@ -5,8 +5,8 @@
     - [X] zoom
     - [X] position
     - **body params control**
-      - [ ] velocity
-      - [ ] position
+      - [X] velocity
+      - [X] position
       - [X] mass
       - [X] radius
       - [ ] color?
@@ -32,3 +32,7 @@
 - [ ] scenario class (save/resume)
   - [ ] figure out savefile format
 - [ ] plot history as lines
+
+1. Make configuration editable
+2. Enable planet tracking
+3. Work on simulation stepping (how does time work??)
