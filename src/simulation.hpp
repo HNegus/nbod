@@ -45,11 +45,15 @@ public:
 
     void Step();
     void Render();
+    void Init();
 
+    void CameraFit();
     void CameraZoom(const int direction);
     void CameraCenter();
     void CameraMove(const glm::vec3 translation);
     void CameraSetCenter(glm::vec3 center);
+    void CameraInfo();
+
 
     // TODO rename without world
     void WorldAddBody();

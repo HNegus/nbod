@@ -25,8 +25,10 @@ public:
     void ZoomInFast();
     void ZoomOutFast();
 
+    void Resize();
     void Update();
     void Center();
+    void Fit(glm::vec2 lbound, glm::vec2 rbound);
     void SetCenter(glm::vec3 center);
     void Info();
 

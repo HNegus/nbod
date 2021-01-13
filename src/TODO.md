@@ -1,6 +1,5 @@
 # TODO
 - [ ] **3D??**
-- [ ] **write proposal**
 - [X] camera control
 - **start making menu**
     - [ ] zoom
@@ -20,7 +19,7 @@
 - [ ] figure out how to center
 - [ ] **clean code**
   - [ ] remove global variables
-  - [ ] make use of gui class
+  - [X] make use of gui class
 - [ ] **parallelize**
 - [ ] use caching
 - [ ] textures

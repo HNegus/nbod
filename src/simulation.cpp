@@ -40,6 +40,26 @@ void Simulation::Render() {
     GuiRender();
 }
 
+void Simulation::Init() {
+    CameraFit();
+}
+
+void Simulation::CameraFit() {
+    glm::vec2 lbound(0.0f), rbound(0.0f);
+    // TODO extract
+    for (Body *body: m_world.Bodies()) {
+        glm::vec3 position = body->GetPosition();
+        if (position.x < lbound.x) lbound.x = 1.01 * position.x - body->Radius();
+        if (position.x > rbound.x) rbound.x = 1.01 * position.x + body->Radius();
+
+        if (position.y < lbound.y) lbound.y = 1.01 * position.y - body->Radius();
+        if (position.y > rbound.y) rbound.y = 1.01 * position.y + body->Radius();
+
+    }
+
+    m_camera.Fit(lbound, rbound);
+}
+
 void Simulation::CameraZoom(const int direction) {
     m_camera.Zoom(direction);
 }
@@ -48,13 +68,16 @@ void Simulation::CameraCenter() {
     m_camera.Center();
 }
 
-
 void Simulation::CameraSetCenter(glm::vec3 center) {
     m_camera.SetCenter(center);
 }
 
 void Simulation::CameraMove(const glm::vec3 translation) {
     m_camera.Move(translation);
+}
+
+void Simulation::CameraInfo() {
+    m_camera.Info();
 }
 
 void Simulation::WorldAddBody(std::string name, glm::vec3 position, float radius,
@@ -101,6 +124,7 @@ void Simulation::ShowDebug() {
 
     if (ImGui::CollapsingHeader("Bodies", ImGuiTreeNodeFlags_None)) {
 
+        // TODO Extract
         std::vector<Body*> bodies = m_world.Bodies();
         Body *body;
 
@@ -121,9 +145,9 @@ void Simulation::ShowDebug() {
                 const float max_mass = 10*MASS_EARTH;
                 const float mass_step = 0.01 * (*mass);
 
-                const float min_pos = -10*RADIUS_EARTH;
-                const float max_pos = 10*RADIUS_EARTH;
-                const float position_step = 0.01 * max_pos;
+                const float min_pos = -10 * abs(position->x);
+                const float max_pos = 10 * abs(position->x);
+                const float position_step = abs(max_pos) > 0 ? 0.01 * abs(max_pos) : 1.0f;
 
 
                 ImGui::InputScalar("Radius (enter value)",   ImGuiDataType_Float,  radius, &radius_step);
@@ -145,6 +169,11 @@ void Simulation::ShowDebug() {
 
     if (ImGui::Button("Add world")) {
         WorldAddBody("three ", glm::vec3(0.0f), RADIUS_EARTH, MASS_MOON, glm::vec3(0.0f));
+    }
+
+    if (ImGui::Button("Fit camera")) {
+        CameraFit();
+
     }
 
     ImGui::End();

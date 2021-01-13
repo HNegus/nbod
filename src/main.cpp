@@ -86,6 +86,11 @@ int main(void) {
 
     if (!window) return -1;
 
+    float xmid = 1920 / 2;
+    float ymid = 1080 / 2;
+    float radius = 1.0f;
+
+
     Gui gui(window);
     Simulation simulation(window, gui);
     glm::vec3 earth_pos(-DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
@@ -95,10 +100,15 @@ int main(void) {
     simulation.WorldAddBody("earth", earth_pos, MASS_EARTH, RADIUS_EARTH, glm::vec3(0.0f));
     simulation.WorldAddBody("moon", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
     // simulation.WorldAddBody("moon2", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
-    // simulation.WorldAddBody("moon3", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
-    // simulation.WorldAddBody("moon4", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
+    // simulation.WorldAddBody("earth", glm::vec3(1000.0f, ymid, 1.0f), 10.0f, 100.0f, glm::vec3(0.0f));
+    // simulation.WorldAddBody("earth2", glm::vec3(1000.0f, ymid * 3, 1.0f), 10.0f, 100.0f, glm::vec3(0.0f));
+    // simulation.WorldAddBody("earth2", glm::vec3(-4000.0f, ymid * 3, 1.0f), 10.0f, 100.0f, glm::vec3(0.0f));
+
+
+    // simulation.WorldAddBody("moon", glm::vec3(0.0f) + 100.0f, 1.0f, 50.0f, moon_v);
 
     simulation.CameraSetCenter(earth_pos);
+    simulation.Init();
     simulation.Render();
 
     // world.AddBody("earth", -DISTANCE_MOON_EARTH / 2, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
@@ -121,9 +131,6 @@ int main(void) {
     glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 
 
-    float xmid = 1920 / 2;
-    float ymid = 1080 / 2;
-    float radius = 1.0f;
 
 
     int i = 0;
@@ -138,11 +145,10 @@ int main(void) {
         }
 
 
-
         simulation.Render();
 
         if (i % 60 == 0) {
-            // camera.Info();
+            // simulation.CameraInfo();
         }
         // std::cout.precision(20);
         // total = world.TotalEnergy();
