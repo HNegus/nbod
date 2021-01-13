@@ -86,13 +86,25 @@ int main(void) {
 
     if (!window) return -1;
 
+    Gui gui(window);
+    Simulation simulation(window, gui);
+
+    glfwSetWindowUserPointer(window, (void *) &simulation);
+    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetKeyCallback(window, key_callback);
+
+    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
+
+
     float xmid = 1920 / 2;
     float ymid = 1080 / 2;
     float radius = 1.0f;
 
 
-    Gui gui(window);
-    Simulation simulation(window, gui);
+
     glm::vec3 earth_pos(-DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
     glm::vec3 moon_pos(DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
     glm::vec3 moon_v(0.0f, VELOCITY_MOON, 0.0f);
@@ -109,7 +121,6 @@ int main(void) {
 
     simulation.CameraSetCenter(earth_pos);
     simulation.Init();
-    simulation.Render();
 
     // world.AddBody("earth", -DISTANCE_MOON_EARTH / 2, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
     // world.AddBody("moon", DISTANCE_MOON_EARTH / 2, 0, RADIUS_MOON, MASS_MOON, 0, VELOCITY_MOON);
@@ -121,31 +132,23 @@ int main(void) {
     // exit(0);
 
 
-    glfwSetWindowUserPointer(window, (void *) &simulation);
-    glfwSetScrollCallback(window, scroll_callback);
-    glfwSetKeyCallback(window, key_callback);
-
-    glEnable(GL_MULTISAMPLE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 
 
 
 
     int i = 0;
-    glfwSwapBuffers(window);
 
 
     while (!glfwWindowShouldClose(window)) {
 
+        simulation.Render();
+        
         i++;
         if (simulation.Running()) {
             simulation.Step();
         }
 
 
-        simulation.Render();
 
         if (i % 60 == 0) {
             // simulation.CameraInfo();
