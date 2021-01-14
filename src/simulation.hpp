@@ -42,9 +42,9 @@ public:
     ~Simulation();
 
 
-    void Step();
-    void Render();
     void Init();
+    void Step();
+
 
     void CameraFit();
     void CameraZoom(const int direction);
@@ -60,17 +60,14 @@ public:
         float mass, glm::vec3 velocity);
     void WorldRemoveBody(unsigned int id);
 
-
-
-    void GuiRender();
-    void GuiToggle();
-
+    void Render();
+    void RenderGui();
     void ShowDebug();
     void ShowDebug2();
     void ShowConfig();
 
+    void GuiToggle();
     void TogglePlay();
-
     bool Running() const { return m_run_simulation; };
 
     // TODO remove

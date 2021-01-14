@@ -32,6 +32,7 @@
 - [ ] scenario class (save/resume)
   - [ ] figure out savefile format
 - [ ] plot history as lines
+- [ ] put shaders in own directory
 
 1. Make configuration editable
 2. Enable planet tracking

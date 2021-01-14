@@ -1,11 +1,12 @@
 #include "simulation.hpp"
 
+/* Initialization, setup and management. */
 Simulation::Simulation(GLFWwindow *window, const Gui &gui) :
         m_window(window), m_gui(gui)
 {
     m_va.Bind();
-    m_vb.Renew(WorldVbData(), WorldVbSize());
-    m_ib.Renew(WorldIbData(), WorldIbSize());
+    m_vb.Update(WorldVbData(), WorldVbSize());
+    m_ib.Update(WorldIbData(), WorldIbSize());
     m_vblayout.Push<float>(2);
     m_vblayout.Push<float>(1);
     m_vblayout.Push<float>(2);
@@ -22,35 +23,27 @@ Simulation::Simulation(GLFWwindow *window, const Gui &gui) :
 Simulation::~Simulation() {
 }
 
-void Simulation::Step() {
-    m_world.Step();
-}
-
-void Simulation::Render() {
-    m_vb.Renew(WorldVbData(), WorldVbSize());
-    m_ib.Renew(WorldIbData(), WorldIbSize());
-    m_va.Renew(m_vb, m_vblayout);
-
-    m_shader.Bind();
-    m_shader.SetUniformMat4f("u_MVP", MVP());
-    m_renderer.Clear();
-
-    m_renderer.Draw(m_va, m_ib, m_shader);
-
-    GuiRender();
-}
-
 void Simulation::Init() {
     m_config.RegisterCamera(&m_camera);
     CameraFit();
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowBorderSize = 0;
     style.WindowRounding = 0;
+}
 
 
+void Simulation::WorldAddBody(std::string name, glm::vec3 position, float radius,
+                              float mass, glm::vec3 velocity) {
+
+    // .push_back(id);
+    Body *body =  m_world.AddBody(name, position.x, position.y,
+                               mass, radius, velocity.x, velocity.y);
+    m_config.RegisterBody(body);
 
 }
 
+
+/* Camera control. */
 void Simulation::CameraFit() {
     glm::vec2 lbound(0.0f), rbound(0.0f);
     // TODO extract
@@ -87,19 +80,30 @@ void Simulation::CameraInfo() {
     m_camera.Info();
 }
 
-void Simulation::WorldAddBody(std::string name, glm::vec3 position, float radius,
-                              float mass, glm::vec3 velocity) {
+/* Simulation */
+void Simulation::Step() {
+    m_world.Step();
+}
 
-    // .push_back(id);
-    Body *body =  m_world.AddBody(name, position.x, position.y,
-                               mass, radius, velocity.x, velocity.y);
-    m_config.RegisterBody(body);
 
+/* Rendering scene/GUI. */
+void Simulation::Render() {
+    m_va.Bind();
+    m_vb.Update(WorldVbData(), WorldVbSize());
+    m_ib.Update(WorldIbData(), WorldIbSize());
+
+    m_shader.Bind();
+    m_shader.SetUniformMat4f("u_MVP", MVP());
+    m_renderer.Clear();
+
+    m_renderer.Draw(m_va, m_ib, m_shader);
+
+    RenderGui();
 }
 
 
 
-void Simulation::GuiRender() {
+void Simulation::RenderGui() {
 
     if (!m_show_gui) return;
 
