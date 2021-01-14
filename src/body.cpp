@@ -21,8 +21,32 @@ void Body::Update() {
     m_force = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
-void Body::Move(glm::vec3 translation) {
-    m_position += translation;
-    // m_xpos += x;
-    // m_ypos += y;
+// void Body::Translate(glm::vec3 translation) {
+    // m_position += translation;
+// }
+
+
+std::ostream& operator<<(std::ostream& os, const Body body) {
+
+    os << body.m_id << std::endl;
+    os << body.m_name << std::endl;
+    os << body.m_position.x << " " << body.m_position.y << std::endl;
+    os << body.m_velocity.x << " " << body.m_velocity.y << std::endl;
+    os << body.m_force.x << " " << body.m_force.y << std::endl;
+    os << body.m_radius << std::endl;
+    os << body.m_mass << std::endl;
+
+    return os;
+}
+
+
+std::istream& operator>>(std::istream& is, Body& body) {
+    is >> body.m_id;
+    is >> body.m_name;
+    is >> body.m_position.x >> body.m_position.y;
+    is >> body.m_velocity.x >> body.m_velocity.y;
+    is >> body.m_force.x >> body.m_force.y;
+    is >> body.m_radius;
+    is >> body.m_mass;
+    return is;
 }
