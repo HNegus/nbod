@@ -19,6 +19,7 @@ public:
     void Draw() const;
     void Draw(const VertexArray& va, const IndexBuffer& ib,
               const Shader& shader) const;
+    void DrawLines(const VertexArray& va, const Shader& shader);
 
     void Clear() const;
 };
