@@ -41,4 +41,8 @@ public:
 
 
     glm::mat4 MVP() const { return m_proj * m_view * m_model; };
+
+    friend std::ostream& operator<<(std::ostream& os, const Camera& camera);
+    friend std::istream& operator>>(std::istream& is, Camera& camera);
+
 };

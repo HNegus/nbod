@@ -118,3 +118,23 @@ void Camera::SetCenter(glm::vec3 center) {
     Update();
     Center();
 }
+
+
+std::ostream& operator<<(std::ostream& os, const Camera& camera) {
+
+    os << camera.m_translation.x << " " << camera.m_translation.y << std::endl;
+    os << camera.m_center.x << " " << camera.m_center.y << std::endl;
+
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, Camera& camera) {
+
+    is >> camera.m_translation.x >> camera.m_translation.y;
+    is >> camera.m_center.x >> camera.m_center.y;
+    camera.Center();
+    camera.Update();
+
+
+    return is;
+}

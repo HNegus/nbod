@@ -2,8 +2,8 @@
 #include <math.h>
 // #include <limits>
 
-
 const double G = 6.674 * pow(10, -11);
+
 const float FLOAT_ZERO = 0.0f;
 
 const float MASS_EARTH = 5.972 * pow(10, 24);

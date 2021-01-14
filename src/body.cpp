@@ -1,5 +1,8 @@
 #include "body.hpp"
 
+void Body::SetRadius(float radius) {
+    m_radius = radius;
+}
 
 void Body::ApplyForce(glm::vec3 f) {
     // std::cout << id() << " fx: " << fx << " fy: " << fy << std::endl;
@@ -26,7 +29,7 @@ void Body::Update() {
 // }
 
 
-std::ostream& operator<<(std::ostream& os, const Body body) {
+std::ostream& operator<<(std::ostream& os, const Body& body) {
 
     os << body.m_id << std::endl;
     os << body.m_name << std::endl;

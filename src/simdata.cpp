@@ -10,7 +10,7 @@ SimData::SimData() : bodies(), max_radius(), max_mass(), delta_radius(),
     max_mass = 10*MASS_EARTH;
 }
 
-void SimData::RegisterBody(Body *body) {
+void SimData::RegisterBody(Body* body) {
 
     bodies.push_back(body);
     Update();

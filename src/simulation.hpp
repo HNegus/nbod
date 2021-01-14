@@ -13,6 +13,7 @@
 #include "gui.hpp"
 #include "world.hpp"
 #include "simdata.hpp"
+#include "scene.hpp"
 
 class Simulation {
 
@@ -55,17 +56,23 @@ public:
 
 
     // TODO rename without world
+    std::vector<Body*> WorldBodies() { return m_world.Bodies(); };
+
     void WorldAddBody();
-    void WorldAddBody(std::string name, glm::vec3 position, float radius,
-        float mass, glm::vec3 velocity);
+    void WorldAddBody(std::string name, glm::vec3 position, glm::vec3 force,
+                      float radius, float mass);
     void WorldRemoveBody(unsigned int id);
 
     void Render();
     void RenderGui();
+    ImVec2 ShowMenu();
+
+    void ShowMenuFile();
     void ShowDebug();
     void ShowDebug2();
     void ShowConfig();
 
+    void Save(std::string scene_name);
     void GuiToggle();
     void TogglePlay();
     bool Running() const { return m_run_simulation; };

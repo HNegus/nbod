@@ -5,8 +5,8 @@ Simulation::Simulation(GLFWwindow *window, const Gui &gui) :
         m_window(window), m_gui(gui)
 {
     m_va.Bind();
-    m_vb.Update(WorldVbData(), WorldVbSize());
-    m_ib.Update(WorldIbData(), WorldIbSize());
+    m_vb.Renew(WorldVbData(), WorldVbSize());
+    m_ib.Renew(WorldIbData(), WorldIbSize());
     m_vblayout.Push<float>(2);
     m_vblayout.Push<float>(1);
     m_vblayout.Push<float>(2);
@@ -32,12 +32,18 @@ void Simulation::Init() {
 }
 
 
-void Simulation::WorldAddBody(std::string name, glm::vec3 position, float radius,
-                              float mass, glm::vec3 velocity) {
+void Simulation::WorldAddBody() {
+    Body* body = m_world.AddBody();
+    m_config.RegisterBody(body);
+}
 
+
+void Simulation::WorldAddBody(std::string name,
+                              glm::vec3 position, glm::vec3 velocity,
+                              float radius, float mass)
+{
     // .push_back(id);
-    Body *body =  m_world.AddBody(name, position.x, position.y,
-                               mass, radius, velocity.x, velocity.y);
+    Body *body =  m_world.AddBody(name, position, velocity, radius, mass);
     m_config.RegisterBody(body);
 
 }
@@ -49,11 +55,11 @@ void Simulation::CameraFit() {
     // TODO extract
     for (Body *body: m_world.Bodies()) {
         glm::vec3 position = body->GetPosition();
-        if (position.x < lbound.x) lbound.x = 1.01 * position.x - body->Radius();
-        if (position.x > rbound.x) rbound.x = 1.01 * position.x + body->Radius();
+        if (position.x < lbound.x) lbound.x = 1.01 * position.x - body->GetRadius();
+        if (position.x > rbound.x) rbound.x = 1.01 * position.x + body->GetRadius();
 
-        if (position.y < lbound.y) lbound.y = 1.01 * position.y - body->Radius();
-        if (position.y > rbound.y) rbound.y = 1.01 * position.y + body->Radius();
+        if (position.y < lbound.y) lbound.y = 1.01 * position.y - body->GetRadius();
+        if (position.y > rbound.y) rbound.y = 1.01 * position.y + body->GetRadius();
 
     }
 
@@ -112,28 +118,159 @@ void Simulation::RenderGui() {
     m_gui.NewFrame();
 
     ImGui::ShowDemoWindow();
-    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
+
+
+    ImVec2 menu_size = ShowMenu();
+
+    ImGui::SetNextWindowPos(ImVec2(0, menu_size.y), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(400, m_camera.ScreenHeight()), ImGuiCond_Always);
 
     ShowDebug();
 
     ShowDebug2();
 
-    ImGui::SetNextWindowPos(ImVec2(m_camera.ScreenWidth() - 200, 0), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(m_camera.ScreenWidth() - 200, menu_size.y), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(200, m_camera.ScreenHeight() / 2), ImGuiCond_Always);
 
     ShowConfig();
 
-
-
-
-
     m_world.UpdateWorld();
-
-
     m_gui.Render();
 
 }
+
+
+ImVec2 Simulation::ShowMenu() {
+
+    ImVec2 menu_size;
+    if (ImGui::BeginMainMenuBar())
+    {
+        menu_size = ImGui::GetWindowSize();
+        if (ImGui::BeginMenu("File"))
+        {
+            ShowMenuFile();
+            ImGui::EndMenu();
+        }
+        // if (ImGui::BeginMenu("Edit"))
+        // {
+        //     if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+        //     if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+        //     ImGui::Separator();
+        //     if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+        //     if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+        //     if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+        //     ImGui::EndMenu();
+        // }
+        ImGui::EndMainMenuBar();
+    }
+
+    return menu_size;
+}
+
+void Simulation::ShowMenuFile()
+{
+    // TODO load default scene
+    if (ImGui::MenuItem("New")) {}
+
+    // TODO prepare and load scenes
+    if (ImGui::Button("Load scene"))
+        ImGui::OpenPopup("Load scene");
+
+    if (ImGui::Button("Save as"))
+        ImGui::OpenPopup("Save as");
+
+    // Always center this window when appearing
+    ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
+    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+    if (ImGui::BeginPopupModal("Load scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+
+
+        if (ImGui::Button("Load", ImVec2(120, 0))) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SetItemDefaultFocus();
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+
+    if (ImGui::BeginPopupModal("Save as", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::Text("Previous saves with the same name will be overwritten\n\n");
+        static char buf1[64] = "";
+        ImGui::InputText(" ",     buf1, 64);
+        ImGui::Separator();
+
+        // TODO guard against empty filenames
+        if (ImGui::Button("Save", ImVec2(120, 0))) {
+            std::string scene_name(buf1);
+            Save(scene_name);
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SetItemDefaultFocus();
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+
+
+    ImGui::Separator();
+    if (ImGui::BeginMenu("Options"))
+    {
+        static bool enabled = true;
+        ImGui::MenuItem("Enabled", "", &enabled);
+        ImGui::BeginChild("child", ImVec2(0, 60), true);
+        for (int i = 0; i < 10; i++)
+            ImGui::Text("Scrolling Text %d", i);
+        ImGui::EndChild();
+        static float f = 0.5f;
+        static int n = 0;
+        ImGui::SliderFloat("Value", &f, 0.0f, 1.0f);
+        ImGui::InputFloat("Input", &f, 0.1f);
+        ImGui::Combo("Combo", &n, "Yes\0No\0Maybe\0\0");
+        ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Colors"))
+    {
+        float sz = ImGui::GetTextLineHeight();
+        for (int i = 0; i < ImGuiCol_COUNT; i++)
+        {
+            const char* name = ImGui::GetStyleColorName((ImGuiCol)i);
+            ImVec2 p = ImGui::GetCursorScreenPos();
+            ImGui::GetWindowDrawList()->AddRectFilled(p, ImVec2(p.x+sz, p.y+sz), ImGui::GetColorU32((ImGuiCol)i));
+            ImGui::Dummy(ImVec2(sz, sz));
+            ImGui::SameLine();
+            ImGui::MenuItem(name);
+        }
+        ImGui::EndMenu();
+    }
+
+    // Here we demonstrate appending again to the "Options" menu (which we already created above)
+    // Of course in this demo it is a little bit silly that this function calls BeginMenu("Options") twice.
+    // In a real code-base using it would make senses to use this feature from very different code locations.
+    if (ImGui::BeginMenu("Options")) // <-- Append!
+    {
+        static bool b = true;
+        ImGui::Checkbox("SomeOption", &b);
+        ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Disabled", false)) // Disabled
+    {
+        IM_ASSERT(0);
+    }
+    if (ImGui::MenuItem("Checked", NULL, true)) {}
+    if (ImGui::MenuItem("Quit", "Alt+F4")) {}
+}
+
+
 
 void Simulation::ShowDebug() {
 
@@ -235,7 +372,7 @@ void Simulation::ShowDebug() {
 
 
     if (ImGui::Button("Add world")) {
-        WorldAddBody("body ", glm::vec3(0.0f), RADIUS_EARTH, MASS_MOON, glm::vec3(0.0f));
+        WorldAddBody();
     }
     if (ImGui::Button("Fit camera")) {
         CameraFit();
@@ -282,6 +419,11 @@ void Simulation::ShowConfig() {
 
 
     ImGui::End();
+}
+
+void Simulation::Save(std::string scene_name) {
+    Scene scene(scene_name, m_world, m_camera, m_config);
+    scene.Save();
 }
 
 void Simulation::GuiToggle() {

@@ -18,13 +18,14 @@ public:
     m_radius(1.0f), m_mass(1.0f),
     m_id(id_counter++)
     {};
+    // { std::cout << "Body constructor called" << std::endl; };
     Body(std::string name) :
     m_name(name),
     m_position(0.0f), m_velocity(0.0f), m_force(0.0f),
     m_radius(1.0f), m_mass(1.0f),
     m_id(id_counter++)
+    // { std::cout << "Body constructor called" << std::endl; };
     {};
-
     Body(std::string name, glm::vec3 position, glm::vec3 velocity,
          float radius, float mass) :
     m_name(name),
@@ -42,8 +43,8 @@ public:
     //      m_id(id_counter++)
     //      {};
 
+    // ~Body() { std::cout << m_name << " Body destructor called" << std::endl; };
     ~Body() {};
-
 
 
     void Update();
@@ -75,6 +76,6 @@ public:
     void PrintPosition() { std::cout << m_name << ": " << glm::to_string(m_position) << std::endl; };
 
 
-    friend std::ostream& operator<<(std::ostream& os, const Body body);
+    friend std::ostream& operator<<(std::ostream& os, const Body& body);
     friend std::istream& operator>>(std::istream& is, Body& body);
 };

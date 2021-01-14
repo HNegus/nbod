@@ -1,16 +1,28 @@
 #include "world.hpp"
 
-World::World() : m_index(0) {
+World::World() : m_body_count(0) {
     // m_layout.Push<float>(2);
     // m_layout.Push<float>(1);
     // m_layout.Push<float>(2);
+    // std::cout << "World constructor called" << std::endl;
+
 }
 
 World::~World() {
+    // std::cout << "World destructor called" << std::endl;
     for (Body *body : m_bodies) {
         delete body;
     }
 }
+
+World::World(const World& old_world) {
+
+    for (Body *body : old_world.Bodies()) {
+        std::cout << "tick" << std::endl;
+        AddBody(*body);
+    }
+}
+
 
 void World::Do() {
     for (Body *body : m_bodies) {
@@ -38,7 +50,7 @@ void World::Step() {
             pos1 = b1->GetPosition();
 
             for (Body *b2: m_bodies) {
-                if (b1 == b2) continue;
+                if (b1->ID() == b2->ID()) continue;
                 pos2 = b2->GetPosition();
                 diff = pos2 - pos1;
 
@@ -46,7 +58,7 @@ void World::Step() {
                 r = length(diff);
 
 
-                F = G * (b2->Mass() / pow(r, 2)) * b1->Mass();
+                F = G * (b2->GetMass() / pow(r, 2)) * b1->GetMass();
                 // std::cout << b1->id() << "r: " << r << std::endl;
 
 
@@ -81,13 +93,42 @@ void World::Step() {
     UpdateWorld();
 }
 
-
-Body* World::AddBody(std::string name, float x, float y, float radius,
-                   float mass, float vx, float vy) {
-    Body *body = new Body(name, x, y, radius, mass, vx, vy);
+void World::StoreBody(Body *body)
+{
     m_bodies.push_back(body);
-    m_index++;
+    m_body_count++;
     UpdateWorld();
+    return;
+}
+
+
+Body* World::AddBody()
+{
+    Body *body = new Body;
+    StoreBody(body);
+    return body;
+}
+
+Body* World::AddBody(Body other_body)
+{
+    Body *body = new Body(other_body);
+    StoreBody(body);
+    return body;
+}
+
+Body* World::AddBody(std::string name)
+{
+    Body *body = new Body(name);
+    StoreBody(body);
+    return body;
+}
+
+Body* World::AddBody(std::string name,
+                     glm::vec3 position, glm::vec3 velocity,
+                     float radius, float mass)
+{
+    Body *body = new Body(name, position, velocity, radius, mass);
+    StoreBody(body);
     return body;
 }
 
@@ -103,20 +144,13 @@ void World::UpdateBodies() {
     }
 }
 
-std::vector<Body*> World::Bodies() {
-    std::vector<Body*> result;
-    for (Body *body: m_bodies) {
-        result.push_back(body);
-    }
-    return result;
-}
 
 // void World::Renew() {
 //     SetVertices();
 //     SetIndices();
 //
-//     m_vb = VertexBuffer(m_data.data(), m_index * 4 * 5 * sizeof (float));
-//     m_ib = IndexBuffer(m_indices.data(), m_index * 6);
+//     m_vb = VertexBuffer(m_data.data(), m_body_count * 4 * 5 * sizeof (float));
+//     m_ib = IndexBuffer(m_indices.data(), m_body_count * 6);
 //     m_va.AddBuffer(m_vb, m_layout);
 //     m_va.Bind();
 //     m_ib.Bind();
@@ -124,8 +158,8 @@ std::vector<Body*> World::Bodies() {
 
 double World::KineticEnergy() {
     double total = 0.0;
-    for (Body *b: m_bodies) {
-        total += b->Mass() * pow(b->GetVelocityMagnitude(), 2) * 0.5;
+    for (Body *body: m_bodies) {
+        total += body->GetMass() * pow(body->GetVelocityMagnitude(), 2) * 0.5;
     }
     return total;
 }
@@ -135,10 +169,10 @@ double World::PotentialEnergy() {
     float r;
     for (Body *b1: m_bodies) {
         for (Body *b2: m_bodies) {
-            if (b1 == b2) continue;
+            if (b1->ID() == b2->ID()) continue;
             r = length(b2->GetPosition() - b1->GetPosition());
-            total += - G * (b1->Mass() / r) * b2->Mass();
-            // total += b->Mass() * pow(b->Velocity(), 2) * 0.5;
+            total += - G * (b1->GetMass() / r) * b2->GetMass();
+            // total += b.GetMass() * pow(b.Velocity(), 2) * 0.5;
 
         }
     }
@@ -154,7 +188,7 @@ void World::SetVertices() {
         pos = body->GetPosition();
         x = pos.x;
         y = pos.y;
-        r = body->Radius();
+        r = body->GetRadius();
 
         data.insert(end(data), {x - r, y - r, r, x, y});
         data.insert(end(data), {x + r, y - r, r, x, y});
@@ -167,9 +201,9 @@ void World::SetVertices() {
     // std::cout << std::endl;
     // TODO: magic numbers
     m_vbdata = data;
-    m_vbsize = sizeof (float) * m_index * 4 * 5;
+    m_vbsize = sizeof (float) * m_body_count * 4 * 5;
 
-    // VertexBuffer vb(m_data.data(), sizeof (float) * m_index * 4 * 5);
+    // VertexBuffer vb(m_data.data(), sizeof (float) * m_body_count * 4 * 5);
 
     // return vb;
 }
@@ -177,7 +211,7 @@ void World::SetVertices() {
 
 void World::SetIndices() {
     std::vector<unsigned int> data;
-    for (unsigned int i = 0; i < m_index; i++) {
+    for (unsigned int i = 0; i < m_body_count; i++) {
 
         data.insert(end(data), {0 + i * 4, 1 + i * 4, 2 + i * 4,
                                 1 + i * 4, 3 + i * 4, 2 + i * 4});
@@ -188,9 +222,29 @@ void World::SetIndices() {
     // std::cout << std::endl;
     // TODO magic numbers
     m_ibdata = data;
-    m_ibsize = m_index * 6;
+    m_ibsize = m_body_count * 6;
 
-    // IndexBuffer ib(data.data(), m_index * 6);
+    // IndexBuffer ib(data.data(), m_body_count * 6);
 
     // return ib;
+}
+
+std::ostream& operator<<(std::ostream& os, const World& world) {
+    for (Body *body: world.m_bodies) {
+        os << (*body);
+        os << "---" << std::endl;
+    }
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, World& world) {
+
+    Body body;
+    while (!is.eof()) {
+        is >> body;
+        world.AddBody(body);
+        std::cout << body;
+        is.ignore(5);
+    }
+    return is;
 }

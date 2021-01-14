@@ -11,11 +11,15 @@
 
 // #include "renderer.hpp"
 #include "gui.hpp"
+#include "scene.hpp"
 #include "simulation.hpp"
 #include "input.hpp"
 
 #include "body.hpp"
 #include "world.hpp"
+
+// TODO remove
+#include <filesystem>
 
 
 E_ErrorLevels ERROR_LEVEL = HIGH;
@@ -72,15 +76,87 @@ static GLFWwindow* init() {
     return window;
 }
 
+void call_world(World world) {
+    return;
+}
+
+void TestBody() {
+    Body ba("A");
+    Body bb;
+
+    std::ofstream ofs;
+    std::ifstream ifs;
+    ofs.open("test.txt");
+    ofs << ba;
+    ofs.close();
+
+    ifs.open("test.txt");
+    ifs >> bb;
+    std::cout << bb;
+}
+
+void TestWorld() {
+    World w, w2;
+    w.AddBody("A");
+    w.AddBody("B");
+    w.AddBody("C");
 
 
+    std::ofstream ofs;
+    std::ifstream ifs;
+    ofs.open("test.txt");
+    ofs << w;
+    ofs.close();
 
+    ifs.open("test.txt");
+    ifs >> w2;
+    std::cout << "printing world " <<  w2.GetCount() << std::endl;
+    std::cout << w2;
+}
+
+void TestCamera() {
+
+    Camera camera;
+    std::cout << camera;
+    camera.SetCenter(glm::vec3(10.0f, 20.0f, 0.0f));
+    std::cout << camera;
+
+    std::ofstream ofs;
+    std::ifstream ifs;
+    ofs.open("test.txt");
+    ofs << camera;
+    ofs.close();
+
+    ifs.open("test.txt");
+    ifs >> camera;
+    std::cout << camera;
+}
 
 int main(void) {
+
+    // std::cout.precision(32);
+
+    //
+    // Scene scene;
 
     GLFWwindow* window = init();
 
     if (!window) return -1;
+
+    // std::string scene_name = "scene";
+    // std::filesystem::create_directories("../scenes/" + scene_name);
+    // exit(0);
+
+    // TestCamera();
+
+
+    // for (int i = 0; i < 5; i++)
+    //     std::cout << w;
+
+
+    // exit(0);
+
+
 
     Gui gui(window);
     Simulation simulation(window, gui);
@@ -105,30 +181,14 @@ int main(void) {
     glm::vec3 moon_pos(DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
     glm::vec3 moon_v(0.0f, VELOCITY_MOON, 0.0f);
 
-    simulation.WorldAddBody("earth", earth_pos, MASS_EARTH, RADIUS_EARTH, glm::vec3(0.0f));
-    simulation.WorldAddBody("moon", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
-    // simulation.WorldAddBody("moon2", moon_pos, MASS_MOON, RADIUS_MOON, moon_v);
-    // simulation.WorldAddBody("earth", glm::vec3(1000.0f, ymid, 1.0f), 10.0f, 100.0f, glm::vec3(0.0f));
-    // simulation.WorldAddBody("earth2", glm::vec3(1000.0f, ymid * 3, 1.0f), 10.0f, 100.0f, glm::vec3(0.0f));
-    // simulation.WorldAddBody("earth2", glm::vec3(-4000.0f, ymid * 3, 1.0f), 10.0f, 100.0f, glm::vec3(0.0f));
+    simulation.WorldAddBody("earth", earth_pos, glm::vec3(0.0f), RADIUS_EARTH, MASS_EARTH);
+    simulation.WorldAddBody("moon", moon_pos, moon_v, RADIUS_MOON, MASS_MOON);
+    for (int i = 0; i < 100; i++)
+        simulation.WorldAddBody("earth", earth_pos, glm::vec3(0.0f), RADIUS_EARTH, MASS_EARTH);
 
-
-    // simulation.WorldAddBody("moon", glm::vec3(0.0f) + 100.0f, 1.0f, 50.0f, moon_v);
-
+    std::cout << simulation.WorldBodies()[0];
     simulation.CameraSetCenter(earth_pos);
     simulation.Init();
-
-    // world.AddBody("earth", -DISTANCE_MOON_EARTH / 2, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
-    // world.AddBody("moon", DISTANCE_MOON_EARTH / 2, 0, RADIUS_MOON, MASS_MOON, 0, VELOCITY_MOON);
-    // world.AddBody("moon2", -DISTANCE_MOON_EARTH, 0, RADIUS_MOON, MASS_MOON, 0, -VELOCITY_MOON);
-
-    // world.AddBody("earth2", DISTANCE_MOON_EARTH, 0, RADIUS_EARTH, MASS_EARTH, 0, 0);
-    // world.AddBody("earth3", DISTANCE_MOON_EARTH / 2, -DISTANCE_MOON_EARTH / 1.3, RADIUS_EARTH, MASS_EARTH * 0.8, 0, 0);
-    // simulation.Do();
-    // exit(0);
-
-
-
 
 
 
