@@ -28,12 +28,13 @@
 - [ ] #### **visualize direction with arrow and past with line** (important for debugging)
 - [ ] add shortcuts
 - [ ] **figure out shader use** (compute shader? what can i do with fragment shaders)
-- [ ] logging data to files
-- [ ] scenario class (save/resume)
-  - [ ] figure out savefile format
+- [ ] **logging data to files**
+- [X] scenario class (save/resume)
+  - [X] figure out savefile format
 - [ ] plot history as lines
 - [ ] put shaders in own directory
 
-1. Make configuration editable
-2. Enable planet tracking
-3. Work on simulation stepping (how does time work??)
+1. Finish import/export
+2. Make configuration editable
+3. Enable planet tracking
+4. Work on simulation stepping (how does time work??)
