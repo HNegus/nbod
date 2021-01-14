@@ -9,7 +9,7 @@ World::World() : m_body_count(0) {
 }
 
 World::~World() {
-    // std::cout << "World destructor called" << std::endl;
+    std::cout << "World destructor called" << std::endl;
     for (Body *body : m_bodies) {
         delete body;
     }

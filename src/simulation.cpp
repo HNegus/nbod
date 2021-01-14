@@ -186,10 +186,32 @@ void Simulation::ShowMenuFile()
     if (ImGui::BeginPopupModal("Load scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
     {
 
+        std::vector<std::string> scenes;
+        std::string path;
 
+        for (const auto &entry : std::filesystem::directory_iterator("../scenes"))
+            scenes.push_back(entry.path().string().substr(10, -1));
+
+        // for (std::string &scene: scenes)
+            // std::cout << scene << std::endl;
+
+        // char *items = &scenes[0];
+        char **items = new char*[scenes.size()];
+        for (int i = 0; i < scenes.size(); i++) {
+            items[i] = (char*) scenes[i].data();
+        }
+        // TODO selectables to config
+        static int item_current;
+        {
+            ImGui::ListBox("listbox\n(single select)", &item_current, items, (size_t) scenes.size(), scenes.size() > 10 ? 10 : scenes.size());
+        }
+        std::cout << item_current << std::endl;
+        delete[] items;
         if (ImGui::Button("Load", ImVec2(120, 0))) {
+            Load(scenes[item_current]);
             ImGui::CloseCurrentPopup();
         }
+
         ImGui::SetItemDefaultFocus();
         ImGui::SameLine();
         if (ImGui::Button("Cancel", ImVec2(120, 0))) {
@@ -424,6 +446,11 @@ void Simulation::ShowConfig() {
 void Simulation::Save(std::string scene_name) {
     Scene scene(scene_name, m_world, m_camera, m_config);
     scene.Save();
+}
+
+void Simulation::Load(std::string scene_name) {
+    Scene scene(scene_name, m_world, m_camera, m_config);
+    scene.Load();
 }
 
 void Simulation::GuiToggle() {

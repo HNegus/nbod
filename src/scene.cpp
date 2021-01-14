@@ -26,6 +26,10 @@ void Scene::SaveConfig() {
 
 void Scene::Load() {
     // TODO check existence
+    std::ifstream ifs;
+    ifs.open(scene_dir + m_name + "/world.cfg");
+    ifs >> m_world;
+    std::cout << m_world << std::endl;
 }
 
 void Scene::LoadWorld() {

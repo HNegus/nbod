@@ -1,6 +1,5 @@
 #pragma once
 
-#include <filesystem>
 #include "utils.hpp"
 #include "world.hpp"
 #include "camera.hpp"

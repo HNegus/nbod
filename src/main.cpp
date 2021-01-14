@@ -18,9 +18,6 @@
 #include "body.hpp"
 #include "world.hpp"
 
-// TODO remove
-#include <filesystem>
-
 
 E_ErrorLevels ERROR_LEVEL = HIGH;
 
@@ -154,7 +151,7 @@ int main(void) {
     //     std::cout << w;
 
 
-    // exit(0);
+
 
 
 

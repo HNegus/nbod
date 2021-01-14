@@ -73,6 +73,8 @@ public:
     void ShowConfig();
 
     void Save(std::string scene_name);
+    void Load(std::string scene_name);
+    
     void GuiToggle();
     void TogglePlay();
     bool Running() const { return m_run_simulation; };
