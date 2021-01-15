@@ -58,7 +58,7 @@ public:
     std::vector<float> GetHistory() { return m_history; };
 
     glm::vec3 GetPosition() const { return m_position; };
-    void SetPosition(glm::vec3 position);
+    void SetPosition(glm::vec3 position) { m_position = position; };
     glm::vec3* PositionPtr() { return &m_position; };
 
 // TODO rename to set get
@@ -71,7 +71,7 @@ public:
     float* MassPtr() { return &m_mass; }
 
     glm::vec3 GetVelocity() const { return m_velocity; };
-    void SetVelocity(glm::vec3 velocity);
+    void SetVelocity(glm::vec3 velocity) { m_velocity = velocity; };
     float GetVelocityMagnitude() const { return glm::length(m_velocity); };
     glm::vec3* VelocityPtr() { return &m_velocity; };
 

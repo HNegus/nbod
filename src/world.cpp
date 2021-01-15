@@ -201,7 +201,7 @@ void World::SetBodiesHistoryColorsVb(VertexBuffer& vb) {
 
     for (Body *body: m_bodies) {
         history = body->GetHistory();
-        history_data.insert(end(history_data), {255, 0, 0, 255});
+        history_data.insert(end(history_data), {255, 0, 0, 100});
     }
 
     vb.Update(history_data.data(), sizeof (unsigned char) * history_data.size());

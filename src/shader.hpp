@@ -4,6 +4,7 @@
 
 struct ShaderSources {
     std::string vertexShaderSrc;
+    std::string geometryShaderSrc;
     std::string fragmentShaderSrc;
 };
 
@@ -57,6 +58,33 @@ public:
         return sources;
     }
 
+    static ShaderSources  GetShaderSources(const std::string& vertexPath,
+                                           const std::string& geometryPath,
+                                           const std::string& fragmentPath) {
+
+        ShaderSources sources;
+        std::ifstream is;
+        std::stringstream ss;
+
+        is = std::ifstream(vertexPath);
+        ss << is.rdbuf();
+        sources.vertexShaderSrc = ss.str();
+
+        ss.str(std::string());
+
+        is = std::ifstream(geometryPath);
+        ss << is.rdbuf();
+        sources.geometryShaderSrc = ss.str();
+
+        ss.str(std::string());
+
+        is = std::ifstream(fragmentPath);
+        ss << is.rdbuf();
+        sources.fragmentShaderSrc = ss.str();
+
+        return sources;
+    }
+
 
 private:
     ShaderSources m_sources;
@@ -82,6 +110,7 @@ private:
 
         unsigned int program;
         unsigned int vs = 0;
+        unsigned int gs = 0;
         unsigned int fs = 0;
 
         program = glCreateProgram();
@@ -89,6 +118,11 @@ private:
         if (!sources.vertexShaderSrc.empty()) {
             vs = CompileShader(GL_VERTEX_SHADER, sources.vertexShaderSrc);
             glAttachShader(program, vs);
+        }
+
+        if (!sources.geometryShaderSrc.empty()) {
+            gs = CompileShader(GL_GEOMETRY_SHADER, sources.geometryShaderSrc);
+            glAttachShader(program, gs);
         }
 
         if (!sources.fragmentShaderSrc.empty()) {
@@ -103,6 +137,10 @@ private:
         if (vs) {
             glDetachShader(program, vs);
             glDeleteShader(vs);
+        }
+        if (gs) {
+            glDetachShader(program, gs);
+            glDeleteShader(gs);
         }
         if (fs) {
             glDetachShader(program, fs);

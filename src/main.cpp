@@ -140,22 +140,22 @@ int main(void) {
 
     if (!window) return -1;
 
-    // const int pi = 18;
-    // const int pc = 36;
-    // const int ii = 9;
-    //
-    // float positions[pi] = {-1.0, -0.8,
-    //                       -0.7, -0.2,
-    //                       -0.2, -0.4,
-    //                       0.8, 0.6,
-    //
-    //                       0.8, 0.6,
-    //                       0.0, 0.5,
-    //
-    //                       0.0, 0.5,
-    //                       0.0, 0.5,
-    //                       -0.5, 1.0};
-
+   //  const int pi = 18;
+   //  const int pc = 36;
+   //  const int ii = 9;
+   //
+   //  float positions[pi] = {-1.0, -0.8,
+   //                        -0.7, -0.2,
+   //                        -0.2, -0.4,
+   //                        0.8, 0.6,
+   //
+   //                        0.8, 0.6,
+   //                        0.0, 0.5,
+   //
+   //                        0.0, 0.5,
+   //                        0.0, 0.5,
+   //                        -0.5, 1.0};
+   //
    // unsigned char colors[pc] = {255, 255, 255, 255,
    //                       255, 255, 255, 255,
    //                        255, 255, 255, 255,
@@ -171,18 +171,18 @@ int main(void) {
    //  VertexArray va;
    //  VertexBuffer vb(positions, sizeof (float) * pi);
    //  vb.UnBind();
-   //  VertexBuffer vb2(colors, sizeof (unsigned char) * pc);
-   //  vb2.UnBind();
+   //  // VertexBuffer vb2(colors, sizeof (unsigned char) * pc);
+   //  // vb2.UnBind();
    //  IndexBuffer ib(indices, ii);
    //  ib.UnBind();
    //  VertexBufferLayout layout, layout2;
    //  layout.Push<float>(2);
-   //  layout2.Push<unsigned char>(4);
+   //  // layout2.Push<unsigned char>(4);
    //  va.AddBuffer(vb, 0, layout);
    //  vb.UnBind();
-   //  va.AddBuffer(vb2, 1, layout2);
-   //  vb2.UnBind();
-   //  ShaderSources sources = Shader::GetShaderSources("lines.vert", "lines.frag");
+   //  // va.AddBuffer(vb2, 1, layout2);
+   //  // vb2.UnBind();
+   //  ShaderSources sources = Shader::GetShaderSources("lines.vert",  "lines.frag");
    //  Shader shader(sources);
    //  shader.Bind();
    //  Renderer renderer;
@@ -235,7 +235,9 @@ int main(void) {
     //     std::cout << w;
 
 
-
+    // glm::vec3 p1(1.0f, 2.0f, 0.0f);
+    // std::cout << &(p1.x) << " " << &(p1.y) << std::endl;
+    // exit(0);
 
 
 
@@ -252,24 +254,20 @@ int main(void) {
     glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 
 
-    // float xmid = 1920 / 2;
-    // float ymid = 1080 / 2;
-    // float radius = 1.0f;
-    //
-    //
-    //
+    float xmid = 1920 / 2;
+    float ymid = 1080 / 2;
+
+
+    glm::vec3 center(xmid, ymid, 0.0f);
     glm::vec3 earth_pos(-DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
     glm::vec3 moon_pos(DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
     glm::vec3 moon_v(0.0f, VELOCITY_MOON, 0.0f);
-    //
-    // simulation.WorldAddBody("earth", earth_pos, glm::vec3(0.0f), RADIUS_EARTH, MASS_EARTH);
-    // simulation.WorldAddBody("moon", moon_pos, moon_v, RADIUS_MOON, MASS_MOON);
-    simulation.WorldAddBody("earth", glm::vec3(0.0f), glm::vec3(1.0f), 10.0f, MASS_EARTH);
 
-    // for (int i = 0; i < 100; i++)
-    //     simulation.WorldAddBody("earth", earth_pos, glm::vec3(0.0f), RADIUS_EARTH, MASS_EARTH);
-    //
-    // simulation.CameraSetCenter(earth_pos);
+    simulation.WorldAddBody("earth", earth_pos, glm::vec3(0.0f), RADIUS_EARTH, MASS_EARTH);
+    simulation.WorldAddBody("moon", moon_pos, moon_v, RADIUS_MOON, MASS_MOON);
+    // simulation.WorldAddBody("earth", center, glm::vec3(0.01f), 1.0f, MASS_EARTH);
+
+    simulation.CameraSetCenter(earth_pos);
 
 
 

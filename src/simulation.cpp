@@ -54,24 +54,24 @@ void Simulation::InitHistoryBuffers() {
     m_vb_history_positions.Bind();
     m_world.SetBodiesHistoryPositionsVb(m_vb_history_positions);
 
-    m_vb_history_colors.Bind();
-    m_world.SetBodiesHistoryColorsVb(m_vb_history_colors);
+    // m_vb_history_colors.Bind();
+    // m_world.SetBodiesHistoryColorsVb(m_vb_history_colors);
 
     m_ib_history.Bind();
     m_world.SetBodiesHistoryIb(m_ib_history);
 
     m_vblayout_history_positions.Push<float>(2);
-    m_vblayout_history_colors.Push<unsigned char>(4);
+    // m_vblayout_history_colors.Push<unsigned char>(4);
 
     m_va_history.Bind();
     m_va_history.AddBuffer(m_vb_history_positions, m_vblayout_history_positions);
-    m_va_history.AddBuffer(m_vb_history_colors, m_vblayout_history_colors);
+    // m_va_history.AddBuffer(m_vb_history_colors, m_vblayout_history_colors);
 
     // TODO rename shaders
-    ShaderSources sources = Shader::GetShaderSources("lines.vert", "lines.frag");
+    ShaderSources sources = Shader::GetShaderSources("lines.vert", "lines.geom", "lines.frag");
     m_shader_history.Renew(sources);
     m_shader_history.Bind();
-    // m_shader_history.SetUniformMat4f("u_MVP", MVP());
+    m_shader_history.SetUniformMat4f("u_MVP", MVP());
 
     m_renderer.DrawLineStrip(m_va_history, m_ib_history, m_shader_history);
 
@@ -156,12 +156,12 @@ void Simulation::Render() {
 
     m_va_history.Bind();
     m_world.SetBodiesHistoryPositionsVb(m_vb_history_positions);
-    m_world.SetBodiesHistoryColorsVb(m_vb_history_colors);
+    // m_world.SetBodiesHistoryColorsVb(m_vb_history_colors);
 
     m_world.SetBodiesHistoryIb(m_ib_history);
 
     m_shader_history.Bind();
-    // m_shader_history.SetUniformMat4f("u_MVP", MVP());
+    m_shader_history.SetUniformMat4f("u_MVP", MVP());
     m_renderer.DrawLineStrip(m_va_history, m_ib_history, m_shader_history);
 
 
@@ -406,14 +406,13 @@ void Simulation::ShowDebug() {
 
 
                 ImGui::Text("Coordinates:");
-                ImGui::InputScalar("x",   ImGuiDataType_Float,  &position->x, delta_position);
-                ImGui::InputScalar("y",   ImGuiDataType_Float,  &position->y, delta_position);
-
+                ImGui::InputScalar("x ",   ImGuiDataType_Float,  &position->x, delta_position);
+                ImGui::InputScalar("y ",   ImGuiDataType_Float,  &position->y, delta_position);
 
 
                 ImGui::Text("Velocity:");
                 ImGui::InputScalar("x",   ImGuiDataType_Float,  &velocity->x, delta_velocity);
-                ImGui::InputScalar("y",   ImGuiDataType_Float,  &velocity->x, delta_velocity);
+                ImGui::InputScalar("y",   ImGuiDataType_Float,  &velocity->y, delta_velocity);
 
                 ImGui::Spacing();
                 ImGui::Spacing();
