@@ -139,26 +139,101 @@ int main(void) {
     GLFWwindow* window = init();
 
     if (!window) return -1;
+    const int pi = 18;
+    const int pc = 36;
+    const int ii = 9;
 
-    float positions[16] = {-1.0, -0.8, -0.7, -0.2, -0.7, -0.2, -0.2, -0.4, -0.2, -0.4, 0.8, 0.6};
+    float positions[pi] = {-1.0, -0.8,
+                          -0.7, -0.2,
+                          -0.2, -0.4,
+                          0.8, 0.6,
 
-    VertexArray va;
-    VertexBuffer vb(positions, sizeof(float) * 16);
-    VertexBufferLayout layout;
-    layout.Push<float>(2);
-    va.AddBuffer(vb, layout);
-    ShaderSources sources = Shader::GetShaderSources("test.vert", "test.frag");
-    Shader shader(sources);
-    // va.Bind();
+                          0.8, 0.6,
+                          0.0, 0.5,
+
+                          0.0, 0.5,
+                          0.0, 0.5,
+                          -0.5, 1.0};
+    // float colors[pc] = {1.0f, 1.0f, 1.0f, 1.0f,
+    //                       1.0f, 1.0f, 1.0f, 1.0f,
+    //                        1.0f, 1.0f, 1.0f, 1.0f,
+    //                        1.0f, 1.0f, 1.0f, 1.0f,
+    //
+    //                        1.0f, 0.0f, 1.0f, 0.0f,
+    //                        1.0f, 0.0f, 0.0f, 0.0f,
+    //
+    //                        1.0f, 0.0f, 0.0f, 1.0f,
+    //                        1.0f, 0.0f, 0.0f, 1.0f,
+    //                        1.0f, 0.0f, 0.0f, 1.0f};
+   short colors[pc] = {255, 255, 255, 255,
+                         255, 255, 255, 255,
+                          255, 255, 255, 255,
+                          255, 255, 255, 255,
+
+                          255, 0, 255, 0,
+                          255, 0, 0, 0,
+
+                          255, 0, 0, 255,
+                          255, 0, 0, 255,
+                          255, 0, 0, 255};
+    unsigned int indices[ii] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    // VertexArray va;
+    // VertexBuffer vb(positions, sizeof(float) * 12);
+    // VertexBuffer vb2(colors, sizeof (float) * 24);
+    // IndexBuffer ib(indices, 6);
+    // VertexBufferLayout layout, layout2;
+    // layout.Push<float>(2);
+    // layout2.Push<float>(4);
+    // va.AddBuffer(vb, 0, layout);
+    // va.AddBuffer(vb2, 1, layout2);
+    // ShaderSources sources = Shader::GetShaderSources("lines.vert", "lines.frag");
+    // Shader shader(sources);
     // shader.Bind();
-    Renderer renderer;
+    // Renderer renderer;
+
+
+    unsigned int va, vb1, vb2, ib;
+    glGenVertexArrays(1, &va);
+    glBindVertexArray(va);
+
+    glGenBuffers(1, &vb1);
+    glGenBuffers(1, &vb2);
+    glGenBuffers(1, &ib);
+
+
+    glBindBuffer(GL_ARRAY_BUFFER, vb1);
+    glBufferData(GL_ARRAY_BUFFER, sizeof (float) * pi, positions, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vb2);
+    glBufferData(GL_ARRAY_BUFFER, sizeof (short) * pc, colors, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, ii * sizeof (unsigned int), indices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vb1);
+    glVertexAttribPointer(0, 2,  GL_FLOAT, false, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vb2);
+    glVertexAttribPointer(1, 4,  GL_SHORT, false, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
+
+    ShaderSources sources = Shader::GetShaderSources("lines.vert", "lines.frag");
+    Shader shader(sources);
+
+    shader.Bind();
+
     // std::string scene_name = "scene";
     // std::filesystem::create_directories("../scenes/" + scene_name);
     // exit(0);
 
     // TestCamera();
 
-    std::cout << "!!!!!!!!!!1got here" << std::endl;
 
     // for (int i = 0; i < 5; i++)
     //     std::cout << w;
@@ -168,8 +243,8 @@ int main(void) {
 
 
 
-    Gui gui(window);
-    Simulation simulation(window, gui);
+    // Gui gui(window);
+    // Simulation simulation(window, gui);
 
     // glfwSetWindowUserPointer(window, (void *) &simulation);
     // glfwSetScrollCallback(window, scroll_callback);
@@ -204,7 +279,6 @@ int main(void) {
 
     int i = 0;
 
-
     while (!glfwWindowShouldClose(window)) {
 
         // simulation.Render();
@@ -214,8 +288,8 @@ int main(void) {
         //     simulation.Step();
         // }
 
-        renderer.DrawLines(va, shader);
-
+        // renderer.DrawLineStrip(va, ib, shader);
+        glDrawElements(GL_LINE_STRIP, ii, GL_UNSIGNED_INT, nullptr);
 
 
         if (i % 60 == 0) {

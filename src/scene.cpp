@@ -26,6 +26,8 @@ void Scene::SaveConfig() {
 
 void Scene::Load() {
     // TODO check existence
+    // TODO implement world.Clear();
+    // m_world.Clear();
     std::ifstream ifs;
     ifs.open(scene_dir + m_name + "/world.cfg");
     ifs >> m_world;

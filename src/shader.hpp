@@ -35,6 +35,7 @@ public:
 
     void SetUniformMat4f(const std::string& name, const glm::mat4 mat);
 
+    unsigned int GetProgram() { return m_renderer_id; };
 
     static ShaderSources  GetShaderSources(const std::string& vertexPath,
                                            const std::string& fragmentPath) {
@@ -55,6 +56,7 @@ public:
 
         return sources;
     }
+
 
 private:
     ShaderSources m_sources;

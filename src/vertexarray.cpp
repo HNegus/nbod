@@ -27,6 +27,23 @@ void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout lay
 
 }
 
+void VertexArray::AddBuffer(const VertexBuffer& vb, const unsigned int index,
+                            const VertexBufferLayout layout) {
+    vb.Bind();
+    auto elements = layout.GetElements();
+    unsigned int offset = 0;
+    auto element = elements[0];
+    glVertexAttribPointer(index, element.count,
+                          element.type,
+                          element.normalized,
+                          layout.GetStride(),
+                          (const void*) offset);
+    glEnableVertexAttribArray(index);
+    // offset += element.count * sizeof (element.type);
+    // }
+
+}
+
 void VertexArray::Bind() const {
     glBindVertexArray(m_renderer_id);
 }

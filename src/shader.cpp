@@ -13,6 +13,8 @@ void Shader::Renew(const ShaderSources sources) {
     m_uniform_cache.clear();
     m_sources = sources;
     m_renderer_id = CreateShaderProgram(sources);
+    glBindAttribLocation(m_renderer_id, 0, "position");
+    glBindAttribLocation(m_renderer_id, 1, "inColor");
     glUseProgram(m_renderer_id);
 }
 
