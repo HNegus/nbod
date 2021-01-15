@@ -1,10 +1,6 @@
 #include "world.hpp"
 
 World::World() : m_body_count(0) {
-    // m_layout.Push<float>(2);
-    // m_layout.Push<float>(1);
-    // m_layout.Push<float>(2);
-    // std::cout << "World constructor called" << std::endl;
 
 }
 
@@ -26,7 +22,6 @@ World::World(const World& old_world) {
 
 void World::Do() {
     for (Body *body : m_bodies) {
-        // body->Id();
         std::cout << body->ID() << " " << body->Name() << std::endl;
     }
     std::cout << std::endl;
@@ -128,7 +123,6 @@ double World::PotentialEnergy() {
             if (b1->ID() == b2->ID()) continue;
             r = length(b2->GetPosition() - b1->GetPosition());
             total += - G * (b1->GetMass() / r) * b2->GetMass();
-            // total += b.GetMass() * pow(b.Velocity(), 2) * 0.5;
 
         }
     }
@@ -157,11 +151,7 @@ void World::SetBodiesVb(VertexBuffer& vb) {
 
     }
 
-    // TODO: magic numbers
     vb.Update(bodies_data.data(), sizeof (float) * bodies_data.size());
-    // m_BodiesVbData = bodies_data;
-    // m_BodiesVbSize = sizeof (float) * bodies_data.size();
-
 
 }
 
@@ -175,7 +165,7 @@ void World::SetBodiesIb(IndexBuffer& ib) {
     }
 
     // TODO magic numbers
-    ib.Update(bodies_data.data(), m_body_count * 6);
+    ib.Update(bodies_data.data(), bodies_data.size());
 }
 
 void World::SetBodiesHistoryPositionsVb(VertexBuffer& vb) {
@@ -185,15 +175,24 @@ void World::SetBodiesHistoryPositionsVb(VertexBuffer& vb) {
 
     for (Body *body: m_bodies) {
         history = body->GetHistory();
-        std::cout << std::endl;
-        for (float v: history)
+        if (history.size() == 0) {
+            continue;
+        }
+
+        history_data.push_back(history[0]);
+        history_data.push_back(history[1]);
+        for (auto v: history) {
             history_data.push_back(v);
-        // history_data.insert(end(history_data), history.data());
+        }
+        history_data.push_back(history.end()[-2]);
+        history_data.push_back(history.end()[-1]);
+
     }
 
     vb.Update(history_data.data(), sizeof (float) * history_data.size());
 
 }
+
 
 void World::SetBodiesHistoryColorsVb(VertexBuffer& vb) {
     std::vector<float> history;
@@ -201,8 +200,20 @@ void World::SetBodiesHistoryColorsVb(VertexBuffer& vb) {
 
     for (Body *body: m_bodies) {
         history = body->GetHistory();
-        history_data.insert(end(history_data), {255, 0, 0, 100});
+        if (history.size() == 0) {
+            continue;
+        }
+
+        history_data.insert(end(history_data), {0, 0, 0, 0});
+
+        for (size_t i = 0; i < history.size(); i += 2) {
+            history_data.insert(end(history_data), {255, 0, 0, 255});
+        }
+        history_data.insert(end(history_data), {0, 0, 0, 0});
+
     }
+
+    // std::cout << "Col: " << history_data.size() << std::endl;
 
     vb.Update(history_data.data(), sizeof (unsigned char) * history_data.size());
 }
@@ -215,11 +226,19 @@ void World::SetBodiesHistoryIb(IndexBuffer& ib) {
 
     for (Body *body: m_bodies) {
         history = body->GetHistory();
-        for (size_t j = 0; j <  history.size(); j++) {
+        if (history.size() == 0) {
+            continue;
+        }
+
+        history_data.push_back(i++);
+        for (size_t j = 0; j <  history.size(); j += 2) {
             history_data.push_back(i++);
         }
-        // history_data.insert(end(history_data), {255, 0, 0, 255);
+        history_data.push_back(i++);
     }
+
+    // std::cout << "Ib: " << history_data.size() << std::endl;
+
 
     ib.Update(history_data.data(), sizeof (unsigned int) * history_data.size());
 }

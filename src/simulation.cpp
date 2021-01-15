@@ -41,10 +41,11 @@ void Simulation::InitBodyBuffers() {
     // TOOD rename shaders
     ShaderSources sources = Shader::GetShaderSources("vertex.glsl", "fragment.glsl");
     m_shader_bodies.Renew(sources);
-    m_shader_bodies.Bind();
     m_shader_bodies.SetUniformMat4f("u_MVP", MVP());
+    m_shader_bodies.Bind();
 
     m_renderer.Draw(m_va_bodies, m_ib_bodies, m_shader_bodies);
+    m_va_bodies.UnBind();
 }
 
 void Simulation::InitHistoryBuffers() {
@@ -54,24 +55,24 @@ void Simulation::InitHistoryBuffers() {
     m_vb_history_positions.Bind();
     m_world.SetBodiesHistoryPositionsVb(m_vb_history_positions);
 
-    // m_vb_history_colors.Bind();
-    // m_world.SetBodiesHistoryColorsVb(m_vb_history_colors);
+    m_vb_history_colors.Bind();
+    m_world.SetBodiesHistoryColorsVb(m_vb_history_colors);
 
     m_ib_history.Bind();
     m_world.SetBodiesHistoryIb(m_ib_history);
 
     m_vblayout_history_positions.Push<float>(2);
-    // m_vblayout_history_colors.Push<unsigned char>(4);
+    m_vblayout_history_colors.Push<unsigned char>(4);
 
     m_va_history.Bind();
-    m_va_history.AddBuffer(m_vb_history_positions, m_vblayout_history_positions);
-    // m_va_history.AddBuffer(m_vb_history_colors, m_vblayout_history_colors);
+    m_va_history.AddBuffer(m_vb_history_positions, 0, m_vblayout_history_positions);
+    m_va_history.AddBuffer(m_vb_history_colors, 1, m_vblayout_history_colors);
 
     // TODO rename shaders
-    ShaderSources sources = Shader::GetShaderSources("lines.vert", "lines.geom", "lines.frag");
+    ShaderSources sources = Shader::GetShaderSources("lines.vert", "lines.frag");
     m_shader_history.Renew(sources);
-    m_shader_history.Bind();
     m_shader_history.SetUniformMat4f("u_MVP", MVP());
+    m_shader_history.Bind();
 
     m_renderer.DrawLineStrip(m_va_history, m_ib_history, m_shader_history);
 
@@ -156,7 +157,7 @@ void Simulation::Render() {
 
     m_va_history.Bind();
     m_world.SetBodiesHistoryPositionsVb(m_vb_history_positions);
-    // m_world.SetBodiesHistoryColorsVb(m_vb_history_colors);
+    m_world.SetBodiesHistoryColorsVb(m_vb_history_colors);
 
     m_world.SetBodiesHistoryIb(m_ib_history);
 
