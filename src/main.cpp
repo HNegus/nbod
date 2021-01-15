@@ -165,7 +165,7 @@ int main(void) {
     //                        1.0f, 0.0f, 0.0f, 1.0f,
     //                        1.0f, 0.0f, 0.0f, 1.0f,
     //                        1.0f, 0.0f, 0.0f, 1.0f};
-   short colors[pc] = {255, 255, 255, 255,
+   unsigned char colors[pc] = {255, 255, 255, 255,
                          255, 255, 255, 255,
                           255, 255, 255, 255,
                           255, 255, 255, 255,
@@ -206,7 +206,7 @@ int main(void) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, vb2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof (short) * pc, colors, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof (char) * pc, colors, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
@@ -218,7 +218,7 @@ int main(void) {
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, vb2);
-    glVertexAttribPointer(1, 4,  GL_SHORT, false, 0, 0);
+    glVertexAttribPointer(1, 4,  GL_CHAR, false, 0, 0);
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
