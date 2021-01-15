@@ -18,9 +18,11 @@ public:
 
     void Draw() const;
     void Draw(const VertexArray& va, const IndexBuffer& ib,
-              const Shader& shader) const;
-    void DrawLineStrip(const VertexArray& va, const unsigned count, const Shader& shader);
-    void DrawLineStrip(const VertexArray& va, const IndexBuffer& ib, const Shader& shader); 
+                const Shader& shader) const;
+    void DrawLineStrip(const VertexArray& va, const unsigned count,
+                const Shader& shader) const;
+    void DrawLineStrip(const VertexArray& va, const IndexBuffer& ib,
+                const Shader& shader) const; 
 
     void Clear() const;
 };

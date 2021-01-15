@@ -12,16 +12,27 @@ class World {
 
 private:
     std::vector<Body*> m_bodies;
-    std::vector<float> m_vbdata;
-    std::vector<unsigned int> m_ibdata;
+
+    // std::vector<float> m_BodiesVbData;
+    // std::vector<unsigned int> m_BodiesIbData;
+    // unsigned int m_BodiesVbSize;
+    // unsigned int m_BodiesIbSize;
+
+
+    std::vector<float> m_HistoryPositionVbData;
+    std::vector<unsigned int> m_HistoryPositionIbData;
+    unsigned int m_HistoryPositionVbSize;
+    unsigned int m_HistoryPositionIbSize;
+
     // VertexArray m_va;
     // VertexBuffer m_vb;
     // IndexBuffer m_ib;
     // VertexBufferLayout m_layout;
 
     unsigned int m_body_count;
-    unsigned int m_vbsize;
-    unsigned int m_ibsize;
+
+
+
 
     // TODO implement copy constructor
     World(const World&);
@@ -46,25 +57,20 @@ public:
     unsigned int GetCount() const { return m_body_count; };
     void Do();
 
-    // void Renew();
-    void UpdateWorld();
     void UpdateBodies();
     void Step();
-    void SetVertices();
-    void SetIndices();
 
-    // VertexArray va() { return m_va; }
-    float* vbdata() { return m_vbdata.data(); }
-    unsigned int* ibdata() { return m_ibdata.data(); }
-    unsigned int vbsize() { return m_vbsize; }
-    unsigned int ibsize() { return m_ibsize; }
+
+    void SetBodiesVb(VertexBuffer& vb);
+    void SetBodiesIb(IndexBuffer& ib);
+    void SetBodiesHistoryPositionsVb(VertexBuffer& vb);
+    void SetBodiesHistoryColorsVb(VertexBuffer& vb);
+    void SetBodiesHistoryIb(IndexBuffer& ib);
+
     double PotentialEnergy();
     double KineticEnergy();
     double TotalEnergy() { return PotentialEnergy() + KineticEnergy(); }
 
-
-    // IndexBuffer ib() { return m_ib; }
-    // VertexBufferLayout layout() { return m_layout; }
 
     friend std::ostream& operator<<(std::ostream& os, const World& world);
     friend std::istream& operator>>(std::istream& is, World& world);

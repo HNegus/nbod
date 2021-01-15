@@ -22,6 +22,9 @@ void Body::Update() {
     // std::cout << id() << " dx: " << m_vx * DELTA_TIME << " dy: " << m_vy * DELTA_TIME << std::endl;
 
     m_force = glm::vec3(0.0f, 0.0f, 0.0f);
+
+    m_history.push_back(m_position.x);
+    m_history.push_back(m_position.y);
 }
 
 // void Body::Translate(glm::vec3 translation) {

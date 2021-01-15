@@ -30,7 +30,6 @@ void World::Do() {
         std::cout << body->ID() << " " << body->Name() << std::endl;
     }
     std::cout << std::endl;
-    UpdateWorld();
 }
 
 void World::Step() {
@@ -38,66 +37,38 @@ void World::Step() {
     glm::vec3 force;
     double r, F, fx, fy, theta;
 
-    // std::ofstream file;
-    // file.open ("output.txt");
-
     // TODO this
-    for (int i = 0; i < 1; i++) {
+    for (Body *b1: m_bodies) {
+        force = glm::vec3(0.0f);
+        pos1 = b1->GetPosition();
 
+        for (Body *b2: m_bodies) {
 
-        for (Body *b1: m_bodies) {
-            force = glm::vec3(0.0f);
-            pos1 = b1->GetPosition();
+            if (b1->ID() == b2->ID()) continue;
 
-            for (Body *b2: m_bodies) {
-                if (b1->ID() == b2->ID()) continue;
-                pos2 = b2->GetPosition();
-                diff = pos2 - pos1;
+            pos2 = b2->GetPosition();
+            diff = pos2 - pos1;
 
+            r = length(diff);
+            F = G * (b2->GetMass() / pow(r, 2)) * b1->GetMass();
 
-                r = length(diff);
+            theta = atan2(diff.y, diff.x);
+            fx = F * cos(theta);
+            fy = F * sin(theta);
 
-
-                F = G * (b2->GetMass() / pow(r, 2)) * b1->GetMass();
-                // std::cout << b1->id() << "r: " << r << std::endl;
-
-
-                theta = atan2(diff.y, diff.x);
-                fx = F * cos(theta);
-                fy = F * sin(theta);
-
-
-                // exit(0);
-                force.x += fx;
-                force.y += fy;
-                b1->ApplyForce(force);
-
-            }
-            // if (b1->id() == "moon") {
-                // file << fx << std::endl;
-            // }
-            // b1->ApplyForce(force.x, force.y);
-            // std::cout << b1->id() << "y: " << pos1.x << std::endl;
-            // b1->PrintVelocity();
-            // b1->PrintPosition();
-            // std::cout << (MASS_EARTH - MASS_MOON) << std::endl;
-
-            // std::cout << std::endl;
-
+            force.x += fx;
+            force.y += fy;
+            b1->ApplyForce(force);
         }
-
     }
 
-    // file.close();
     UpdateBodies();
-    UpdateWorld();
 }
 
 void World::StoreBody(Body *body)
 {
     m_bodies.push_back(body);
     m_body_count++;
-    UpdateWorld();
     return;
 }
 
@@ -133,10 +104,6 @@ Body* World::AddBody(std::string name,
 }
 
 
-void World::UpdateWorld() {
-    SetVertices();
-    SetIndices();
-}
 
 void World::UpdateBodies() {
     for (Body *body: m_bodies) {
@@ -144,17 +111,6 @@ void World::UpdateBodies() {
     }
 }
 
-
-// void World::Renew() {
-//     SetVertices();
-//     SetIndices();
-//
-//     m_vb = VertexBuffer(m_data.data(), m_body_count * 4 * 5 * sizeof (float));
-//     m_ib = IndexBuffer(m_indices.data(), m_body_count * 6);
-//     m_va.AddBuffer(m_vb, m_layout);
-//     m_va.Bind();
-//     m_ib.Bind();
-// }
 
 double World::KineticEnergy() {
     double total = 0.0;
@@ -179,10 +135,14 @@ double World::PotentialEnergy() {
     return total / 2;
 }
 
-void World::SetVertices() {
-    std::vector<float> data;
+
+
+void World::SetBodiesVb(VertexBuffer& vb) {
+    std::vector<float> bodies_data;
+
     glm::vec3 pos(0.0f);
     float x, y, r;
+
     // TODO clean
     for (Body *body : m_bodies) {
         pos = body->GetPosition();
@@ -190,43 +150,78 @@ void World::SetVertices() {
         y = pos.y;
         r = body->GetRadius();
 
-        data.insert(end(data), {x - r, y - r, r, x, y});
-        data.insert(end(data), {x + r, y - r, r, x, y});
-        data.insert(end(data), {x - r, y + r, r, x, y});
-        data.insert(end(data), {x + r, y + r, r, x, y});
+        bodies_data.insert(end(bodies_data), {x - r, y - r, r, x, y});
+        bodies_data.insert(end(bodies_data), {x + r, y - r, r, x, y});
+        bodies_data.insert(end(bodies_data), {x - r, y + r, r, x, y});
+        bodies_data.insert(end(bodies_data), {x + r, y + r, r, x, y});
+
     }
-    // for (auto d : data) {
-    //     std::cout << d << " ";
-    // }
-    // std::cout << std::endl;
+
     // TODO: magic numbers
-    m_vbdata = data;
-    m_vbsize = sizeof (float) * m_body_count * 4 * 5;
+    vb.Update(bodies_data.data(), sizeof (float) * bodies_data.size());
+    // m_BodiesVbData = bodies_data;
+    // m_BodiesVbSize = sizeof (float) * bodies_data.size();
 
-    // VertexBuffer vb(m_data.data(), sizeof (float) * m_body_count * 4 * 5);
 
-    // return vb;
 }
 
+void World::SetBodiesIb(IndexBuffer& ib) {
+    std::vector<unsigned int> bodies_data;
 
-void World::SetIndices() {
-    std::vector<unsigned int> data;
     for (unsigned int i = 0; i < m_body_count; i++) {
 
-        data.insert(end(data), {0 + i * 4, 1 + i * 4, 2 + i * 4,
+        bodies_data.insert(end(bodies_data), {0 + i * 4, 1 + i * 4, 2 + i * 4,
                                 1 + i * 4, 3 + i * 4, 2 + i * 4});
     }
-    // for (auto d : data) {
-    //     std::cout << d << " ";
-    // }
-    // std::cout << std::endl;
+
     // TODO magic numbers
-    m_ibdata = data;
-    m_ibsize = m_body_count * 6;
+    ib.Update(bodies_data.data(), m_body_count * 6);
+}
 
-    // IndexBuffer ib(data.data(), m_body_count * 6);
+void World::SetBodiesHistoryPositionsVb(VertexBuffer& vb) {
+    std::vector<float> history;
+    std::vector<float> history_data;
 
-    // return ib;
+
+    for (Body *body: m_bodies) {
+        history = body->GetHistory();
+        std::cout << std::endl;
+        for (float v: history)
+            history_data.push_back(v);
+        // history_data.insert(end(history_data), history.data());
+    }
+
+    vb.Update(history_data.data(), sizeof (float) * history_data.size());
+
+}
+
+void World::SetBodiesHistoryColorsVb(VertexBuffer& vb) {
+    std::vector<float> history;
+    std::vector<unsigned char> history_data;
+
+    for (Body *body: m_bodies) {
+        history = body->GetHistory();
+        history_data.insert(end(history_data), {255, 0, 0, 255});
+    }
+
+    vb.Update(history_data.data(), sizeof (unsigned char) * history_data.size());
+}
+
+void World::SetBodiesHistoryIb(IndexBuffer& ib) {
+
+    std::vector<float> history;
+    std::vector<unsigned int> history_data;
+    unsigned int i = 0;
+
+    for (Body *body: m_bodies) {
+        history = body->GetHistory();
+        for (size_t j = 0; j <  history.size(); j++) {
+            history_data.push_back(i++);
+        }
+        // history_data.insert(end(history_data), {255, 0, 0, 255);
+    }
+
+    ib.Update(history_data.data(), sizeof (unsigned int) * history_data.size());
 }
 
 std::ostream& operator<<(std::ostream& os, const World& world) {

@@ -4,33 +4,79 @@
 Simulation::Simulation(GLFWwindow *window, const Gui &gui) :
         m_window(window), m_gui(gui)
 {
-    m_va.Bind();
-    m_vb.Renew(WorldVbData(), WorldVbSize());
-    m_ib.Renew(WorldIbData(), WorldIbSize());
-    m_vblayout.Push<float>(2);
-    m_vblayout.Push<float>(1);
-    m_vblayout.Push<float>(2);
-    m_va.AddBuffer(m_vb, m_vblayout);
 
-    ShaderSources sources = Shader::GetShaderSources("vertex.glsl", "fragment.glsl");
-    m_shader.Renew(sources);
-    m_shader.SetUniformMat4f("u_MVP", MVP());
-    m_shader.Bind();
-    m_renderer.Draw(m_va, m_ib, m_shader);
-
-}
-
-Simulation::~Simulation() {
-}
-
-void Simulation::Init() {
     m_config.RegisterCamera(&m_camera);
-    CameraFit();
+
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowBorderSize = 0;
     style.WindowRounding = 0;
+
+    Init();
 }
 
+
+
+void Simulation::Init() {
+
+    InitBodyBuffers();
+    InitHistoryBuffers();
+
+}
+
+void Simulation::InitBodyBuffers() {
+
+    m_vb_bodies.Bind();
+    m_ib_bodies.Bind();
+
+    m_world.SetBodiesVb(m_vb_bodies);
+    m_world.SetBodiesIb(m_ib_bodies);
+
+    m_vblayout_bodies.Push<float>(2);
+    m_vblayout_bodies.Push<float>(1);
+    m_vblayout_bodies.Push<float>(2);
+
+    m_va_bodies.Bind();
+    m_va_bodies.AddBuffer(m_vb_bodies, m_vblayout_bodies);
+
+    // TOOD rename shaders
+    ShaderSources sources = Shader::GetShaderSources("vertex.glsl", "fragment.glsl");
+    m_shader_bodies.Renew(sources);
+    m_shader_bodies.Bind();
+    m_shader_bodies.SetUniformMat4f("u_MVP", MVP());
+
+    m_renderer.Draw(m_va_bodies, m_ib_bodies, m_shader_bodies);
+}
+
+void Simulation::InitHistoryBuffers() {
+
+    m_va_history.Bind();
+
+    m_vb_history_positions.Bind();
+    m_world.SetBodiesHistoryPositionsVb(m_vb_history_positions);
+
+    m_vb_history_colors.Bind();
+    m_world.SetBodiesHistoryColorsVb(m_vb_history_colors);
+
+    m_ib_history.Bind();
+    m_world.SetBodiesHistoryIb(m_ib_history);
+
+    m_vblayout_history_positions.Push<float>(2);
+    m_vblayout_history_colors.Push<unsigned char>(4);
+
+    m_va_history.Bind();
+    m_va_history.AddBuffer(m_vb_history_positions, m_vblayout_history_positions);
+    m_va_history.AddBuffer(m_vb_history_colors, m_vblayout_history_colors);
+
+    // TODO rename shaders
+    ShaderSources sources = Shader::GetShaderSources("lines.vert", "lines.frag");
+    m_shader_history.Renew(sources);
+    m_shader_history.Bind();
+    // m_shader_history.SetUniformMat4f("u_MVP", MVP());
+
+    m_renderer.DrawLineStrip(m_va_history, m_ib_history, m_shader_history);
+
+
+}
 
 void Simulation::WorldAddBody() {
     Body* body = m_world.AddBody();
@@ -55,11 +101,11 @@ void Simulation::CameraFit() {
     // TODO extract
     for (Body *body: m_world.Bodies()) {
         glm::vec3 position = body->GetPosition();
-        if (position.x < lbound.x) lbound.x = 1.01 * position.x - body->GetRadius();
-        if (position.x > rbound.x) rbound.x = 1.01 * position.x + body->GetRadius();
+        if (position.x < lbound.x) lbound.x = 1.25 * position.x - body->GetRadius();
+        if (position.x > rbound.x) rbound.x = 1.25 * position.x + body->GetRadius();
 
-        if (position.y < lbound.y) lbound.y = 1.01 * position.y - body->GetRadius();
-        if (position.y > rbound.y) rbound.y = 1.01 * position.y + body->GetRadius();
+        if (position.y < lbound.y) lbound.y = 1.25 * position.y - body->GetRadius();
+        if (position.y > rbound.y) rbound.y = 1.25 * position.y + body->GetRadius();
 
     }
 
@@ -76,6 +122,7 @@ void Simulation::CameraCenter() {
 
 void Simulation::CameraSetCenter(glm::vec3 center) {
     m_camera.SetCenter(center);
+    CameraFit();
 }
 
 void Simulation::CameraMove(const glm::vec3 translation) {
@@ -94,15 +141,29 @@ void Simulation::Step() {
 
 /* Rendering scene/GUI. */
 void Simulation::Render() {
-    m_va.Bind();
-    m_vb.Update(WorldVbData(), WorldVbSize());
-    m_ib.Update(WorldIbData(), WorldIbSize());
+    m_va_bodies.Bind();
+    m_world.SetBodiesVb(m_vb_bodies);
+    m_world.SetBodiesIb(m_ib_bodies);
 
-    m_shader.Bind();
-    m_shader.SetUniformMat4f("u_MVP", MVP());
+
+    m_shader_bodies.Bind();
+    m_shader_bodies.SetUniformMat4f("u_MVP", MVP());
+
     m_renderer.Clear();
+    m_renderer.Draw(m_va_bodies, m_ib_bodies, m_shader_bodies);
 
-    m_renderer.Draw(m_va, m_ib, m_shader);
+    m_va_bodies.UnBind();
+
+    m_va_history.Bind();
+    m_world.SetBodiesHistoryPositionsVb(m_vb_history_positions);
+    m_world.SetBodiesHistoryColorsVb(m_vb_history_colors);
+
+    m_world.SetBodiesHistoryIb(m_ib_history);
+
+    m_shader_history.Bind();
+    // m_shader_history.SetUniformMat4f("u_MVP", MVP());
+    m_renderer.DrawLineStrip(m_va_history, m_ib_history, m_shader_history);
+
 
     RenderGui();
 }
@@ -134,7 +195,6 @@ void Simulation::RenderGui() {
 
     ShowConfig();
 
-    m_world.UpdateWorld();
     m_gui.Render();
 
 }
@@ -327,8 +387,6 @@ void Simulation::ShowDebug() {
         ImGui::InputScalar("delta radius", ImGuiDataType_Float, delta_radius);
 
 
-
-
         for (std::size_t i = 0; i < m_config.bodies.size(); i++) {
 
             body = m_config.bodies[i];
@@ -398,6 +456,9 @@ void Simulation::ShowDebug() {
     }
     if (ImGui::Button("Fit camera")) {
         CameraFit();
+    }
+    // TODO
+    if (ImGui::Button("Fit bodies")) {
 
     }
 

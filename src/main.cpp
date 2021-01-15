@@ -139,94 +139,90 @@ int main(void) {
     GLFWwindow* window = init();
 
     if (!window) return -1;
-    const int pi = 18;
-    const int pc = 36;
-    const int ii = 9;
 
-    float positions[pi] = {-1.0, -0.8,
-                          -0.7, -0.2,
-                          -0.2, -0.4,
-                          0.8, 0.6,
-
-                          0.8, 0.6,
-                          0.0, 0.5,
-
-                          0.0, 0.5,
-                          0.0, 0.5,
-                          -0.5, 1.0};
-    // float colors[pc] = {1.0f, 1.0f, 1.0f, 1.0f,
-    //                       1.0f, 1.0f, 1.0f, 1.0f,
-    //                        1.0f, 1.0f, 1.0f, 1.0f,
-    //                        1.0f, 1.0f, 1.0f, 1.0f,
+    // const int pi = 18;
+    // const int pc = 36;
+    // const int ii = 9;
     //
-    //                        1.0f, 0.0f, 1.0f, 0.0f,
-    //                        1.0f, 0.0f, 0.0f, 0.0f,
+    // float positions[pi] = {-1.0, -0.8,
+    //                       -0.7, -0.2,
+    //                       -0.2, -0.4,
+    //                       0.8, 0.6,
     //
-    //                        1.0f, 0.0f, 0.0f, 1.0f,
-    //                        1.0f, 0.0f, 0.0f, 1.0f,
-    //                        1.0f, 0.0f, 0.0f, 1.0f};
-   unsigned char colors[pc] = {255, 255, 255, 255,
-                         255, 255, 255, 255,
-                          255, 255, 255, 255,
-                          255, 255, 255, 255,
+    //                       0.8, 0.6,
+    //                       0.0, 0.5,
+    //
+    //                       0.0, 0.5,
+    //                       0.0, 0.5,
+    //                       -0.5, 1.0};
 
-                          255, 0, 255, 0,
-                          255, 0, 0, 0,
+   // unsigned char colors[pc] = {255, 255, 255, 255,
+   //                       255, 255, 255, 255,
+   //                        255, 255, 255, 255,
+   //                        255, 255, 255, 255,
+   //
+   //                        255, 0, 255, 0,
+   //                        255, 0, 0, 0,
+   //
+   //                        255, 0, 0, 255,
+   //                        255, 0, 0, 255,
+   //                        255, 0, 0, 255};
+   //  unsigned int indices[ii] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+   //  VertexArray va;
+   //  VertexBuffer vb(positions, sizeof (float) * pi);
+   //  vb.UnBind();
+   //  VertexBuffer vb2(colors, sizeof (unsigned char) * pc);
+   //  vb2.UnBind();
+   //  IndexBuffer ib(indices, ii);
+   //  ib.UnBind();
+   //  VertexBufferLayout layout, layout2;
+   //  layout.Push<float>(2);
+   //  layout2.Push<unsigned char>(4);
+   //  va.AddBuffer(vb, 0, layout);
+   //  vb.UnBind();
+   //  va.AddBuffer(vb2, 1, layout2);
+   //  vb2.UnBind();
+   //  ShaderSources sources = Shader::GetShaderSources("lines.vert", "lines.frag");
+   //  Shader shader(sources);
+   //  shader.Bind();
+   //  Renderer renderer;
 
-                          255, 0, 0, 255,
-                          255, 0, 0, 255,
-                          255, 0, 0, 255};
-    unsigned int indices[ii] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-    // VertexArray va;
-    // VertexBuffer vb(positions, sizeof(float) * 12);
-    // VertexBuffer vb2(colors, sizeof (float) * 24);
-    // IndexBuffer ib(indices, 6);
-    // VertexBufferLayout layout, layout2;
-    // layout.Push<float>(2);
-    // layout2.Push<float>(4);
-    // va.AddBuffer(vb, 0, layout);
-    // va.AddBuffer(vb2, 1, layout2);
+
+    // unsigned int va, vb1, vb2, ib;
+    // glGenVertexArrays(1, &va);
+    // glBindVertexArray(va);
+
+    // glGenBuffers(1, &vb1);
+    // glGenBuffers(1, &vb2);
+    // glGenBuffers(1, &ib);
+    //
+    //
+    // glBindBuffer(GL_ARRAY_BUFFER, vb1);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof (float) * pi, positions, GL_STATIC_DRAW);
+    // glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //
+    // glBindBuffer(GL_ARRAY_BUFFER, vb2);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof (unsigned char) * pc, colors, GL_STATIC_DRAW);
+    // glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, ii * sizeof (unsigned int), indices, GL_STATIC_DRAW);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    //
+    // glBindBuffer(GL_ARRAY_BUFFER, vb1);
+    // glVertexAttribPointer(0, 2,  GL_FLOAT, false, 0, 0);
+    // glEnableVertexAttribArray(0);
+    //
+    // glBindBuffer(GL_ARRAY_BUFFER, vb2);
+    // glVertexAttribPointer(1, 4,  GL_UNSIGNED_BYTE, false, 0, 0);
+    // glEnableVertexAttribArray(1);
+    //
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
+    //
     // ShaderSources sources = Shader::GetShaderSources("lines.vert", "lines.frag");
     // Shader shader(sources);
+    //
     // shader.Bind();
-    // Renderer renderer;
-
-
-    unsigned int va, vb1, vb2, ib;
-    glGenVertexArrays(1, &va);
-    glBindVertexArray(va);
-
-    glGenBuffers(1, &vb1);
-    glGenBuffers(1, &vb2);
-    glGenBuffers(1, &ib);
-
-
-    glBindBuffer(GL_ARRAY_BUFFER, vb1);
-    glBufferData(GL_ARRAY_BUFFER, sizeof (float) * pi, positions, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vb2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof (char) * pc, colors, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, ii * sizeof (unsigned int), indices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vb1);
-    glVertexAttribPointer(0, 2,  GL_FLOAT, false, 0, 0);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vb2);
-    glVertexAttribPointer(1, 4,  GL_CHAR, false, 0, 0);
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
-
-    ShaderSources sources = Shader::GetShaderSources("lines.vert", "lines.frag");
-    Shader shader(sources);
-
-    shader.Bind();
 
     // std::string scene_name = "scene";
     // std::filesystem::create_directories("../scenes/" + scene_name);
@@ -243,12 +239,12 @@ int main(void) {
 
 
 
-    // Gui gui(window);
-    // Simulation simulation(window, gui);
+    Gui gui(window);
+    Simulation simulation(window, gui);
 
-    // glfwSetWindowUserPointer(window, (void *) &simulation);
-    // glfwSetScrollCallback(window, scroll_callback);
-    // glfwSetKeyCallback(window, key_callback);
+    glfwSetWindowUserPointer(window, (void *) &simulation);
+    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetKeyCallback(window, key_callback);
 
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_BLEND);
@@ -262,18 +258,18 @@ int main(void) {
     //
     //
     //
-    // glm::vec3 earth_pos(-DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
-    // glm::vec3 moon_pos(DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
-    // glm::vec3 moon_v(0.0f, VELOCITY_MOON, 0.0f);
+    glm::vec3 earth_pos(-DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
+    glm::vec3 moon_pos(DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
+    glm::vec3 moon_v(0.0f, VELOCITY_MOON, 0.0f);
     //
     // simulation.WorldAddBody("earth", earth_pos, glm::vec3(0.0f), RADIUS_EARTH, MASS_EARTH);
     // simulation.WorldAddBody("moon", moon_pos, moon_v, RADIUS_MOON, MASS_MOON);
+    simulation.WorldAddBody("earth", glm::vec3(0.0f), glm::vec3(1.0f), 10.0f, MASS_EARTH);
+
     // for (int i = 0; i < 100; i++)
     //     simulation.WorldAddBody("earth", earth_pos, glm::vec3(0.0f), RADIUS_EARTH, MASS_EARTH);
     //
-    // std::cout << simulation.WorldBodies()[0];
     // simulation.CameraSetCenter(earth_pos);
-    // simulation.Init();
 
 
 
@@ -281,15 +277,15 @@ int main(void) {
 
     while (!glfwWindowShouldClose(window)) {
 
-        // simulation.Render();
+        simulation.Render();
         //
         // i++;
-        // if (simulation.Running()) {
-        //     simulation.Step();
-        // }
+        if (simulation.Running()) {
+            simulation.Step();
+        }
 
         // renderer.DrawLineStrip(va, ib, shader);
-        glDrawElements(GL_LINE_STRIP, ii, GL_UNSIGNED_INT, nullptr);
+        // glDrawElements(GL_LINE_STRIP, ii, GL_UNSIGNED_INT, nullptr);
 
 
         if (i % 60 == 0) {

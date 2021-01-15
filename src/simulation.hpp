@@ -28,11 +28,11 @@ private:
     bool m_run_simulation = false;
     // const Gui &m_gui;
 
-    VertexArray m_va;
-    VertexBuffer m_vb;
-    IndexBuffer m_ib;
-    VertexBufferLayout m_vblayout;
-    Shader m_shader;
+    VertexArray m_va_bodies, m_va_history;
+    VertexBuffer m_vb_bodies, m_vb_history_positions, m_vb_history_colors;
+    IndexBuffer m_ib_bodies, m_ib_history;
+    VertexBufferLayout m_vblayout_bodies, m_vblayout_history_positions, m_vblayout_history_colors;
+    Shader m_shader_bodies, m_shader_history;
 
     SimData m_config;
 public:
@@ -40,10 +40,13 @@ public:
     Simulation(GLFWwindow *window, const Gui &gui);
     // Simulation(Camera camera, Gui gui, Renderer renderer) : m_camera(camera),
         // m_gui(gui), m_renderer(renderer) {};
-    ~Simulation();
+    ~Simulation() {};
 
 
     void Init();
+    void InitBodyBuffers();
+    void InitHistoryBuffers();
+
     void Step();
 
 
@@ -74,7 +77,7 @@ public:
 
     void Save(std::string scene_name);
     void Load(std::string scene_name);
-    
+
     void GuiToggle();
     void TogglePlay();
     bool Running() const { return m_run_simulation; };
@@ -82,10 +85,5 @@ public:
     // TODO remove
     void Do() { m_world.Do(); };
     glm::mat4 MVP() const { return m_camera.MVP(); };
-    float* WorldVbData() { return m_world.vbdata(); };
-    unsigned int WorldVbSize() { return m_world.vbsize(); };
-    unsigned int* WorldIbData() { return m_world.ibdata(); };
-    unsigned int WorldIbSize() { return m_world.ibsize(); };
-
 
 };

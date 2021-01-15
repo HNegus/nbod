@@ -8,12 +8,12 @@ layout(location = 1) in vec4 inColor;
 out vec4 outColor;
 // out vec2 outPosition;
 //
-// // uniform mat4 u_MVP;
+// uniform mat4 u_MVP;
 
 void main()
 {
-    // gl_Position = u_MVP * position;
     gl_Position = position;
+    // gl_Position = position;
     // v_TexCoord = texCoord;
     // baseColor = inColor;
     // outPosition = position.xy;

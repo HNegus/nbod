@@ -9,6 +9,7 @@ private:
     glm::vec3 m_position, m_velocity, m_force;
     float m_radius, m_mass;
     unsigned int m_id;
+    std::vector<float> m_history;
 
 public:
 
@@ -16,14 +17,14 @@ public:
     m_name("body"),
     m_position(0.0f), m_velocity(0.0f),  m_force(0.0f),
     m_radius(1.0f), m_mass(1.0f),
-    m_id(id_counter++)
+    m_id(id_counter++), m_history()
     {};
     // { std::cout << "Body constructor called" << std::endl; };
     Body(std::string name) :
     m_name(name),
     m_position(0.0f), m_velocity(0.0f), m_force(0.0f),
     m_radius(1.0f), m_mass(1.0f),
-    m_id(id_counter++)
+    m_id(id_counter++), m_history()
     // { std::cout << "Body constructor called" << std::endl; };
     {};
     Body(std::string name, glm::vec3 position, glm::vec3 velocity,
@@ -31,7 +32,7 @@ public:
     m_name(name),
     m_position(position), m_velocity(velocity), m_force(0.0f),
     m_radius(radius), m_mass(mass),
-    m_id(id_counter++)
+    m_id(id_counter++), m_history()
     {};
 
     // IDEA constant force on body (constant force vs gravitational/other)
@@ -53,6 +54,8 @@ public:
 
     unsigned int ID() const { return m_id; }
     std::string Name() const { return m_name; };
+
+    std::vector<float> GetHistory() { return m_history; };
 
     glm::vec3 GetPosition() const { return m_position; };
     void SetPosition(glm::vec3 position);

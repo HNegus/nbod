@@ -8,7 +8,7 @@ private:
 
 public:
 
-    IndexBuffer() : m_renderer_id(0), m_count(0) {}
+    IndexBuffer();
     IndexBuffer(const unsigned int* data, const unsigned int count);
     ~IndexBuffer() { glDeleteBuffers(1, &m_renderer_id); }
 
