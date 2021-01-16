@@ -24,8 +24,8 @@ private:
     Camera m_camera;
     World m_world;
 
-    bool m_show_gui = true;
-    bool m_run_simulation = false;
+
+
     // const Gui &m_gui;
 
     VertexArray m_va_bodies, m_va_history;
@@ -48,6 +48,7 @@ public:
     void InitHistoryBuffers();
 
     void Step();
+    void Clear();
 
 
     void CameraFit();
@@ -80,7 +81,7 @@ public:
 
     void GuiToggle();
     void TogglePlay();
-    bool Running() const { return m_run_simulation; };
+    bool Running() const { return m_config.run_simulation; };
 
     // TODO remove
     void Do() { m_world.Do(); };

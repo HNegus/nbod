@@ -6,7 +6,7 @@ World::World() : m_body_count(0) {
 
 World::~World() {
     std::cout << "World destructor called" << std::endl;
-    for (Body *body : m_bodies) {
+    for (Body *body: m_bodies) {
         delete body;
     }
 }
@@ -17,6 +17,13 @@ World::World(const World& old_world) {
         std::cout << "tick" << std::endl;
         AddBody(*body);
     }
+}
+
+void World::Clear() {
+    for (Body *body: m_bodies) {
+        delete body;
+    }
+    m_bodies.clear();
 }
 
 

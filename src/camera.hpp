@@ -25,6 +25,8 @@ public:
     void ZoomInFast();
     void ZoomOutFast();
 
+    void Clear();
+
     void Resize();
     void Update();
     void Center();
@@ -38,6 +40,7 @@ public:
     int ScreenWidth() const { return m_screen_width; };
     int ScreenHeight() const { return m_screen_height; };
 
+    float HorizontalDistance() const { return (float) m_screen_width - 2*m_zoomx; };
 
 
     glm::mat4 MVP() const { return m_proj * m_view * m_model; };

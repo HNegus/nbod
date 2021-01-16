@@ -97,11 +97,11 @@ void Simulation::CameraFit() {
     // TODO extract
     for (Body *body: m_world.Bodies()) {
         glm::vec3 position = body->GetPosition();
-        if (position.x < lbound.x) lbound.x = 1.25 * position.x - body->GetRadius();
-        if (position.x > rbound.x) rbound.x = 1.25 * position.x + body->GetRadius();
+        if (position.x < lbound.x) lbound.x = 1.1 * (position.x - body->GetRadius());
+        if (position.x > rbound.x) rbound.x = 1.1 * (position.x + body->GetRadius());
 
-        if (position.y < lbound.y) lbound.y = 1.25 * position.y - body->GetRadius();
-        if (position.y > rbound.y) rbound.y = 1.25 * position.y + body->GetRadius();
+        if (position.y < lbound.y) lbound.y = 1.1 * (position.y - body->GetRadius());
+        if (position.y > rbound.y) rbound.y = 1.1 * (position.y + body->GetRadius());
 
     }
 
@@ -132,6 +132,9 @@ void Simulation::CameraInfo() {
 /* Simulation */
 void Simulation::Step() {
     m_world.Step();
+    if (m_config.auto_resize_camera) {
+        CameraFit();
+    }
 }
 
 
@@ -160,16 +163,40 @@ void Simulation::Render() {
     m_shader_history.SetUniformMat4f("u_MVP", MVP());
     m_renderer.DrawLineStrip(m_va_history, m_ib_history, m_shader_history);
 
-
-
     RenderGui();
+}
+
+void Simulation::Clear() {
+    m_world.Clear();
+    m_config.Clear();
+    m_camera.Clear();
+}
+
+
+void Simulation::Save(std::string scene_name) {
+    Scene scene(scene_name, m_world, m_camera, m_config);
+    scene.Save();
+}
+
+void Simulation::Load(std::string scene_name) {
+    Scene scene(scene_name, m_world, m_camera, m_config);
+    scene.Load();
+}
+
+void Simulation::GuiToggle() {
+    m_config.show_gui = !m_config.show_gui;
+}
+
+void Simulation::TogglePlay() {
+    m_config.run_simulation = !m_config.run_simulation;
 }
 
 
 
+/****************** GUI rendering code ***********************/
 void Simulation::RenderGui() {
 
-    if (!m_show_gui) return;
+    if (!m_config.show_gui) return;
 
     m_config.Update();
 
@@ -181,14 +208,14 @@ void Simulation::RenderGui() {
     ImVec2 menu_size = ShowMenu();
 
     ImGui::SetNextWindowPos(ImVec2(0, menu_size.y), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(400, m_camera.ScreenHeight()), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(400, m_camera.ScreenHeight()), ImGuiCond_Once);
 
     ShowDebug();
 
     ShowDebug2();
 
-    ImGui::SetNextWindowPos(ImVec2(m_camera.ScreenWidth() - 200, menu_size.y), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(200, m_camera.ScreenHeight() / 2), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(m_camera.ScreenWidth() - 400, menu_size.y), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(400, m_camera.ScreenHeight() / 2), ImGuiCond_Once);
 
     ShowConfig();
 
@@ -224,10 +251,13 @@ ImVec2 Simulation::ShowMenu() {
     return menu_size;
 }
 
+
 void Simulation::ShowMenuFile()
 {
     // TODO load default scene
-    if (ImGui::MenuItem("New")) {}
+    if (ImGui::MenuItem("New")) {
+        Clear();
+    }
 
     // TODO prepare and load scenes
     if (ImGui::Button("Load scene"))
@@ -362,33 +392,20 @@ void Simulation::ShowDebug() {
     window_flags |= ImGuiWindowFlags_NoMove;
 
     // std::cout << "!!" << ImGui::GetIO().WantCaptureMouse << std::endl;
-
-    ImGui::Checkbox("Play", &m_run_simulation);
-
-
+    ImGui::SetNextItemOpen(true, ImGuiCond_Once);
     if (ImGui::CollapsingHeader("Bodies", ImGuiTreeNodeFlags_None)) {
 
         // TODO Extract
         Body *body;
         //
         // TODO extract to configuration window
-        float *delta_position = &m_config.delta_position;
-        float *delta_velocity = &m_config.delta_velocity;
-        float *delta_radius = &m_config.delta_radius;
-        float *delta_mass = &m_config.delta_mass;
 
-
-        ImGui::InputScalar("delta position", ImGuiDataType_Float, delta_position);
-        ImGui::InputScalar("delta velocity", ImGuiDataType_Float, delta_velocity);
-        ImGui::InputScalar("delta mass", ImGuiDataType_Float, delta_mass);
-        ImGui::InputScalar("delta radius", ImGuiDataType_Float, delta_radius);
 
 
         for (std::size_t i = 0; i < m_config.bodies.size(); i++) {
 
             body = m_config.bodies[i];
             if (ImGui::TreeNode((void*)(intptr_t) body->ID(), "%s", body->Name().c_str())) {
-
 
 
                 float *radius = body->RadiusPtr();
@@ -403,58 +420,56 @@ void Simulation::ShowDebug() {
 
 
                 ImGui::Text("Coordinates:");
-                ImGui::InputScalar("x ",   ImGuiDataType_Float,  &position->x, delta_position);
-                ImGui::InputScalar("y ",   ImGuiDataType_Float,  &position->y, delta_position);
+                ImGui::InputScalar("x ",   ImGuiDataType_Float,  &position->x, &m_config.delta_position);
+                ImGui::InputScalar("y ",   ImGuiDataType_Float,  &position->y, &m_config.delta_position);
 
 
                 ImGui::Text("Velocity:");
-                ImGui::InputScalar("x",   ImGuiDataType_Float,  &velocity->x, delta_velocity);
-                ImGui::InputScalar("y",   ImGuiDataType_Float,  &velocity->y, delta_velocity);
+                ImGui::InputScalar("x",   ImGuiDataType_Float,  &velocity->x, &m_config.delta_velocity);
+                ImGui::InputScalar("y",   ImGuiDataType_Float,  &velocity->y, &m_config.delta_velocity);
 
                 ImGui::Spacing();
                 ImGui::Spacing();
 
                 // TODO sliders or no?
                 ImGui::Text("Radius:");
-                ImGui::InputScalar("m", ImGuiDataType_Float, (void *) radius, delta_radius);
-                // ImGui::SliderScalar("Radius (drag value)", ImGuiDataType_Float, radius, &FLOAT_ZERO, &max_radius, "%e", 1.0f);
+                ImGui::InputScalar("m", ImGuiDataType_Float, (void *) radius, &m_config.delta_radius);
 
                 ImGui::Spacing();
 
                 ImGui::Text("Mass:");
-                ImGui::InputScalar("kg", ImGuiDataType_Float, mass, delta_mass);
-                // // ImGui::SliderScalar("",ImGuiDataType_Float, mass, &FLOAT_ZERO, &max_mass, "%e", 1.0f);
-                //
-                //
-                // ImGui::Spacing();
-                //
-                //
-                // ImGui::Text("Color:");
-                // ImGui::Spacing();
-                //
-                //
-                // // ImGui::InputFloat3("Position xyz (enter values)", (float *) position);
-                // // ImGui::DragFloat3("Position xyz (drag numbers)", (float *) position, position_step, min_pos, max_pos);
-                //
+                ImGui::InputScalar("kg", ImGuiDataType_Float, mass, &m_config.delta_mass);
 
+
+                ImGui::("Color");
+
+                if (ImGui::Button("Focus")) {
+                    m_camera.SetCenter(body->GetPosition());
+                    m_camera.Center();
+                };
                 ImGui::TreePop();
             }
-
-
         }
-
-
     }
 
+    ImGui::Separator();
+    ImGui::Spacing();
 
     if (ImGui::Button("Add world")) {
         WorldAddBody();
     }
+
+    ImGui::Spacing();
+
     if (ImGui::Button("Fit camera")) {
         CameraFit();
     }
+
+
+    ImGui::Spacing();
+
     // TODO
-    if (ImGui::Button("Fit bodies")) {
+    if (ImGui::Button("Resize bodies")) {
 
     }
 
@@ -470,7 +485,9 @@ void Simulation::ShowDebug2() {
 
     glm::vec3 position = m_config.camera_position;
     ImGui::Text("Camera position\n x: %f \n y: %f", position.x, position.y);
-
+    ImGui::Text("Horizontal view distance %f meters", m_camera.HorizontalDistance());
+    ImGui::Text("Fps");
+    ImGui::Text("Time");
     ImGui::End();
 
 }
@@ -482,38 +499,53 @@ void Simulation::ShowConfig() {
         return;
     }
 
-    // TODO Maximum position??
-    ImGui::Text("Maximum mass");
-    ImGui::Text("Maximum radius");
+    ImGui::Text("World parameters");
+    ImGui::Spacing();
+    ImGui::Text("Gravitational constant");
+    ImGui::Text("Gravity on/off");
+
+    ImGui::Separator();
+
+    // TODO Maximum position/velocity??
     ImGui::Text("Maximum velocity");
 
+    float *max_mass = &m_config.max_mass;
+    float *max_radius = &m_config.max_radius;
 
-    ImGui::Text("delta position");
-    ImGui::Text("delta velocity");
-    ImGui::Text("delta mass");
-    ImGui::Text("delta radius");
+    ImGui::InputScalar("Maximum mass", ImGuiDataType_Float, max_mass);
+    ImGui::InputScalar("Maximum radius", ImGuiDataType_Float, max_radius);
+
+    ImGui::Spacing();
+
+    float *delta_position = &m_config.delta_position;
+    float *delta_velocity = &m_config.delta_velocity;
+    float *delta_radius = &m_config.delta_radius;
+    float *delta_mass = &m_config.delta_mass;
 
 
+    ImGui::InputScalar("delta position", ImGuiDataType_Float, delta_position);
+    ImGui::InputScalar("delta velocity", ImGuiDataType_Float, delta_velocity);
+    ImGui::InputScalar("delta mass", ImGuiDataType_Float, delta_mass);
+    ImGui::InputScalar("delta radius", ImGuiDataType_Float, delta_radius);
+
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    ImGui::Checkbox("Run simulation", &m_config.run_simulation);
+    ImGui::Checkbox("Auto-resize camera", &m_config.auto_resize_camera);
+    ImGui::Checkbox("Auto-resize bodies", &m_config.auto_resize_bodies);
+    // ();
+    ImGui::Checkbox("Track body", &m_config.track_body);
+    // struct FuncHolder { static bool ItemGetter(void* data, int idx, const char** out_str) { *out_str = ((const char**)data)[idx]; return true; } };
+    // static int item_current_4 = 0;
+    // std::vector<std::string> names;
+    // for (Body *body: m_config.bodies) {
+        // names.push_back(body->Name());
+    // }
+    // char **items = names.data();
+    // ImGui::Combo("combo 4 (function)", &item_current_4, &m_config.ComboGetter, items, m_bodies.size());
 
 
 
     ImGui::End();
-}
-
-void Simulation::Save(std::string scene_name) {
-    Scene scene(scene_name, m_world, m_camera, m_config);
-    scene.Save();
-}
-
-void Simulation::Load(std::string scene_name) {
-    Scene scene(scene_name, m_world, m_camera, m_config);
-    scene.Load();
-}
-
-void Simulation::GuiToggle() {
-    m_show_gui = !m_show_gui;
-}
-
-void Simulation::TogglePlay() {
-    m_run_simulation = !m_run_simulation;
 }

@@ -21,6 +21,11 @@ void SimData::RegisterCamera(Camera *camera) {
     camera_position = m_camera->GetPosition();
 }
 
+void SimData::Clear() {
+    bodies.clear();
+    Update();
+}
+
 // TODO reset bounds
 void SimData::Update() {
 

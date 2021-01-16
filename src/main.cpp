@@ -272,8 +272,8 @@ int main(void) {
 
 
     glm::vec3 center(xmid, ymid, 0.0f);
-    glm::vec3 earth_pos(-DISTANCE_MOON_EARTH / 2, 1000000000.0f, 0.0f);
-    glm::vec3 moon_pos(DISTANCE_MOON_EARTH/2, 1000000000.0f, 0.0f);
+    glm::vec3 earth_pos(-DISTANCE_MOON_EARTH / 2, 0, 0.0f);
+    glm::vec3 moon_pos(DISTANCE_MOON_EARTH/2, 0, 0.0f);
     glm::vec3 moon_v(0.0f, VELOCITY_MOON, 0.0f);
 
     simulation.WorldAddBody("earth", earth_pos, glm::vec3(0.0f), RADIUS_EARTH, MASS_EARTH);
@@ -291,7 +291,7 @@ int main(void) {
         simulation.Render();
         // std::cout << "Is enabled: " << glIsEnabled(GL_PRIMITIVE_RESTART) << std::endl;
 
-        // i++;
+        i++;
         if (simulation.Running()) {
             simulation.Step();
         }
@@ -301,7 +301,7 @@ int main(void) {
 
 
         if (i % 60 == 0) {
-            // simulation.CameraInfo();
+            simulation.CameraInfo();
         }
         // std::cout.precision(20);
         // total = world.TotalEnergy();

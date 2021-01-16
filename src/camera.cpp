@@ -21,6 +21,12 @@ void Camera::Resize() {
 
 }
 
+void Camera::Clear() {
+    SetCenter(glm::vec3(0.0f));
+    m_zoom_level = 0;
+    Update();
+}
+
 
 void Camera::Zoom(const int direction) {
     float scale;
@@ -43,7 +49,7 @@ void Camera::Zoom(const int direction) {
 
 void Camera::Fit(glm::vec2 lbound, glm::vec2 rbound) {
 
-    Center();
+    // Center();
 
     float zoom_level;
     float zoomlevel_lbound = (lbound.x + m_translation.x) / m_zoom_ratio;

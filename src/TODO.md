@@ -31,7 +31,7 @@
 - [ ] **logging data to files**
 - [X] scenario class (save/resume)
   - [X] figure out savefile format
-- [ ] plot history as lines
+- [X] plot history as lines
 - [ ] put shaders in own directory
 
 1. Finish import/export

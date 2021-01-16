@@ -54,6 +54,7 @@ public:
                   float radius, float mass);
     std::vector<Body*> Bodies() const { return m_bodies; };
     void RemoveBody(unsigned int id);
+    void Clear();
     unsigned int GetCount() const { return m_body_count; };
     void Do();
 
