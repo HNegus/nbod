@@ -441,7 +441,7 @@ void Simulation::ShowDebug() {
                 ImGui::InputScalar("kg", ImGuiDataType_Float, mass, &m_config.delta_mass);
 
 
-                ImGui::("Color");
+                ImGui::Text("Color");
 
                 if (ImGui::Button("Focus")) {
                     m_camera.SetCenter(body->GetPosition());
