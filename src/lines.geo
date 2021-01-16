@@ -13,17 +13,17 @@ void main (void) {
 
     gl_Position = p1;
     EmitVertex();
-    gl_Position = d1;
-    EmitVertex();
+    // gl_Position = d1;
+    // EmitVertex();
     gl_Position = p2;
     EmitVertex();
 
-    gl_Position = d1;
-    EmitVertex();
-    gl_Position = p2;
-    EmitVertex();
-    gl_Position = d2;
-    EmitVertex();
+    // gl_Position = d1;
+    // EmitVertex();
+    // gl_Position = p2;
+    // EmitVertex();
+    // gl_Position = d2;
+    // EmitVertex();
 
     // gl_Position = gl_in[1].gl_Position + pos;
     // EmitVertex();

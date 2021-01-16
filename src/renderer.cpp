@@ -19,7 +19,7 @@ void Renderer::DrawLineStrip(const VertexArray& va, const unsigned int count,
 
     va.Bind();
     shader.Bind();
-    glDrawArrays(GL_LINE_STRIP, 0, count);
+    glDrawArrays(GL_LINES, 0, count);
 }
 
 

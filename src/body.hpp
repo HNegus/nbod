@@ -18,6 +18,8 @@ public:
     m_position(0.0f), m_velocity(0.0f),  m_force(0.0f),
     m_radius(1.0f), m_mass(1.0f),
     m_id(id_counter++), m_history()
+    // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
+      // m_history.push_back(m_position.x); m_history.push_back(m_position.y); };
     {};
     // { std::cout << "Body constructor called" << std::endl; };
     Body(std::string name) :
@@ -26,6 +28,8 @@ public:
     m_radius(1.0f), m_mass(1.0f),
     m_id(id_counter++), m_history()
     // { std::cout << "Body constructor called" << std::endl; };
+    // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
+      // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
     {};
     Body(std::string name, glm::vec3 position, glm::vec3 velocity,
          float radius, float mass) :
@@ -33,6 +37,8 @@ public:
     m_position(position), m_velocity(velocity), m_force(0.0f),
     m_radius(radius), m_mass(mass),
     m_id(id_counter++), m_history()
+    // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
+      // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
     {};
 
     // IDEA constant force on body (constant force vs gravitational/other)

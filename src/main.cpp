@@ -17,8 +17,8 @@
 
 #include "body.hpp"
 #include "world.hpp"
-
-
+// TODO remove
+#include <unistd.h>
 E_ErrorLevels ERROR_LEVEL = HIGH;
 
 
@@ -34,6 +34,7 @@ static GLFWwindow* init() {
 
     /* Hint correct OpenGL version to GLFW. */
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
     glfwWindowHint(GLFW_SAMPLES, 4);
@@ -140,52 +141,62 @@ int main(void) {
 
     if (!window) return -1;
 
-   //  const int pi = 18;
-   //  const int pc = 36;
-   //  const int ii = 9;
+    // const int pi = 18;
+    // const int pc = 24;
+    // const int ii = 12;
+   // //
+    // float positions[pi] = {-1.0, -0.8,
+    //                       -0.7, -0.2,
+    //                       -0.2, -0.4,
+    //
+    //                       0.8, 0.6,
+    //
+    //                       0.0, 0.5,
+    //                       -0.5, 1.0};
+
+   //  float positions[pi] = {-1, 0,
+   //                     -0.8, 0,
+   //                     -0.2, 0,
    //
-   //  float positions[pi] = {-1.0, -0.8,
-   //                        -0.7, -0.2,
-   //                        -0.2, -0.4,
-   //                        0.8, 0.6,
+   //                     0.0, 0,
+   //                     0.1, 0,
+   //                     0.4, 0,
    //
-   //                        0.8, 0.6,
-   //                        0.0, 0.5,
-   //
-   //                        0.0, 0.5,
-   //                        0.0, 0.5,
-   //                        -0.5, 1.0};
-   //
+   //                      0.5, 0,
+   //                      0.6, 0,
+   //                      0.7, 0,};
+   // //
    // unsigned char colors[pc] = {255, 255, 255, 255,
-   //                       255, 255, 255, 255,
    //                        255, 255, 255, 255,
    //                        255, 255, 255, 255,
    //
-   //                        255, 0, 255, 0,
-   //                        255, 0, 0, 0,
    //
    //                        255, 0, 0, 255,
    //                        255, 0, 0, 255,
    //                        255, 0, 0, 255};
-   //  unsigned int indices[ii] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-   //  VertexArray va;
-   //  VertexBuffer vb(positions, sizeof (float) * pi);
-   //  vb.UnBind();
-   //  // VertexBuffer vb2(colors, sizeof (unsigned char) * pc);
+   //  unsigned int indices[ii] = {0, 1, 2, 0xFFFFFFFF, 3, 4, 5};
+    // unsigned int indices[ii] = {0, 1, 2, 0xFFFFFFFF, 3, 4, 5, 0xFFFFFFFF, 6, 7, 8, 0xFFFFFFFF};
+
+    // VertexArray va;
+    // VertexBuffer vb(positions, sizeof (float) * pi);
+    // vb.UnBind();
+    // VertexBuffer vb2(colors, sizeof (unsigned char) * pc);
    //  // vb2.UnBind();
-   //  IndexBuffer ib(indices, ii);
-   //  ib.UnBind();
-   //  VertexBufferLayout layout, layout2;
-   //  layout.Push<float>(2);
-   //  // layout2.Push<unsigned char>(4);
-   //  va.AddBuffer(vb, 0, layout);
-   //  vb.UnBind();
-   //  // va.AddBuffer(vb2, 1, layout2);
+    // IndexBuffer ib(indices, ii);
+   //  // ib.UnBind();
+    // VertexBufferLayout layout, layout2;
+    // layout.Push<float>(2);
+   //  layout2.Push<unsigned char>(4);
+    // va.AddBuffer(vb, 0, layout);
+   //  // vb.UnBind();
+   //  va.AddBuffer(vb2, 1, layout2);
    //  // vb2.UnBind();
-   //  ShaderSources sources = Shader::GetShaderSources("lines.vert",  "lines.frag");
-   //  Shader shader(sources);
-   //  shader.Bind();
-   //  Renderer renderer;
+    // ShaderSources sources = Shader::GetShaderSources("lines.vert",  "lines.frag");
+    // Shader shader(sources);
+    // shader.Bind();
+    // Renderer renderer;
+    // glEnable(GL_PRIMITIVE_RESTART);
+    // glPrimitiveRestartIndex(0xFFFFFFFF);
 
 
     // unsigned int va, vb1, vb2, ib;
@@ -253,19 +264,21 @@ int main(void) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 
+    glEnable(GL_PRIMITIVE_RESTART);
+    glPrimitiveRestartIndex(RESTART_INDEX);
 
     float xmid = 1920 / 2;
     float ymid = 1080 / 2;
 
 
     glm::vec3 center(xmid, ymid, 0.0f);
-    glm::vec3 earth_pos(-DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
-    glm::vec3 moon_pos(DISTANCE_MOON_EARTH / 2, 0.0f, 0.0f);
+    glm::vec3 earth_pos(-DISTANCE_MOON_EARTH / 2, 1000000000.0f, 0.0f);
+    glm::vec3 moon_pos(DISTANCE_MOON_EARTH/2, 1000000000.0f, 0.0f);
     glm::vec3 moon_v(0.0f, VELOCITY_MOON, 0.0f);
 
     simulation.WorldAddBody("earth", earth_pos, glm::vec3(0.0f), RADIUS_EARTH, MASS_EARTH);
     simulation.WorldAddBody("moon", moon_pos, moon_v, RADIUS_MOON, MASS_MOON);
-    // simulation.WorldAddBody("earth", center, glm::vec3(0.01f), 1.0f, MASS_EARTH);
+    // // simulation.WorldAddBody("earth", center, glm::vec3(0.01f), 1.0f, MASS_EARTH);
 
     simulation.CameraSetCenter(earth_pos);
 
@@ -274,9 +287,10 @@ int main(void) {
     int i = 0;
 
     while (!glfwWindowShouldClose(window)) {
-
+        sleep(0.6);
         simulation.Render();
-        //
+        // std::cout << "Is enabled: " << glIsEnabled(GL_PRIMITIVE_RESTART) << std::endl;
+
         // i++;
         if (simulation.Running()) {
             simulation.Step();

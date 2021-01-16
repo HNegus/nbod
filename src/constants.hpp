@@ -23,3 +23,4 @@ const float SLIDERFLOAT_MIN = -FLT_MAX/2.0f;
 
 // const float MAX_RADIUS = 10 * RADIUS_EARTH;
 const float MAX_RADIUS = (FLT_MAX - 1)/2;
+const unsigned int RESTART_INDEX = 0xFFFF;

@@ -75,8 +75,6 @@ void Simulation::InitHistoryBuffers() {
     m_shader_history.Bind();
 
     m_renderer.DrawLineStrip(m_va_history, m_ib_history, m_shader_history);
-
-
 }
 
 void Simulation::WorldAddBody() {
@@ -164,6 +162,7 @@ void Simulation::Render() {
     m_shader_history.Bind();
     m_shader_history.SetUniformMat4f("u_MVP", MVP());
     m_renderer.DrawLineStrip(m_va_history, m_ib_history, m_shader_history);
+
 
 
     RenderGui();
