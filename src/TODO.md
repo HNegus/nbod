@@ -17,7 +17,7 @@
     - [ ] **add/remove body**
 
 - [X] figure out how to center
-- [X] clean code
+- [ ] clean code
   - [X] remove global variables other than const
   - [X] make use of gui class
 - [ ] **parallelize**
@@ -33,8 +33,9 @@
   - [X] figure out savefile format
 - [X] plot history as lines
 - [ ] put shaders in own directory
+- [ ] Plot system energy (potential + kinetic) *Use relativistic mass*
 
 1. Finish import/export
-2. Make configuration editable
+- [X] Make configuration editable
 3. Enable planet tracking
 4. Work on simulation stepping (how does time work??)
