@@ -180,47 +180,10 @@ void World::SetBodiesHistoryPositionsVb(VertexBuffer& vb) {
             continue;
         }
 
-        // history_data.push_back(history[0]);
-        // history_data.push_back(history[1]);
         for (float v: history) {
             history_data.push_back(v);
         }
-        // for (size_t i; i < history.size(); i += 2) {
-        //     history_data.push_back(history[i]);
-        //     history_data.push_back(history[i]);
-        //
-        // }
-
-        // history_data.pop_back();
-        // history_data.pop_back();
-
-        // history_data.push_back(0);
-        // history_data.push_back(0);
-
-        // history_data.push_back(history[1]);
-
-        // history_data.push_back(history.end()[-1]);
-        // history_data.push_back(history.end()[-2]);
-
-        // history_data.push_back(0);
-        // history_data.push_back(0);
-        // history_data.push_back(0);
-
-        // history_data.push_back(65535);
-
-
     }
-
-    // if (!history_data.empty())
-        // history_data.pop_back();
-
-    // std::cout << "pos: ";
-    // for (auto v: history_data) {
-        // if (v == 0xFF) {
-            // std::cout << v << " ";
-        // }
-    // }
-    // std::cout << std::endl;
 
     vb.Update(history_data.data(), sizeof (float) * history_data.size());
 
@@ -237,36 +200,12 @@ void World::SetBodiesHistoryColorsVb(VertexBuffer& vb) {
             continue;
         }
 
-        // history_data.insert(end(history_data), {0, 0, 0, 0});
 
         for (size_t i = 0; i < history.size(); i += 2) {
             history_data.insert(end(history_data), {255, 0, 0, 100});
         }
-        // history_data.pop_back();
-
-        // history_data.insert(end(history_data), {0, 0, 0, 0});
-        // history_data.insert(end(history_data), {0xFF, 0xFF, 0xFF, 0xFF});
-        // history_data.insert(end(history_data), {0xFF, 0xFF, 0xFF, 0xFF});
-        // history_data.insert(end(history_data), {0xFF, 0xFF, 0xFF, 0xFF});
-
-
-        // history_data.insert(end(history_data), {0, 0, 0, 0});
-        // history_data.push_back(65535);
-
-        // history_data.insert(end(history_data), {0, 0, 0, 0});
 
     }
-
-    // if (!history_data.empty())
-        // history_data.pop_back();
-
-    // std::cout << "col: ";
-    // for (auto v: history_data) {
-    //     // if (v == RESTART_INDEX) {
-    //         std::cout << (int) v << " ";
-    //     // }
-    // }
-    // std::cout << std::endl;
 
     vb.Update(history_data.data(), sizeof (unsigned char) * history_data.size());
 }
@@ -276,7 +215,6 @@ void World::SetBodiesHistoryIb(IndexBuffer& ib) {
     std::vector<float> history;
     std::vector<unsigned int> history_data;
     unsigned int i = 0;
-    // history_data.push_back(0);
 
     for (Body *body: m_bodies) {
         history = body->GetHistory();
@@ -284,35 +222,13 @@ void World::SetBodiesHistoryIb(IndexBuffer& ib) {
             continue;
         }
 
-        // history_data.push_back(i++);
         for (size_t j = 0; j < history.size(); j += 2) {
             history_data.push_back(i++);
         }
-        // i++;
-        // history_data.push_back(i-1);
-        // history_data.push_back(i);
 
         history_data.push_back(RESTART_INDEX);
 
-        // history_data.push_back(0);
-
-
-        // history_data.push_back(i++);
     }
-
-    // if (!history_data.empty())
-        // history_data.pop_back();
-
-    // std::cout << "ib: ";
-    // for (auto v: history_data) {
-    //     // if (v == RESTART_INDEX) {
-    //         std::cout << v << " ";
-    //     // }
-    // }
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-
-
 
     ib.Update(history_data.data(), history_data.size());
 

@@ -54,7 +54,6 @@ int Shader::GetUniformLocation(const std::string& name) const {
 
     if (location == -1) {
         std::cerr << "! Uniform '" << name << "' does not exist!" << std::endl;
-        std::cout << m_sources.vertexShaderSrc << std::endl;
     }
 
     return location;

@@ -82,15 +82,12 @@ void Simulation::WorldAddBody() {
     m_config.RegisterBody(body);
 }
 
-
 void Simulation::WorldAddBody(std::string name,
                               glm::vec3 position, glm::vec3 velocity,
                               float radius, float mass)
 {
-    // .push_back(id);
     Body *body =  m_world.AddBody(name, position, velocity, radius, mass);
     m_config.RegisterBody(body);
-
 }
 
 

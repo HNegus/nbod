@@ -15,8 +15,6 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib,
 void Renderer::DrawLineStrip(const VertexArray& va, const unsigned int count,
                          const Shader& shader) const {
 
-    // glm vec3::colors[]
-
     va.Bind();
     shader.Bind();
     glDrawArrays(GL_LINES, 0, count);
@@ -26,7 +24,6 @@ void Renderer::DrawLineStrip(const VertexArray& va, const unsigned int count,
 void Renderer::DrawLineStrip(const VertexArray& va, const IndexBuffer& ib,
                          const Shader& shader) const {
 
-    // glm vec3::colors[]
 
     va.Bind();
     ib.Bind();
