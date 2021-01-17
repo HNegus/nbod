@@ -16,6 +16,13 @@ void SimData::RegisterBody(Body* body) {
     Update();
 }
 
+void SimData::RegisterBodies(std::vector<Body*> in_bodies) {
+    for (Body *body: in_bodies) {
+        bodies.push_back(body);
+    }
+    Update();
+}
+
 void SimData::RegisterCamera(Camera *camera) {
     m_camera = camera;
     camera_position = m_camera->GetPosition();

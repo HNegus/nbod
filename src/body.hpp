@@ -59,7 +59,7 @@ public:
     void ApplyForce(glm::vec3 f);
 
     unsigned int ID() const { return m_id; }
-    std::string Name() const { return m_name; };
+    std::string Name() const { return std::to_string(m_id) + " " + m_name; };
 
     std::vector<float> GetHistory() { return m_history; };
 

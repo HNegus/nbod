@@ -136,6 +136,14 @@ int main(void) {
 
     //
     // Scene scene;
+    // World w;
+
+    // std::ifstream ifs;
+    // ifs.open("../scenes/sun_earth/world.cfg");
+    // ifs >> w;
+    // std::cout << w;
+    // TestWorld();
+    // exit(0);
 
     GLFWwindow* window = init();
 
@@ -281,7 +289,7 @@ int main(void) {
     // // simulation.WorldAddBody("earth", center, glm::vec3(0.01f), 1.0f, MASS_EARTH);
 
     simulation.CameraSetCenter(earth_pos);
-
+    simulation.CameraFit();
 
 
     int i = 0;
@@ -301,7 +309,7 @@ int main(void) {
 
 
         if (i % 60 == 0) {
-            simulation.CameraInfo();
+            // simulation.CameraInfo();
         }
         // std::cout.precision(20);
         // total = world.TotalEnergy();

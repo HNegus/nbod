@@ -20,7 +20,6 @@ void Simulation::Init() {
 
     InitBodyBuffers();
     InitHistoryBuffers();
-
 }
 
 void Simulation::InitBodyBuffers() {
@@ -118,7 +117,6 @@ void Simulation::CameraCenter() {
 
 void Simulation::CameraSetCenter(glm::vec3 center) {
     m_camera.SetCenter(center);
-    CameraFit();
 }
 
 void Simulation::CameraMove(const glm::vec3 translation) {
@@ -132,6 +130,10 @@ void Simulation::CameraInfo() {
 /* Simulation */
 void Simulation::Step() {
     m_world.Step();
+
+    if (m_config.track_body) {
+        CameraSetCenter(m_config.bodies[m_config.track_body_idx]->GetPosition());
+    }
     if (m_config.auto_resize_camera) {
         CameraFit();
     }
@@ -181,6 +183,7 @@ void Simulation::Save(std::string scene_name) {
 void Simulation::Load(std::string scene_name) {
     Scene scene(scene_name, m_world, m_camera, m_config);
     scene.Load();
+    CameraFit();
 }
 
 void Simulation::GuiToggle() {
@@ -292,7 +295,7 @@ void Simulation::ShowMenuFile()
         {
             ImGui::ListBox("listbox\n(single select)", &item_current, items, (size_t) scenes.size(), scenes.size() > 10 ? 10 : scenes.size());
         }
-        std::cout << item_current << std::endl;
+
         delete[] items;
         if (ImGui::Button("Load", ImVec2(120, 0))) {
             Load(scenes[item_current]);
@@ -455,7 +458,8 @@ void Simulation::ShowDebug() {
     ImGui::Separator();
     ImGui::Spacing();
 
-    if (ImGui::Button("Add world")) {
+    ImGui::Text("Body name");
+    if (ImGui::Button("Add body")) {
         WorldAddBody();
     }
 
@@ -476,6 +480,8 @@ void Simulation::ShowDebug() {
     ImGui::End();
 }
 
+
+
 void Simulation::ShowDebug2() {
 
     if (!ImGui::Begin("Debug 2")) {
@@ -491,6 +497,8 @@ void Simulation::ShowDebug2() {
     ImGui::End();
 
 }
+
+static int item_current_3 = 0;
 
 void Simulation::ShowConfig() {
 
@@ -534,18 +542,28 @@ void Simulation::ShowConfig() {
     ImGui::Checkbox("Run simulation", &m_config.run_simulation);
     ImGui::Checkbox("Auto-resize camera", &m_config.auto_resize_camera);
     ImGui::Checkbox("Auto-resize bodies", &m_config.auto_resize_bodies);
-    // ();
-    ImGui::Checkbox("Track body", &m_config.track_body);
-    // struct FuncHolder { static bool ItemGetter(void* data, int idx, const char** out_str) { *out_str = ((const char**)data)[idx]; return true; } };
-    // static int item_current_4 = 0;
-    // std::vector<std::string> names;
-    // for (Body *body: m_config.bodies) {
-        // names.push_back(body->Name());
-    // }
-    // char **items = names.data();
-    // ImGui::Combo("combo 4 (function)", &item_current_4, &m_config.ComboGetter, items, m_bodies.size());
 
+    ImGui::Spacing();
+    ImGui::Checkbox("Enable tracking", &m_config.track_body);
 
+    if (m_config.bodies.size() > 0) {
+
+        char *current = (char*) m_config.bodies[m_config.track_body_idx]->Name().c_str();
+        if (ImGui::BeginCombo("Body to track", current, 0))
+        {
+            for (int n = 0; n < (int) m_config.bodies.size(); n++)
+            {
+                const bool is_selected = (m_config.track_body_idx == n);
+                if (ImGui::Selectable(m_config.bodies[n]->Name().c_str(), is_selected))
+                    m_config.track_body_idx = n;
+
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+
+    }
 
     ImGui::End();
 }

@@ -20,7 +20,8 @@ public:
     // Scene(std::string name) : m_name(name) {};
     Scene(std::string name, World& world, Camera& camera, SimData& config) :
           m_name(name), m_world(world), m_camera(camera), m_config(config)
-    { std::cout << "Making scene" << std::endl; };
+    // { std::cout << "Making scene" << std::endl; };
+    {};
     ~Scene() {};
 
     void Load();

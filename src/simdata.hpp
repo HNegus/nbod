@@ -23,9 +23,11 @@ public:
 
     bool show_gui = true;
     bool run_simulation = false;
-    bool auto_resize_camera = true;
+    bool auto_resize_camera = false;
     bool auto_resize_bodies = true;
-    bool track_body = true;
+    bool track_body = false;
+
+    int track_body_idx = 0;
 
     SimData();
     ~SimData() {};
@@ -33,6 +35,7 @@ public:
 
 
     void RegisterBody(Body *body);
+    void RegisterBodies(std::vector<Body*> bodies);
     void DeregisterBody(unsigned int id);
     void DeregisterBody(Body *body);
     void RegisterCamera(Camera *camera);

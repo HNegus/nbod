@@ -46,6 +46,7 @@ public:
 
 
     void StoreBody(Body *body);
+    // TODO Give body parameters that are similar to other bodies.
     Body* AddBody();
     Body* AddBody(Body other_body);
     Body* AddBody(std::string name);
@@ -53,6 +54,7 @@ public:
                   glm::vec3 position, glm::vec3 velocity,
                   float radius, float mass);
     std::vector<Body*> Bodies() const { return m_bodies; };
+    // TODO
     void RemoveBody(unsigned int id);
     void Clear();
     unsigned int GetCount() const { return m_body_count; };

@@ -255,7 +255,7 @@ std::istream& operator>>(std::istream& is, World& world) {
     while (!is.eof()) {
         is >> body;
         world.AddBody(body);
-        std::cout << body;
+        // std::cout << body;
         is.ignore(5);
     }
     return is;
