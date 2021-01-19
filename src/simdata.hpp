@@ -29,6 +29,8 @@ public:
 
     int track_body_idx = 0;
 
+    float time_current = 0;
+
     SimData();
     ~SimData() {};
     void Clear();

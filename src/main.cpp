@@ -24,6 +24,7 @@ E_ErrorLevels ERROR_LEVEL = HIGH;
 
 static GLFWwindow* init() {
 
+
     GLFWwindow* window;
 
     /* Initialize the library */
@@ -58,8 +59,8 @@ static GLFWwindow* init() {
     glfwMakeContextCurrent(window);
 
     /* Enable 60+ fps: 0. */
-    // glfwSwapInterval(0);
-    // glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+    glfwSwapInterval(0);
+    glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 
 
     GLenum err = glewInit();

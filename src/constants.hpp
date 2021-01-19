@@ -12,8 +12,8 @@ const float DISTANCE_MOON_EARTH = 384402 * pow(10, 3);
 const float RADIUS_EARTH = 6371 * pow(10, 3);
 const float RADIUS_MOON = 1737 * pow(10, 3);
 const float VELOCITY_MOON = 1 * pow(10, 3);
-const float DELTA_TIME = 86400 / 60;
-// const float DELTA_TIME = 0.01;
+// const float DELTA_TIME = 86400;
+const float DELTA_TIME = 60*60;
 
 
 // const float MAX_MASS = 10 * MASS_EARTH;

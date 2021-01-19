@@ -52,6 +52,8 @@ void World::Step() {
             diff = pos2 - pos1;
 
             r = length(diff);
+            // F = G * (b2->GetMass() / pow(r, 3));
+
             F = G * (b2->GetMass() / pow(r, 2)) * b1->GetMass();
 
             theta = atan2(diff.y, diff.x);

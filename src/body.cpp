@@ -54,5 +54,6 @@ std::istream& operator>>(std::istream& is, Body& body) {
     is >> body.m_force.x >> body.m_force.y;
     is >> body.m_radius;
     is >> body.m_mass;
+    std::cout << "Loaded: " << body.m_name << std::endl;
     return is;
 }

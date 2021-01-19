@@ -34,8 +34,9 @@
 - [X] plot history as lines
 - [ ] put shaders in own directory
 - [ ] Plot system energy (potential + kinetic) *Use relativistic mass*
+- [ ] Add background
 
-1. Finish import/export
+- [X] Finish import/export
 - [X] Make configuration editable
-3. Enable planet tracking
+- [X] Enable planet tracking
 4. Work on simulation stepping (how does time work??)

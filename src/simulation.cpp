@@ -137,6 +137,7 @@ void Simulation::Step() {
     if (m_config.auto_resize_camera) {
         CameraFit();
     }
+    m_config.time_current += DELTA_TIME;
 }
 
 
@@ -493,7 +494,9 @@ void Simulation::ShowDebug2() {
     ImGui::Text("Camera position\n x: %f \n y: %f", position.x, position.y);
     ImGui::Text("Horizontal view distance %f meters", m_camera.HorizontalDistance());
     ImGui::Text("Fps");
-    ImGui::Text("Time");
+    ImGui::Text("Elapsed time: %f s", m_config.time_current);
+    ImGui::Text("Elapsed time: %d days", (int) round(m_config.time_current / 86400));
+
     ImGui::End();
 
 }
