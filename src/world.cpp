@@ -34,6 +34,10 @@ void World::Do() {
     std::cout << std::endl;
 }
 
+void World::StepAcc() {
+    
+}
+
 void World::Step() {
     glm::vec3 pos1, pos2, diff;
     glm::vec3 force;

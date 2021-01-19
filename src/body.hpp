@@ -7,6 +7,7 @@ private:
     inline static unsigned int id_counter = 0;
     std::string m_name;
     glm::vec3 m_position, m_velocity, m_force;
+    glm::vec3 m_accelaration, m_jerk;
     float m_radius, m_mass;
     unsigned int m_id;
     std::vector<float> m_history;
@@ -16,8 +17,9 @@ public:
     Body() :
     m_name("body"),
     m_position(0.0f), m_velocity(0.0f),  m_force(0.0f),
+    m_accelaration(0.0f), m_jerk(0.0f),
     m_radius(1.0f), m_mass(1.0f),
-    m_id(id_counter++), m_history()
+    m_id(id_counter++)
     // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
       // m_history.push_back(m_position.x); m_history.push_back(m_position.y); };
     {};
@@ -25,8 +27,9 @@ public:
     Body(std::string name) :
     m_name(name),
     m_position(0.0f), m_velocity(0.0f), m_force(0.0f),
+    m_accelaration(0.0f), m_jerk(0.0f),
     m_radius(1.0f), m_mass(1.0f),
-    m_id(id_counter++), m_history()
+    m_id(id_counter++)
     // { std::cout << "Body constructor called" << std::endl; };
     // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
       // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
@@ -35,8 +38,9 @@ public:
          float radius, float mass) :
     m_name(name),
     m_position(position), m_velocity(velocity), m_force(0.0f),
+    m_accelaration(0.0f), m_jerk(0.0f),
     m_radius(radius), m_mass(mass),
-    m_id(id_counter++), m_history()
+    m_id(id_counter++)
     // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
       // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
     {};

@@ -62,6 +62,7 @@ public:
 
     void UpdateBodies();
     void Step();
+    void StepAcc();
 
 
     void SetBodiesVb(VertexBuffer& vb);

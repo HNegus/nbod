@@ -24,6 +24,8 @@ E_ErrorLevels ERROR_LEVEL = HIGH;
 
 static GLFWwindow* init() {
 
+    glm::vec3 v;
+    std::cout << glm::to_string(v) << std::endl;
 
     GLFWwindow* window;
 
@@ -296,7 +298,7 @@ int main(void) {
     int i = 0;
 
     while (!glfwWindowShouldClose(window)) {
-        sleep(0.6);
+        // sleep(0.6);
         simulation.Render();
         // std::cout << "Is enabled: " << glIsEnabled(GL_PRIMITIVE_RESTART) << std::endl;
 
