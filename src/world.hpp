@@ -13,13 +13,13 @@ class World {
 private:
     std::vector<Body*> m_bodies;
 
-    // std::vector<float> m_BodiesVbData;
+    // std::vector<real> m_BodiesVbData;
     // std::vector<unsigned int> m_BodiesIbData;
     // unsigned int m_BodiesVbSize;
     // unsigned int m_BodiesIbSize;
 
 
-    std::vector<float> m_HistoryPositionVbData;
+    std::vector<real> m_HistoryPositionVbData;
     std::vector<unsigned int> m_HistoryPositionIbData;
     unsigned int m_HistoryPositionVbSize;
     unsigned int m_HistoryPositionIbSize;
@@ -30,6 +30,7 @@ private:
     // VertexBufferLayout m_layout;
 
     unsigned int m_body_count;
+    real m_dt = 10000;
 
 
 
@@ -51,8 +52,8 @@ public:
     Body* AddBody(Body other_body);
     Body* AddBody(std::string name);
     Body* AddBody(std::string name,
-                  glm::vec3 position, glm::vec3 velocity,
-                  float radius, float mass);
+                  vec3 position, vec3 velocity,
+                  real radius, real mass);
     std::vector<Body*> Bodies() const { return m_bodies; };
     // TODO
     void RemoveBody(unsigned int id);
@@ -61,8 +62,9 @@ public:
     void Do();
 
     void UpdateBodies();
+    void UpdateBodiesNew();
     void Step();
-    void StepAcc();
+    void StepNew();
 
 
     void SetBodiesVb(VertexBuffer& vb);
@@ -80,7 +82,7 @@ public:
     friend std::istream& operator>>(std::istream& is, World& world);
 
 
-    // std::vector<float> Data() { return m_data; };
+    // std::vector<real> Data() { return m_data; };
 
 
 };

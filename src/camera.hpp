@@ -7,8 +7,8 @@ private:
     unsigned int m_screen_width, m_screen_height;
     float m_zoom_level, m_zoom_ratio, m_zoomx, m_zoomy;
 
-    glm::mat4 m_proj, m_view, m_model;
-    glm::vec3 m_translation, m_center;
+    mat4 m_proj, m_view, m_model;
+    vec3 m_translation, m_center;
 
 public:
 
@@ -30,20 +30,20 @@ public:
     void Resize();
     void Update();
     void Center();
-    void Fit(glm::vec2 lbound, glm::vec2 rbound);
-    void SetCenter(glm::vec3 center);
-    glm::vec3 GetPosition() const { return -m_translation; };
+    void Fit(vec2 lbound, vec2 rbound);
+    void SetCenter(vec3 center);
+    vec3 GetPosition() const { return -m_translation; };
 
     void Info();
 
-    void Move(const glm::vec3 translation);
+    void Move(const vec3 translation);
     int ScreenWidth() const { return m_screen_width; };
     int ScreenHeight() const { return m_screen_height; };
 
-    float HorizontalDistance() const { return (float) m_screen_width - 2*m_zoomx; };
+    real HorizontalDistance() const { return (real) m_screen_width - 2*m_zoomx; };
 
 
-    glm::mat4 MVP() const { return m_proj * m_view * m_model; };
+    fmat4 MVP() const { return fmat4(m_proj * m_view * m_model); };
 
     friend std::ostream& operator<<(std::ostream& os, const Camera& camera);
     friend std::istream& operator>>(std::istream& is, Camera& camera);

@@ -1,3 +1,5 @@
+// #define GLM_PRECISION_HIGHP_DOUBLE
+
 #include "utils.hpp"
 
 #include "errors.hpp"
@@ -61,8 +63,8 @@ static GLFWwindow* init() {
     glfwMakeContextCurrent(window);
 
     /* Enable 60+ fps: 0. */
-    glfwSwapInterval(0);
-    glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+    // glfwSwapInterval(0);
+    // glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 
 
     GLenum err = glewInit();
@@ -146,7 +148,8 @@ int main(void) {
     // ifs >> w;
     // std::cout << w;
     // TestWorld();
-    // exit(0);
+
+
 
     GLFWwindow* window = init();
 

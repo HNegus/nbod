@@ -1,9 +1,9 @@
 #include "camera.hpp"
 
-// Camera::Camera() : m_zoom_level(-4.0f * pow(10, 8)),
-                   // m_translation(0.0f, 0.0f, 0.0f), m_center(0.0f, 0.0f, 0.0f)
-Camera::Camera() : m_zoom_level(1.0f), m_translation(0.0f, 0.0f, 0.0f),
-                   m_center(10.0f, 0.0f, 0.0f)
+// Camera::Camera() : m_zoom_level(-4.0 * pow(10, 8)),
+                   // m_translation(0.0, 0.0, 0.0), m_center(0.0, 0.0, 0.0)
+Camera::Camera() : m_zoom_level(1.0), m_translation(0.0, 0.0, 0.0),
+                   m_center(10.0, 0.0, 0.0)
 {
 
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
@@ -22,7 +22,7 @@ void Camera::Resize() {
 }
 
 void Camera::Clear() {
-    SetCenter(glm::vec3(0.0f));
+    SetCenter(vec3(0.0));
     m_zoom_level = 0;
     Update();
 }
@@ -31,9 +31,9 @@ void Camera::Clear() {
 void Camera::Zoom(const int direction) {
     float scale;
     if (m_zoomx >= 0 && m_zoomx < 200) {
-        scale = 10.0f;
+        scale = 10.0;
     } else if (m_zoomx < 0 && m_zoomx > -200) {
-        scale = 10.0f;
+        scale = 10.0;
     }  else {
         scale = abs(m_zoomx * 0.05);
     }
@@ -47,7 +47,7 @@ void Camera::Zoom(const int direction) {
     Update();
 }
 
-void Camera::Fit(glm::vec2 lbound, glm::vec2 rbound) {
+void Camera::Fit(vec2 lbound, vec2 rbound) {
 
     // Center();
 
@@ -72,29 +72,29 @@ void Camera::Update() {
     m_proj = glm::ortho(m_zoomx, (float) m_screen_width - m_zoomx,
                         m_zoomy, (float) m_screen_height - m_zoomy, -1.0f, 1.0f);
 
-    m_view = glm::translate(glm::mat4(1.0f), m_translation);
-    m_model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+    m_view = translate(mat4(1.0), m_translation);
+    m_model = translate(mat4(1.0), vec3(0, 0, 0));
 }
 
-void Camera::Move(glm::vec3 translation) {
+void Camera::Move(vec3 translation) {
     float scalex, scaley;
     if (m_zoomx >= 0 && m_zoomx < 200) {
-        scalex = 5.0f;
+        scalex = 5.0;
     } else if (m_zoomx < 0 && m_zoomx > -200) {
-        scalex = 5.0f;
+        scalex = 5.0;
     }  else {
         scalex = abs(m_zoomx * 0.01);
     }
 
     if (m_zoomy >= 0 && m_zoomy < 200) {
-        scaley = 5.0f;
+        scaley = 5.0;
     } else if (m_zoomx < 0 && m_zoomy > -200) {
-        scaley = 5.0f;
+        scaley = 5.0;
     }  else {
         scaley = abs(m_zoomy * 0.01);
     }
 
-    glm::vec3 scale(scalex, scaley, 0.0f);
+    vec3 scale(scalex, scaley, 0.0);
 
     m_translation += translation * scale;
     Update();
@@ -105,7 +105,7 @@ void Camera::Info() {
     std::cout << "zoom level: " << m_zoom_level << std::endl;
     std::cout << "zoomx: " << m_zoomx << " | " << m_screen_width - m_zoomx << std::endl;
     std::cout << "zoomy: " << m_zoomy << " | " << m_screen_height - m_zoomy << std::endl;
-    std::cout << "Translate: " << glm::to_string(m_translation) << std::endl;
+    std::cout << "Translate: " << to_string(m_translation) << std::endl;
 
     std::cout << std::endl;
 
@@ -118,7 +118,7 @@ void Camera::Center() {
     Update();
 }
 
-void Camera::SetCenter(glm::vec3 center) {
+void Camera::SetCenter(vec3 center) {
 //     std::cout << centervec.x << std::endl;
     m_center = -center;
     Update();

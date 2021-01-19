@@ -54,8 +54,8 @@ public:
     void CameraFit();
     void CameraZoom(const int direction);
     void CameraCenter();
-    void CameraMove(const glm::vec3 translation);
-    void CameraSetCenter(glm::vec3 center);
+    void CameraMove(const vec3 translation);
+    void CameraSetCenter(vec3 center);
     void CameraInfo();
 
 
@@ -63,8 +63,8 @@ public:
     std::vector<Body*> WorldBodies() { return m_world.Bodies(); };
 
     void WorldAddBody();
-    void WorldAddBody(std::string name, glm::vec3 position, glm::vec3 force,
-                      float radius, float mass);
+    void WorldAddBody(std::string name, vec3 position, vec3 force,
+                      real radius, real mass);
     void WorldRemoveBody(unsigned int id);
 
     void Render();

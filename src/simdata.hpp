@@ -15,11 +15,11 @@ public:
 
     std::vector<Body*> bodies;
     // TODO for each body, save configuration
-    float radius, mass;
-    // float max_radius, radius_step, max_mass, mass_step;
-    float max_radius, max_mass, delta_radius, delta_mass, delta_position, delta_velocity;
+    real radius, mass;
+    // real max_radius, radius_step, max_mass, mass_step;
+    real max_radius, max_mass, delta_radius, delta_mass, delta_position, delta_velocity;
 
-    glm::vec3 camera_position;
+    vec3 camera_position;
 
     bool show_gui = true;
     bool run_simulation = false;
@@ -29,7 +29,7 @@ public:
 
     int track_body_idx = 0;
 
-    float time_current = 0;
+    real time_current = 0;
 
     SimData();
     ~SimData() {};

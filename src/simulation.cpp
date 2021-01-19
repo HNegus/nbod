@@ -82,8 +82,8 @@ void Simulation::WorldAddBody() {
 }
 
 void Simulation::WorldAddBody(std::string name,
-                              glm::vec3 position, glm::vec3 velocity,
-                              float radius, float mass)
+                              vec3 position, vec3 velocity,
+                              real radius, real mass)
 {
     Body *body =  m_world.AddBody(name, position, velocity, radius, mass);
     m_config.RegisterBody(body);
@@ -95,7 +95,7 @@ void Simulation::CameraFit() {
     glm::vec2 lbound(0.0f), rbound(0.0f);
     // TODO extract
     for (Body *body: m_world.Bodies()) {
-        glm::vec3 position = body->GetPosition();
+        vec3 position = body->GetPosition();
         if (position.x < lbound.x) lbound.x = 1.1 * (position.x - body->GetRadius());
         if (position.x > rbound.x) rbound.x = 1.1 * (position.x + body->GetRadius());
 
@@ -115,11 +115,11 @@ void Simulation::CameraCenter() {
     m_camera.Center();
 }
 
-void Simulation::CameraSetCenter(glm::vec3 center) {
+void Simulation::CameraSetCenter(vec3 center) {
     m_camera.SetCenter(center);
 }
 
-void Simulation::CameraMove(const glm::vec3 translation) {
+void Simulation::CameraMove(const vec3 translation) {
     m_camera.Move(translation);
 }
 
@@ -129,7 +129,8 @@ void Simulation::CameraInfo() {
 
 /* Simulation */
 void Simulation::Step() {
-    m_world.Step();
+    // m_world.Step();
+    m_world.StepNew();
 
     if (m_config.track_body) {
         CameraSetCenter(m_config.bodies[m_config.track_body_idx]->GetPosition());
@@ -352,7 +353,7 @@ void Simulation::ShowMenuFile()
 
     if (ImGui::BeginMenu("Colors"))
     {
-        float sz = ImGui::GetTextLineHeight();
+        real sz = ImGui::GetTextLineHeight();
         for (int i = 0; i < ImGuiCol_COUNT; i++)
         {
             const char* name = ImGui::GetStyleColorName((ImGuiCol)i);
@@ -412,37 +413,37 @@ void Simulation::ShowDebug() {
             if (ImGui::TreeNode((void*)(intptr_t) body->ID(), "%s", body->Name().c_str())) {
 
 
-                float *radius = body->RadiusPtr();
-                float *mass = body->MassPtr();
-                glm::vec3 *position = body->PositionPtr();
-                glm::vec3 *velocity = body->VelocityPtr();
+                real *radius = body->RadiusPtr();
+                real *mass = body->MassPtr();
+                vec3 *position = body->PositionPtr();
+                vec3 *velocity = body->VelocityPtr();
 
                 // TODO
 
-                const float max_mass = m_config.max_mass;
-                const float max_radius = m_config.max_radius;
+                const real max_mass = m_config.max_mass;
+                const real max_radius = m_config.max_radius;
 
 
                 ImGui::Text("Coordinates:");
-                ImGui::InputScalar("x ",   ImGuiDataType_Float,  &position->x, &m_config.delta_position);
-                ImGui::InputScalar("y ",   ImGuiDataType_Float,  &position->y, &m_config.delta_position);
+                ImGui::InputScalar("x ",   ImGuiDataType_Real,  &position->x, &m_config.delta_position);
+                ImGui::InputScalar("y ",   ImGuiDataType_Real,  &position->y, &m_config.delta_position);
 
 
                 ImGui::Text("Velocity:");
-                ImGui::InputScalar("x",   ImGuiDataType_Float,  &velocity->x, &m_config.delta_velocity);
-                ImGui::InputScalar("y",   ImGuiDataType_Float,  &velocity->y, &m_config.delta_velocity);
+                ImGui::InputScalar("x",   ImGuiDataType_Real,  &velocity->x, &m_config.delta_velocity);
+                ImGui::InputScalar("y",   ImGuiDataType_Real,  &velocity->y, &m_config.delta_velocity);
 
                 ImGui::Spacing();
                 ImGui::Spacing();
 
                 // TODO sliders or no?
                 ImGui::Text("Radius:");
-                ImGui::InputScalar("m", ImGuiDataType_Float, (void *) radius, &m_config.delta_radius);
+                ImGui::InputScalar("m", ImGuiDataType_Real, (void *) radius, &m_config.delta_radius);
 
                 ImGui::Spacing();
 
                 ImGui::Text("Mass:");
-                ImGui::InputScalar("kg", ImGuiDataType_Float, mass, &m_config.delta_mass);
+                ImGui::InputScalar("kg", ImGuiDataType_Real, mass, &m_config.delta_mass);
 
 
                 ImGui::Text("Color");
@@ -490,7 +491,7 @@ void Simulation::ShowDebug2() {
         return;
     }
 
-    glm::vec3 position = m_config.camera_position;
+    vec3 position = m_config.camera_position;
     ImGui::Text("Camera position\n x: %f \n y: %f", position.x, position.y);
     ImGui::Text("Horizontal view distance %f meters", m_camera.HorizontalDistance());
     ImGui::Text("Fps");
@@ -520,24 +521,24 @@ void Simulation::ShowConfig() {
     // TODO Maximum position/velocity??
     ImGui::Text("Maximum velocity");
 
-    float *max_mass = &m_config.max_mass;
-    float *max_radius = &m_config.max_radius;
+    real *max_mass = &m_config.max_mass;
+    real *max_radius = &m_config.max_radius;
 
-    ImGui::InputScalar("Maximum mass", ImGuiDataType_Float, max_mass);
-    ImGui::InputScalar("Maximum radius", ImGuiDataType_Float, max_radius);
+    ImGui::InputScalar("Maximum mass", ImGuiDataType_Real, max_mass);
+    ImGui::InputScalar("Maximum radius", ImGuiDataType_Real, max_radius);
 
     ImGui::Spacing();
 
-    float *delta_position = &m_config.delta_position;
-    float *delta_velocity = &m_config.delta_velocity;
-    float *delta_radius = &m_config.delta_radius;
-    float *delta_mass = &m_config.delta_mass;
+    real *delta_position = &m_config.delta_position;
+    real *delta_velocity = &m_config.delta_velocity;
+    real *delta_radius = &m_config.delta_radius;
+    real *delta_mass = &m_config.delta_mass;
 
 
-    ImGui::InputScalar("delta position", ImGuiDataType_Float, delta_position);
-    ImGui::InputScalar("delta velocity", ImGuiDataType_Float, delta_velocity);
-    ImGui::InputScalar("delta mass", ImGuiDataType_Float, delta_mass);
-    ImGui::InputScalar("delta radius", ImGuiDataType_Float, delta_radius);
+    ImGui::InputScalar("delta position", ImGuiDataType_Real, delta_position);
+    ImGui::InputScalar("delta velocity", ImGuiDataType_Real, delta_velocity);
+    ImGui::InputScalar("delta mass", ImGuiDataType_Real, delta_mass);
+    ImGui::InputScalar("delta radius", ImGuiDataType_Real, delta_radius);
 
     ImGui::Separator();
     ImGui::Spacing();
@@ -566,6 +567,10 @@ void Simulation::ShowConfig() {
             ImGui::EndCombo();
         }
 
+    }
+
+    if (ImGui::Button("Step Once")) {
+        Step();
     }
 
     ImGui::End();
