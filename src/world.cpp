@@ -209,13 +209,13 @@ void World::SetBodiesVb(VertexBuffer& vb) {
         Color c = body->GetColor();
 
         bodies_data.insert(end(bodies_data), {x - r, y - r, r, x, y,
-                                              c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, c.a / 255.0f});
+                                              c.r, c.g, c.b, c.a});
         bodies_data.insert(end(bodies_data), {x + r, y - r, r, x, y,
-                                              c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, c.a / 255.0f});
+                                              c.r, c.g, c.b, c.a});
         bodies_data.insert(end(bodies_data), {x - r, y + r, r, x, y,
-                                              c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, c.a / 255.0f});
+                                              c.r, c.g, c.b, c.a});
         bodies_data.insert(end(bodies_data), {x + r, y + r, r, x, y,
-                                              c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, c.a / 255.0f});
+                                              c.r, c.g, c.b, c.a});
 
     }
 
@@ -271,7 +271,7 @@ void World::SetBodiesHistoryColorsVb(VertexBuffer& vb) {
 
         for (size_t i = 0; i < history.size(); i += 2) {
             Color c = body->GetColor();
-            history_data.insert(end(history_data), {c.r, c.g, c.b, c.a});
+            history_data.insert(end(history_data), {(unsigned char) (c.r / 255), (unsigned char) (c.g / 255), (unsigned char) (c.b / 255), (unsigned char) (c.a / 255)});
         }
 
     }

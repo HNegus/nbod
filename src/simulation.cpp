@@ -436,17 +436,17 @@ void Simulation::ShowDebug() {
 
 
                 ImGui::Text("Color");
-                Color c = body->GetColor();
-                float color[4] = {c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, c.a / 255.0f};
+                Color *c = body->ColorPtr();
+                // float color[4] = {c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, c.a / 255.0f};
                 ImGuiColorEditFlags misc_flags = 0 | 0 | ImGuiColorEditFlags_AlphaPreview  | 0;
-                ImGui::ColorEdit4("##RefColor", &color[0], misc_flags);
+                ImGui::ColorEdit4("##RefColor", (float*) c, misc_flags);
 
-                std::cout << (unsigned int) round(255.0f*color[0]) << std::endl;
+                // std::cout << (unsigned int) round(255.0f*color[0]) << std::endl;
                 // c.r = (unsigned char) (color.x * 225.0f);
                 // c.g = (unsigned char) (color.y * 225.0f);
                 // c.b = (unsigned char) (color.z * 225.0f);
                 // c.a = (unsigned char) (color.w * 225.0f);
-                body->SetColor(color);
+                // body->SetColor(color);
                 // std::cout << (int) (body->GetColor().r) << std::endl;
                 // std::cout << std::endl;
 

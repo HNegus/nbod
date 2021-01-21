@@ -76,10 +76,7 @@ std::istream& operator>>(std::istream& is, Body& body) {
     int c[4];
     is >> c[0] >> c[1] >> c[2] >> c[3];
     std::cout << "c:" << c[0] << " " << c[1] << " " << c[2] << " " << c[3] << std::endl;
-    body.m_color.r = (unsigned char) c[0];
-    body.m_color.g = (unsigned char) c[1];
-    body.m_color.b = (unsigned char) c[2];
-    body.m_color.a = (unsigned char) c[4];
+    body.m_color = Color(c[0], c[1], c[2], c[3]);
 
     std::cout << "Loaded: " << body.m_name << std::endl;
     return is;
