@@ -26,6 +26,7 @@ public:
     bool auto_resize_camera = false;
     bool auto_resize_bodies = true;
     bool track_body = false;
+    bool show_history = true;
 
     int track_body_idx = 0;
 

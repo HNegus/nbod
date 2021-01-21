@@ -3,6 +3,7 @@
 #include <imgui.h>
 // #include <limits>
 
+
 const ImGuiDataType_ ImGuiDataType_Real = ImGuiDataType_Double;
 // bool (*SliderReal)(const char *, float *, float, float, const char *, float) = ImGui::SliderFloat;
 
@@ -43,3 +44,6 @@ const real SLIDERFLOAT_MIN = -FLT_MAX/2.0f;
 // const real MAX_RADIUS = 10 * RADIUS_EARTH;
 const real MAX_RADIUS = (FLT_MAX - 1)/2;
 const unsigned int RESTART_INDEX = 0xFFFFFFFF;
+
+const int SECONDS_PER_DAY = 86400;
+const float DAYS_PER_YEAR = 365.25;

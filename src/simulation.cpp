@@ -14,8 +14,6 @@ Simulation::Simulation(GLFWwindow *window, const Gui &gui) :
     Init();
 }
 
-
-
 void Simulation::Init() {
 
     InitBodyBuffers();
@@ -24,15 +22,10 @@ void Simulation::Init() {
 
 void Simulation::InitBodyBuffers() {
 
-    m_vb_bodies.Bind();
-    m_ib_bodies.Bind();
-
-    m_world.SetBodiesVb(m_vb_bodies);
-    m_world.SetBodiesIb(m_ib_bodies);
-
     m_vblayout_bodies.Push<float>(2);
     m_vblayout_bodies.Push<float>(1);
     m_vblayout_bodies.Push<float>(2);
+    m_vblayout_bodies.Push<float>(4);
 
     m_va_bodies.Bind();
     m_va_bodies.AddBuffer(m_vb_bodies, m_vblayout_bodies);
@@ -40,25 +33,9 @@ void Simulation::InitBodyBuffers() {
     // TOOD rename shaders
     ShaderSources sources = Shader::GetShaderSources("vertex.glsl", "fragment.glsl");
     m_shader_bodies.Renew(sources);
-    m_shader_bodies.SetUniformMat4f("u_MVP", MVP());
-    m_shader_bodies.Bind();
-
-    m_renderer.Draw(m_va_bodies, m_ib_bodies, m_shader_bodies);
-    m_va_bodies.UnBind();
 }
 
 void Simulation::InitHistoryBuffers() {
-
-    m_va_history.Bind();
-
-    m_vb_history_positions.Bind();
-    m_world.SetBodiesHistoryPositionsVb(m_vb_history_positions);
-
-    m_vb_history_colors.Bind();
-    m_world.SetBodiesHistoryColorsVb(m_vb_history_colors);
-
-    m_ib_history.Bind();
-    m_world.SetBodiesHistoryIb(m_ib_history);
 
     m_vblayout_history_positions.Push<float>(2);
     m_vblayout_history_colors.Push<unsigned char>(4);
@@ -70,10 +47,6 @@ void Simulation::InitHistoryBuffers() {
     // TODO rename shaders
     ShaderSources sources = Shader::GetShaderSources("lines.vert", "lines.frag");
     m_shader_history.Renew(sources);
-    m_shader_history.SetUniformMat4f("u_MVP", MVP());
-    m_shader_history.Bind();
-
-    m_renderer.DrawLineStrip(m_va_history, m_ib_history, m_shader_history);
 }
 
 void Simulation::WorldAddBody() {
@@ -86,6 +59,14 @@ void Simulation::WorldAddBody(std::string name,
                               real radius, real mass)
 {
     Body *body =  m_world.AddBody(name, position, velocity, radius, mass);
+    m_config.RegisterBody(body);
+}
+
+void Simulation::WorldAddBody(std::string name,
+                              vec3 position, vec3 velocity,
+                              real radius, real mass, Color color)
+{
+    Body *body =  m_world.AddBody(name, position, velocity, radius, mass, color);
     m_config.RegisterBody(body);
 }
 
@@ -138,12 +119,21 @@ void Simulation::Step() {
     if (m_config.auto_resize_camera) {
         CameraFit();
     }
-    m_config.time_current += DELTA_TIME;
+    m_config.time_current += m_world.m_dt;
 }
 
 
 /* Rendering scene/GUI. */
 void Simulation::Render() {
+
+    m_renderer.Clear();
+    RenderWorld();
+    RenderGui();
+
+
+}
+
+void Simulation::RenderWorld() {
     m_va_bodies.Bind();
     m_world.SetBodiesVb(m_vb_bodies);
     m_world.SetBodiesIb(m_ib_bodies);
@@ -152,10 +142,11 @@ void Simulation::Render() {
     m_shader_bodies.Bind();
     m_shader_bodies.SetUniformMat4f("u_MVP", MVP());
 
-    m_renderer.Clear();
     m_renderer.Draw(m_va_bodies, m_ib_bodies, m_shader_bodies);
 
     m_va_bodies.UnBind();
+
+    if (!m_config.show_history) return;
 
     m_va_history.Bind();
     m_world.SetBodiesHistoryPositionsVb(m_vb_history_positions);
@@ -166,8 +157,6 @@ void Simulation::Render() {
     m_shader_history.Bind();
     m_shader_history.SetUniformMat4f("u_MVP", MVP());
     m_renderer.DrawLineStrip(m_va_history, m_ib_history, m_shader_history);
-
-    RenderGui();
 }
 
 void Simulation::Clear() {
@@ -447,6 +436,21 @@ void Simulation::ShowDebug() {
 
 
                 ImGui::Text("Color");
+                Color c = body->GetColor();
+                float color[4] = {c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, c.a / 255.0f};
+                ImGuiColorEditFlags misc_flags = 0 | 0 | ImGuiColorEditFlags_AlphaPreview  | 0;
+                ImGui::ColorEdit4("##RefColor", &color[0], misc_flags);
+
+                std::cout << (unsigned int) round(255.0f*color[0]) << std::endl;
+                // c.r = (unsigned char) (color.x * 225.0f);
+                // c.g = (unsigned char) (color.y * 225.0f);
+                // c.b = (unsigned char) (color.z * 225.0f);
+                // c.a = (unsigned char) (color.w * 225.0f);
+                body->SetColor(color);
+                // std::cout << (int) (body->GetColor().r) << std::endl;
+                // std::cout << std::endl;
+
+
 
                 if (ImGui::Button("Focus")) {
                     m_camera.SetCenter(body->GetPosition());
@@ -495,14 +499,17 @@ void Simulation::ShowDebug2() {
     ImGui::Text("Camera position\n x: %f \n y: %f", position.x, position.y);
     ImGui::Text("Horizontal view distance %f meters", m_camera.HorizontalDistance());
     ImGui::Text("Fps");
+
+    int days = (int) round(m_config.time_current / SECONDS_PER_DAY);
+    float years = days / DAYS_PER_YEAR;
     ImGui::Text("Elapsed time: %f s", m_config.time_current);
-    ImGui::Text("Elapsed time: %d days", (int) round(m_config.time_current / 86400));
+    ImGui::Text("Elapsed time: %d days", days);
+    ImGui::Text("Elapsed time: %f years", years);
 
     ImGui::End();
 
 }
 
-static int item_current_3 = 0;
 
 void Simulation::ShowConfig() {
 
@@ -568,6 +575,13 @@ void Simulation::ShowConfig() {
         }
 
     }
+
+    ImGui::Spacing();
+
+    ImGui::Checkbox("Show history", &m_config.show_history);
+
+    ImGui::Spacing();
+
 
     if (ImGui::Button("Step Once")) {
         Step();

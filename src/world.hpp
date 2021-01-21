@@ -30,7 +30,6 @@ private:
     // VertexBufferLayout m_layout;
 
     unsigned int m_body_count;
-    real m_dt = 10000;
 
 
 
@@ -41,6 +40,7 @@ private:
 public:
     // std::vector<Body> m_bodies_prime;
 
+    real m_dt = 100000;
 
     World();
     ~World();
@@ -54,6 +54,9 @@ public:
     Body* AddBody(std::string name,
                   vec3 position, vec3 velocity,
                   real radius, real mass);
+    Body* AddBody(std::string name,
+                vec3 position, vec3 velocity,
+                real radius, real mass, Color color);
     std::vector<Body*> Bodies() const { return m_bodies; };
     // TODO
     void RemoveBody(unsigned int id);

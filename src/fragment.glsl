@@ -6,7 +6,7 @@ in float outRadius;
 in vec2 outCenter;
 in vec2 outPosition;
 // in vec2 v_TexCoord;
-// in vec4 baseColor;
+in vec4 outColor;
 
 // uniform vec4 u_Color;
 // uniform vec4 m_RGBA;
@@ -27,7 +27,7 @@ void main()
         float difference = (length(v) - radius) / (radius + border);
         color = vec4(0.0, 1.0, 1.0, 1.0);
     } else {
-        color = vec4(0.0, 1.0, 0.0, 1.0);
+        color = outColor;
     }
     return;
     // color = vec4(0.0, 1.0, 0.0, 1.0);

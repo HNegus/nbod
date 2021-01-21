@@ -39,4 +39,10 @@
 - [X] Finish import/export
 - [X] Make configuration editable
 - [X] Enable planet tracking
-4. Work on simulation stepping (how does time work??)
+- [X] Work on simulation stepping (how does time work??)
+
+
+1. Add color
+2. Make history display more efficient
+   1. Add cache?
+3. Add logging capability

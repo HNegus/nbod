@@ -9,6 +9,7 @@ private:
     vec3 m_position, m_velocity, m_force;
     vec3 m_accelaration, m_jerk;
     real m_radius, m_mass;
+    Color m_color;
     unsigned int m_id;
     std::vector<real> m_history;
 
@@ -18,7 +19,7 @@ public:
     m_name("body"),
     m_position(0.0), m_velocity(0.0),  m_force(0.0),
     m_accelaration(0.0), m_jerk(0.0),
-    m_radius(1.0), m_mass(1.0),
+    m_radius(1.0), m_mass(1.0), m_color({0, 255, 0, 255}),
     m_id(id_counter++)
     // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
       // m_history.push_back(m_position.x); m_history.push_back(m_position.y); };
@@ -28,18 +29,36 @@ public:
     m_name(name),
     m_position(0.0), m_velocity(0.0), m_force(0.0),
     m_accelaration(0.0), m_jerk(0.0),
-    m_radius(1.0), m_mass(1.0),
+    m_radius(1.0), m_mass(1.0), m_color({0, 255, 0, 255}),
     m_id(id_counter++)
     // { std::cout << "Body constructor called" << std::endl; };
     // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
       // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
     {};
+    // Body(std::string name) :
+    // m_name(name),
+    // m_position(0.0), m_velocity(0.0), m_force(0.0),
+    // m_accelaration(0.0), m_jerk(0.0),
+    // m_radius(1.0), m_mass(1.0),
+    // m_id(id_counter++)
+    // {};
     Body(std::string name, vec3 position, vec3 velocity,
          real radius, real mass) :
     m_name(name),
     m_position(position), m_velocity(velocity), m_force(0.0),
     m_accelaration(0.0), m_jerk(0.0),
-    m_radius(radius), m_mass(mass),
+    m_radius(radius), m_mass(mass), m_color({0, 255, 0, 255}),
+    m_id(id_counter++)
+    // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
+      // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
+    {};
+
+    Body(std::string name, vec3 position, vec3 velocity,
+         real radius, real mass, Color color) :
+    m_name(name),
+    m_position(position), m_velocity(velocity), m_force(0.0),
+    m_accelaration(0.0), m_jerk(0.0),
+    m_radius(radius), m_mass(mass), m_color(color),
     m_id(id_counter++)
     // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
       // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
@@ -88,7 +107,13 @@ public:
     real GetVelocityMagnitude() const { return glm::length(m_velocity); };
     vec3* VelocityPtr() { return &m_velocity; };
 
-    void PrintVelocity() { std::cout << m_name << ": " <<  glm::to_string(m_velocity) << std::endl; };
+    Color GetColor() const { return m_color; };
+    void SetColor(float color[4]) { m_color.r = (unsigned int) round(color[0] * 255.0f);
+                                    m_color.g = (unsigned int) round(color[1] * 255.0f);
+                                    m_color.b = (unsigned int) round(color[2] * 255.0f);
+                                    m_color.a = (unsigned int) round(color[3] * 255.0f); };
+
+    void PrintVelocityround() { std::cout << m_name << ": " <<  glm::to_string(m_velocity) << std::endl; };
     void PrintPosition() { std::cout << m_name << ": " << glm::to_string(m_position) << std::endl; };
 
 

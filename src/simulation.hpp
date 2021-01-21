@@ -65,9 +65,12 @@ public:
     void WorldAddBody();
     void WorldAddBody(std::string name, vec3 position, vec3 force,
                       real radius, real mass);
+    void WorldAddBody(std::string name, vec3 position, vec3 force,
+                    real radius, real mass, Color color);
     void WorldRemoveBody(unsigned int id);
 
     void Render();
+    void RenderWorld();
     void RenderGui();
     ImVec2 ShowMenu();
 

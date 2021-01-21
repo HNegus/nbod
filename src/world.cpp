@@ -146,6 +146,15 @@ Body* World::AddBody(std::string name,
 }
 
 
+Body* World::AddBody(std::string name,
+                     vec3 position, vec3 velocity,
+                     real radius, real mass, Color color)
+{
+    Body *body = new Body(name, position, velocity, radius, mass, color);
+    StoreBody(body);
+    return body;
+}
+
 
 void World::UpdateBodies() {
     for (Body *body: m_bodies) {
@@ -197,10 +206,16 @@ void World::SetBodiesVb(VertexBuffer& vb) {
         y = (float) pos.y;
         r = (float) body->GetRadius();
 
-        bodies_data.insert(end(bodies_data), {x - r, y - r, r, x, y});
-        bodies_data.insert(end(bodies_data), {x + r, y - r, r, x, y});
-        bodies_data.insert(end(bodies_data), {x - r, y + r, r, x, y});
-        bodies_data.insert(end(bodies_data), {x + r, y + r, r, x, y});
+        Color c = body->GetColor();
+
+        bodies_data.insert(end(bodies_data), {x - r, y - r, r, x, y,
+                                              c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, c.a / 255.0f});
+        bodies_data.insert(end(bodies_data), {x + r, y - r, r, x, y,
+                                              c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, c.a / 255.0f});
+        bodies_data.insert(end(bodies_data), {x - r, y + r, r, x, y,
+                                              c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, c.a / 255.0f});
+        bodies_data.insert(end(bodies_data), {x + r, y + r, r, x, y,
+                                              c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, c.a / 255.0f});
 
     }
 
@@ -255,7 +270,8 @@ void World::SetBodiesHistoryColorsVb(VertexBuffer& vb) {
 
 
         for (size_t i = 0; i < history.size(); i += 2) {
-            history_data.insert(end(history_data), {255, 0, 0, 100});
+            Color c = body->GetColor();
+            history_data.insert(end(history_data), {c.r, c.g, c.b, c.a});
         }
 
     }
@@ -301,7 +317,7 @@ std::istream& operator>>(std::istream& is, World& world) {
     while (!is.eof()) {
         is >> body;
         world.AddBody(body);
-        // std::cout << body;
+        std::cout << body;
         is.ignore(5);
     }
     return is;

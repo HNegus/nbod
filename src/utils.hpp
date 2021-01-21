@@ -21,3 +21,11 @@
 #include <vector>
 #include <filesystem>
 #include <math.h>
+
+
+typedef struct Color {
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    unsigned char a;
+} Color;
