@@ -5,7 +5,6 @@ World::World() : m_body_count(0) {
 }
 
 World::~World() {
-    std::cout << "World destructor called" << std::endl;
     for (Body *body: m_bodies) {
         delete body;
     }
@@ -14,7 +13,6 @@ World::~World() {
 World::World(const World& old_world) {
 
     for (Body *body : old_world.Bodies()) {
-        std::cout << "tick" << std::endl;
         AddBody(*body);
     }
 }
@@ -271,7 +269,7 @@ void World::SetBodiesHistoryColorsVb(VertexBuffer& vb) {
 
         for (size_t i = 0; i < history.size(); i += 2) {
             Color c = body->GetColor();
-            history_data.insert(end(history_data), {(unsigned char) (c.r / 255), (unsigned char) (c.g / 255), (unsigned char) (c.b / 255), (unsigned char) (c.a / 255)});
+            history_data.insert(end(history_data), {(unsigned char) (c.r * 255), (unsigned char) (c.g * 255), (unsigned char) (c.b * 255), (unsigned char) (c.a * 255)});
         }
 
     }

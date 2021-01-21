@@ -103,6 +103,9 @@ void TestWorld() {
     w.AddBody("A");
     w.AddBody("B");
     w.AddBody("C");
+    w.AddBody("D");
+    w.AddBody("E");
+    w.AddBody("F");
 
 
     std::ofstream ofs;
