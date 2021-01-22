@@ -41,13 +41,27 @@ void Scene::LoadWorld() {
         std::cout << m_world << std::endl;
     }
     std::vector<Body*> bodies = m_world.Bodies();
-    std::cout << "got bodies" << std::endl;
-    for (Body *body: bodies)
-        std::cout << *body;
-    std::cout << "got bodies" << std::endl;
+    int max_id = -1;
+    int id;
+    for (Body *body: bodies) {
+        id = body->ID();
+        // std::cout << "id:" << id << std::endl;
+
+        if (id > max_id) {
+            max_id = (int) id;
+            // std::cout << "bigger:" << max_id << std::endl;
+        }
+    }
+    std::cout << "max:" << max_id << std::endl;
+    Body::SetIDCounter(++max_id);
+    std::cout << Body::GetIDCounter() << std::endl;
+    // std::cout << "got bodies" << std::endl;
+    // for (Body *body: bodies)
+        // std::cout << *body;
+    // std::cout << "got bodies" << std::endl;
 
     m_config.RegisterBodies(bodies);
-    std::cout << "done loading" << std::endl;
+    // std::cout << "done loading" << std::endl;
 
 }
 

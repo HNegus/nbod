@@ -63,6 +63,7 @@ public:
     std::vector<Body*> WorldBodies() { return m_world.Bodies(); };
 
     void WorldAddBody();
+    void WorldAddBody(Body bodyToAdd);
     void WorldAddBody(std::string name, vec3 position, vec3 force,
                       real radius, real mass);
     void WorldAddBody(std::string name, vec3 position, vec3 force,

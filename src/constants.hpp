@@ -21,8 +21,8 @@ typedef glm::dvec2 dvec2;
 typedef glm::dvec3 dvec3;
 typedef glm::dmat4 dmat4;
 
-
 const real G = 6.674 * pow(10, -11);
+
 
 const real FLOAT_ZERO = 0.0f;
 

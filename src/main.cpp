@@ -293,12 +293,12 @@ int main(void) {
     glm::vec3 moon_pos(DISTANCE_MOON_EARTH/2, 0, 0.0f);
     glm::vec3 moon_v(0.0f, VELOCITY_MOON, 0.0f);
 
-    simulation.WorldAddBody("earth", earth_pos, glm::vec3(0.0f), RADIUS_EARTH, MASS_EARTH);
-    simulation.WorldAddBody("moon", moon_pos, moon_v, RADIUS_MOON, MASS_MOON, {0.0f, 0.0f, 1.0f, 1.0f});
+    // simulation.WorldAddBody("earth", earth_pos, glm::vec3(0.0f), RADIUS_EARTH, MASS_EARTH);
+    // simulation.WorldAddBody("moon", moon_pos, moon_v, RADIUS_MOON, MASS_MOON, {0.0f, 0.0f, 1.0f, 1.0f});
     // // simulation.WorldAddBody("earth", center, glm::vec3(0.01f), 1.0f, MASS_EARTH);
 
-    simulation.CameraSetCenter(earth_pos);
-    simulation.CameraFit();
+    // simulation.CameraSetCenter(earth_pos);
+    // simulation.CameraFit();
 
 
     int i = 0;

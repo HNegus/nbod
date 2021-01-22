@@ -84,8 +84,10 @@ public:
     void ApplyParams(vec3 accelaration, vec3 jerk, real mass);
 
 
-    unsigned int ID() const { return m_id; }
+    unsigned int ID() const { return m_id; };
+    void SetID(unsigned int id) { m_id = id; };
     std::string Name() const { return std::to_string(m_id) + " " + m_name; };
+    void SetName(char *name) { m_name = std::string(name); }
 
     std::vector<real> GetHistory() { return m_history; };
 
@@ -114,6 +116,11 @@ public:
     void PrintVelocityround() { std::cout << m_name << ": " <<  glm::to_string(m_velocity) << std::endl; };
     void PrintPosition() { std::cout << m_name << ": " << glm::to_string(m_position) << std::endl; };
 
+
+    static void SetIDCounter(int val) { id_counter = (unsigned int) val; };
+    static unsigned int GetIDCounter() { return id_counter; };
+    static void IncIDCounter() { id_counter++; }
+    static void DecIDCounter() { id_counter--; };
 
     friend std::ostream& operator<<(std::ostream& os, const Body& body);
     friend std::istream& operator>>(std::istream& is, Body& body);

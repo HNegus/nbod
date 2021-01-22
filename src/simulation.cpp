@@ -18,6 +18,9 @@ void Simulation::Init() {
 
     InitBodyBuffers();
     InitHistoryBuffers();
+    Load("default");
+    CameraSetCenter(m_world.Bodies()[0]->GetPosition());
+    CameraFit();
 }
 
 void Simulation::InitBodyBuffers() {
@@ -51,6 +54,11 @@ void Simulation::InitHistoryBuffers() {
 
 void Simulation::WorldAddBody() {
     Body* body = m_world.AddBody();
+    m_config.RegisterBody(body);
+}
+
+void Simulation::WorldAddBody(Body bodyToAdd) {
+    Body *body = m_world.AddBody(bodyToAdd);
     m_config.RegisterBody(body);
 }
 
@@ -371,13 +379,27 @@ void Simulation::ShowMenuFile()
     }
     if (ImGui::MenuItem("Checked", NULL, true)) {}
     if (ImGui::MenuItem("Quit", "Alt+F4")) {}
+
 }
 
 
 
+static void HelpMarker(const char* desc)
+{
+    ImGui::TextDisabled("(?)");
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(desc);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+}
+
 void Simulation::ShowDebug() {
 
-    if (!ImGui::Begin("Debug")) {
+    if (!ImGui::Begin("Control world")) {
         ImGui::End();
         return;
     }
@@ -388,12 +410,12 @@ void Simulation::ShowDebug() {
     // std::cout << "!!" << ImGui::GetIO().WantCaptureMouse << std::endl;
     ImGui::SetNextItemOpen(true, ImGuiCond_Once);
     if (ImGui::CollapsingHeader("Bodies", ImGuiTreeNodeFlags_None)) {
+        ImGui::SameLine(); HelpMarker("Format: <id> <name>");
 
         // TODO Extract
         Body *body;
         //
         // TODO extract to configuration window
-
 
 
         for (std::size_t i = 0; i < m_config.bodies.size(); i++) {
@@ -412,11 +434,13 @@ void Simulation::ShowDebug() {
                 const real max_mass = m_config.max_mass;
                 const real max_radius = m_config.max_radius;
 
+                ImGui::Spacing();
 
                 ImGui::Text("Coordinates:");
                 ImGui::InputScalar("x ",   ImGuiDataType_Real,  &position->x, &m_config.delta_position);
                 ImGui::InputScalar("y ",   ImGuiDataType_Real,  &position->y, &m_config.delta_position);
 
+                ImGui::Spacing();
 
                 ImGui::Text("Velocity:");
                 ImGui::InputScalar("x",   ImGuiDataType_Real,  &velocity->x, &m_config.delta_velocity);
@@ -435,11 +459,9 @@ void Simulation::ShowDebug() {
                 ImGui::InputScalar("kg", ImGuiDataType_Real, mass, &m_config.delta_mass);
 
 
-                ImGui::Text("Color");
+                ImGui::Text("Color:");
                 Color *c = body->ColorPtr();
-                // float color[4] = {c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, c.a / 255.0f};
-                ImGuiColorEditFlags misc_flags = 0 | 0 | ImGuiColorEditFlags_AlphaPreview  | 0;
-                ImGui::ColorEdit4("##RefColor", (float*) c, misc_flags);
+                ImGui::ColorEdit4("##RefColor", (float*) c, 0);
 
                 // std::cout << (unsigned int) round(255.0f*color[0]) << std::endl;
                 // c.r = (unsigned char) (color.x * 225.0f);
@@ -464,11 +486,62 @@ void Simulation::ShowDebug() {
     ImGui::Separator();
     ImGui::Spacing();
 
-    ImGui::Text("Body name");
-    if (ImGui::Button("Add body")) {
-        WorldAddBody();
+
+    ImGui::Text("Add a new body");
+    ImGui::Spacing();
+
+    Body *body = &m_config.NewBody;
+    char *name = m_config.NewBodyName;
+    real* radius = body->RadiusPtr();
+    real* mass = body->MassPtr();
+
+    vec3 *position = body->PositionPtr();
+    vec3 *velocity = body->VelocityPtr();
+
+    ImGui::InputTextWithHint(" ", "Enter name", name, 64);
+    body->SetName(name);
+
+    ImGui::Spacing();
+
+    ImGui::Text("Coordinates:");
+    ImGui::InputScalar("x ",   ImGuiDataType_Real,  &position->x, &m_config.delta_position);
+    ImGui::InputScalar("y ",   ImGuiDataType_Real,  &position->y, &m_config.delta_position);
+
+
+    ImGui::Spacing();
+
+    ImGui::Text("Velocity:");
+    ImGui::InputScalar("x",   ImGuiDataType_Real,  &velocity->x, &m_config.delta_velocity);
+    ImGui::InputScalar("y",   ImGuiDataType_Real,  &velocity->y, &m_config.delta_velocity);
+
+
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+    // TODO sliders or no?
+    ImGui::Text("Radius:");
+    ImGui::InputScalar("m", ImGuiDataType_Real, (void *) radius, &m_config.delta_radius);
+
+    ImGui::Spacing();
+
+    ImGui::Text("Mass:");
+    ImGui::InputScalar("kg", ImGuiDataType_Real, mass, &m_config.delta_mass);
+
+
+    ImGui::Text("Color:");
+    Color *c = body->ColorPtr();
+    ImGui::ColorEdit4("##RefColor", (float*) c, 0);
+
+    ImGui::Spacing();
+
+    if (ImGui::Button("Add")) {
+        body->SetID(Body::GetIDCounter());
+        Body::IncIDCounter();
+        WorldAddBody(*body);
     }
 
+    ImGui::Spacing();
+    ImGui::Separator();
     ImGui::Spacing();
 
     if (ImGui::Button("Fit camera")) {

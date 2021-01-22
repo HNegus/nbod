@@ -11,6 +11,7 @@ class World {
 
 
 private:
+    // real G = 6.674 * pow(10, -11);
     std::vector<Body*> m_bodies;
 
     // std::vector<real> m_BodiesVbData;
@@ -40,7 +41,9 @@ private:
 public:
     // std::vector<Body> m_bodies_prime;
 
-    real m_dt = 100000;
+    // real m_dt = 60 * 60 * 24 * 365 * 1000;
+    // real m_dt = 100000;
+    real m_dt = 60*30;
 
     World();
     ~World();
