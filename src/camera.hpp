@@ -35,6 +35,7 @@ public:
     int ScreenWidth() const { return m_screen_width; };
     int ScreenHeight() const { return m_screen_height; };
     real HorizontalDistance() const { return (real) m_screen_width - 2*m_zoomx; };
+    real VerticalDistance() const { return (real) m_screen_height - 2*m_zoomy; };
 
     fmat4 MVP() const { return fmat4(m_proj * m_view * m_model); };
 

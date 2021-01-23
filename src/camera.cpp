@@ -25,8 +25,9 @@ void Camera::Update() {
     m_proj = glm::ortho(m_zoomx, (float) m_screen_width - m_zoomx,
                         m_zoomy, (float) m_screen_height - m_zoomy, -1.0f, 1.0f);
 
-    m_view = translate(mat4(1.0), m_translation);
-    m_model = translate(mat4(1.0), vec3(0, 0, 0));
+    vec3 displacement(ScreenWidth()/2, ScreenHeight() /2, 0.0);
+    m_view = translate(mat4(1.0), m_translation + displacement);
+    m_model = translate(mat4(1.0), vec3(0.0));
 }
 
 /* Reset camera. */
@@ -125,6 +126,7 @@ void Camera::Info() {
     std::cout << "zoom level: " << m_zoom_level << std::endl;
     std::cout << "zoomx: " << m_zoomx << " | " << m_screen_width - m_zoomx << std::endl;
     std::cout << "zoomy: " << m_zoomy << " | " << m_screen_height - m_zoomy << std::endl;
+    std::cout << "Center: " << to_string(m_center) << std::endl;
     std::cout << "Translate: " << to_string(m_translation) << std::endl;
     std::cout << std::endl;
 }

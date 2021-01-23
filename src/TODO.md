@@ -47,3 +47,4 @@
 - [ ] Add logging capability
 - [ ] add header comments
 - [ ] Distinguish between saves and scenes
+- [ ] statically link everything

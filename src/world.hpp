@@ -30,8 +30,9 @@ public:
     // TODO remove/move to private
     // real m_dt = 60 * 60 * 24 * 365 * 1000;
     // real m_dt = 100000;
-    real m_dt = 60*30;
-    // real m_dt = 60;
+    // real m_dt = 60*30;
+    real m_dt = 60;
+    // real m_dt = 1;
 
     World();
     ~World();
