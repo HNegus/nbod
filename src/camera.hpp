@@ -15,37 +15,29 @@ public:
     Camera();
     ~Camera() {};
 
+    void Update();
+    void Clear();
 
-    void Do() {
-        std::cout << "!!!!" << m_screen_width << std::endl;
-    }
+
     void Zoom(const int direction);
     void ZoomIn() { Zoom(1); }
     void ZoomOut() { Zoom(-1); };
-    void ZoomInFast();
-    void ZoomOutFast();
 
-    void Clear();
-
-    void Resize();
-    void Update();
+    void SetCenter(vec3 center);
     void Center();
     void Fit(vec2 lbound, vec2 rbound);
-    void SetCenter(vec3 center);
-    vec3 GetPosition() const { return -m_translation; };
+    void Move(const vec3 translation);
+
 
     void Info();
 
-    void Move(const vec3 translation);
+    vec3 GetPosition() const { return -m_translation; };
     int ScreenWidth() const { return m_screen_width; };
     int ScreenHeight() const { return m_screen_height; };
-
     real HorizontalDistance() const { return (real) m_screen_width - 2*m_zoomx; };
-
 
     fmat4 MVP() const { return fmat4(m_proj * m_view * m_model); };
 
     friend std::ostream& operator<<(std::ostream& os, const Camera& camera);
     friend std::istream& operator>>(std::istream& is, Camera& camera);
-
 };

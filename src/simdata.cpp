@@ -1,15 +1,12 @@
 #include "simdata.hpp"
 
-SimData::SimData() : bodies(), max_radius(), max_mass(), delta_radius(),
-    delta_mass(), delta_position(100.0f), delta_velocity(100.0f),
-    camera_position(0.0f)
-{
-    delta_radius = 0.001 * RADIUS_MOON;
-    delta_mass = 0.001 * MASS_MOON;
-    max_radius = FLT_MAX;
-    max_mass = FLT_MAX;
-}
+SimData::SimData() :
+    bodies(), delta_radius(100.0),
+    delta_mass(100.0), delta_position(100.0), delta_velocity(100.0),
+    camera_position(0.0)
+{}
 
+/* Add bodies to track. */
 void SimData::RegisterBody(Body* body) {
 
     bodies.push_back(body);
@@ -17,6 +14,7 @@ void SimData::RegisterBody(Body* body) {
     initialize_world = true;
 }
 
+/* Add bodies to track. */
 void SimData::RegisterBodies(std::vector<Body*> in_bodies) {
     for (Body *body: in_bodies) {
         bodies.push_back(body);
@@ -24,27 +22,24 @@ void SimData::RegisterBodies(std::vector<Body*> in_bodies) {
     Update();
 }
 
+/* Set camera pointer. */
 void SimData::RegisterCamera(Camera *camera) {
     m_camera = camera;
     camera_position = m_camera->GetPosition();
 }
 
+/* Reset configuration. */
 void SimData::Clear() {
     bodies.clear();
+    track_body_idx = 0;
+    track_body = false;
+    initialize_world = true;
+    run_simulation = false;
+    time_current = 0;
     Update();
 }
 
-// TODO reset bounds
+/* Update configuration data. */
 void SimData::Update() {
-
-    // float radius, mass;
-    // glm::vec3 position, velocity;
-
-    // for (Body *body: bodies) {
-        // radius = body->Radius();
-        // mass = body->Mass();
-
-    // }
-
     camera_position = m_camera->GetPosition();
 }

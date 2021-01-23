@@ -9,7 +9,6 @@ class Scene {
 
 private:
 
-    const std::string scene_dir = "../scenes/";
     std::string m_name;
     World& m_world;
     Camera& m_camera;
@@ -17,10 +16,8 @@ private:
 
 public:
     Scene();
-    // Scene(std::string name) : m_name(name) {};
     Scene(std::string name, World& world, Camera& camera, SimData& config) :
           m_name(name), m_world(world), m_camera(camera), m_config(config)
-    // { std::cout << "Making scene" << std::endl; };
     {};
     ~Scene() {};
 
@@ -33,7 +30,4 @@ public:
     void SaveWorld();
     void SaveCamera();
     void SaveConfig();
-
 };
-
-// BUG update Body class counter after importing a world.

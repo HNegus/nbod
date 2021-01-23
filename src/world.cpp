@@ -1,22 +1,21 @@
 #include "world.hpp"
 
-World::World() : m_energy_buffer(1000), m_body_count(0) {
-
-}
+World::World() : m_energy_buffer(1000), m_body_count(0) {}
 
 World::~World() {
-    for (Body *body: m_bodies) {
-        delete body;
-    }
+    Clear();
 }
 
-World::World(const World& old_world) {
+/* Copy constructor. */
+World::World(const World& old_world) : m_energy_buffer(1000), m_body_count(0)
+{
 
-    for (Body *body : old_world.Bodies()) {
+    for (Body *body : old_world.GetBodies()) {
         AddBody(*body);
     }
 }
 
+/* Remove all bodies from world. */
 void World::Clear() {
     for (Body *body: m_bodies) {
         delete body;
@@ -24,109 +23,7 @@ void World::Clear() {
     m_bodies.clear();
 }
 
-void World::ResetBodies() {
-    for (Body *body: m_bodies) {
-        body->Reset();
-    }
-}
-
-void World::Do() {
-    for (Body *body : m_bodies) {
-        std::cout << body->ID() << " " << body->Name() << std::endl;
-    }
-    std::cout << std::endl;
-}
-
-void World::Init() {
-    EvolveBodies();
-}
-
-void World::EvolveBodies() {
-
-
-    Body *b1, *b2;
-
-    vec3 diff_pos(0), diff_v(0), dacc(0), djerk(0);
-    real r2, v2, rv_r2, r, r3;
-
-    for (size_t i = 0; i < m_bodies.size(); i++) {
-        b1 = m_bodies[i];
-        for (size_t j = i + 1; j < m_bodies.size(); j++) {
-            b2 = m_bodies[j];
-            // if (b1->ID() == b2->ID()) continue;
-
-            diff_pos = b2->GetPosition() - b1->GetPosition();
-            diff_v = b2->GetVelocity() - b1->GetVelocity();
-
-            r2 = glm::dot(diff_pos, diff_pos);
-            v2 = glm::dot(diff_v, diff_v);
-            rv_r2 = glm::dot(diff_pos, diff_v) / r2;
-            r = sqrt(r2);
-            r3 = r * r2;
-
-            dacc = diff_pos / r3;
-            djerk = (diff_v - 3.0 * rv_r2 * diff_pos) / r3;
-            // std::cout << diff_pos.x << " " << diff_pos.y << std::endl;
-            // std::cout << dacc.x << " " << dacc.y << std::endl;
-            // std::cout << r << " " << r2 << " " << r3 << std::endl;
-            // std::cout << std::endl;
-
-            b1->Evolve(dacc, djerk, b2->GetMass());
-            b2->Evolve(-dacc, -djerk, b1->GetMass());
-        }
-    }
-}
-
-void World::CorrectBodies() {
-    for (Body *body: m_bodies) {
-        body->Correct(m_dt);
-    }
-}
-
-void World::Step() {
-
-    UpdateBodies();
-    EvolveBodies();
-    CorrectBodies();
-    m_energy_buffer.Add(PotentialEnergy() + KineticEnergy());
-
-}
-
-// void World::Step() {
-//     vec3 pos1, pos2, diff;
-//     vec3 force;
-//     real r, F, fx, fy, theta;
-//
-//     // TODO this
-//     for (Body *b1: m_bodies) {
-//         force = vec3(0.0f);
-//         pos1 = b1->GetPosition();
-//
-//         for (Body *b2: m_bodies) {
-//
-//             if (b1->ID() == b2->ID()) continue;
-//
-//             pos2 = b2->GetPosition();
-//             diff = pos2 - pos1;
-//
-//             r = length(diff);
-//             // F = G * (b2->GetMass() / pow(r, 3));
-//
-//             F = G * (b2->GetMass() / pow(r, 2)) * b1->GetMass();
-//
-//             theta = atan2(diff.y, diff.x);
-//             fx = F * cos(theta);
-//             fy = F * sin(theta);
-//
-//             force.x += fx;
-//             force.y += fy;
-//             b1->ApplyForce(force);
-//         }
-//     }
-//
-//     UpdateBodies();
-// }
-
+/* Push new body to list of bodies. */
 void World::StoreBody(Body *body)
 {
     m_bodies.push_back(body);
@@ -134,7 +31,7 @@ void World::StoreBody(Body *body)
     return;
 }
 
-
+/* Add body to world. */
 Body* World::AddBody()
 {
     Body *body = new Body;
@@ -176,13 +73,57 @@ Body* World::AddBody(std::string name,
 }
 
 
-// void World::UpdateBodies() {
-//     for (Body *body: m_bodies) {
-//         body->Update();
-//     }
-// }
+/* Evolve bodies once, before calculating new position, accelation etc.*/
+void World::Init() {
+    EvolveBodies();
+}
 
+/* Reset all bodies. */
+void World::ResetBodies() {
+    for (Body *body: m_bodies) {
+        body->Reset();
+    }
+}
 
+/* Compute body interactions and evolve them. */
+void World::EvolveBodies() {
+
+    Body *b1, *b2;
+
+    vec3 diff_pos(0), diff_v(0), dacc(0), djerk(0);
+    real r2, v2, rv_r2, r, r3;
+
+    for (size_t i = 0; i < m_bodies.size(); i++) {
+        b1 = m_bodies[i];
+        for (size_t j = i + 1; j < m_bodies.size(); j++) {
+            b2 = m_bodies[j];
+
+            diff_pos = b2->GetPosition() - b1->GetPosition();
+            diff_v = b2->GetVelocity() - b1->GetVelocity();
+
+            r2 = glm::dot(diff_pos, diff_pos);
+            v2 = glm::dot(diff_v, diff_v);
+            rv_r2 = glm::dot(diff_pos, diff_v) / r2;
+            r = sqrt(r2);
+            r3 = r * r2;
+
+            dacc = diff_pos / r3;
+            djerk = (diff_v - 3.0 * rv_r2 * diff_pos) / r3;
+
+            b1->Evolve(dacc, djerk, b2->GetMass());
+            b2->Evolve(-dacc, -djerk, b1->GetMass());
+        }
+    }
+}
+
+/* Correct all bodies. */
+void World::CorrectBodies() {
+    for (Body *body: m_bodies) {
+        body->Correct(m_dt);
+    }
+}
+
+/* Advace bodies to new positions. */
 void World::UpdateBodies() {
     ResetBodies();
 
@@ -191,30 +132,46 @@ void World::UpdateBodies() {
     }
 }
 
+
+/* Advance world to next timestep. */
+void World::Step() {
+
+    UpdateBodies();
+    EvolveBodies();
+    CorrectBodies();
+    m_energy_buffer.Add(PotentialEnergy() + KineticEnergy());
+
+}
+
+/* Return total kinetic energy in world. */
 real World::KineticEnergy() {
     real total = 0.0;
     for (Body *body: m_bodies) {
         total += body->GetMass() * pow(body->GetVelocityMagnitude(), 2) * 0.5;
     }
+
     return total;
 }
 
+/* Return total potential energy in world. */
 real World::PotentialEnergy() {
     real total = 0.0;
     real r;
     for (Body *b1: m_bodies) {
         for (Body *b2: m_bodies) {
-            if (b1->ID() == b2->ID()) continue;
+            if (b1->GetID() == b2->GetID()) continue;
             r = length(b2->GetPosition() - b1->GetPosition());
             total += - G * (b1->GetMass() / r) * b2->GetMass();
 
         }
     }
+
     return total / 2;
 }
 
 
-
+/************************* OpenGL buffer management. *************************/
+/* Set body vertexbuffer. */
 void World::SetBodiesVb(VertexBuffer& vb) {
     std::vector<float> bodies_data;
 
@@ -238,13 +195,12 @@ void World::SetBodiesVb(VertexBuffer& vb) {
                                               c.r, c.g, c.b, c.a});
         bodies_data.insert(end(bodies_data), {x + r, y + r, r, x, y,
                                               c.r, c.g, c.b, c.a});
-
     }
 
     vb.Update(bodies_data.data(), sizeof (real) * bodies_data.size());
-
 }
 
+/* Set body indexbuffer. */
 void World::SetBodiesIb(IndexBuffer& ib) {
     std::vector<unsigned int> bodies_data;
 
@@ -258,7 +214,7 @@ void World::SetBodiesIb(IndexBuffer& ib) {
     ib.Update(bodies_data.data(), bodies_data.size());
 }
 
-
+/* Set history position vertexbuffer. */
 void World::SetBodiesHistoryPositionsVb(VertexBuffer& vb) {
     std::vector<real> history;
     std::vector<float> history_data;
@@ -276,10 +232,9 @@ void World::SetBodiesHistoryPositionsVb(VertexBuffer& vb) {
     }
 
     vb.Update(history_data.data(), sizeof (float) * history_data.size());
-
 }
 
-
+/* Set history color vertexbuffer. */
 void World::SetBodiesHistoryColorsVb(VertexBuffer& vb) {
     std::vector<real> history;
     std::vector<unsigned char> history_data;
@@ -293,7 +248,10 @@ void World::SetBodiesHistoryColorsVb(VertexBuffer& vb) {
 
         for (size_t i = 0; i < history.size(); i += 2) {
             Color c = body->GetColor();
-            history_data.insert(end(history_data), {(unsigned char) (c.r * 255), (unsigned char) (c.g * 255), (unsigned char) (c.b * 255), (unsigned char) (c.a * 255)});
+            history_data.insert(end(history_data), {(unsigned char) (c.r * 255),
+                                                    (unsigned char) (c.g * 255),
+                                                    (unsigned char) (c.b * 255),
+                                                    (unsigned char) (c.a * 255)});
         }
 
     }
@@ -301,6 +259,7 @@ void World::SetBodiesHistoryColorsVb(VertexBuffer& vb) {
     vb.Update(history_data.data(), sizeof (unsigned char) * history_data.size());
 }
 
+/* Set history indexbuffer. */
 void World::SetBodiesHistoryIb(IndexBuffer& ib) {
 
     std::vector<real> history;
@@ -318,18 +277,18 @@ void World::SetBodiesHistoryIb(IndexBuffer& ib) {
         }
 
         history_data.push_back(RESTART_INDEX);
-
     }
 
     ib.Update(history_data.data(), history_data.size());
-
 }
+
 
 std::ostream& operator<<(std::ostream& os, const World& world) {
     for (Body *body: world.m_bodies) {
         os << (*body);
         os << "---" << std::endl;
     }
+
     return os;
 }
 
@@ -339,8 +298,8 @@ std::istream& operator>>(std::istream& is, World& world) {
     while (!is.eof()) {
         is >> body;
         world.AddBody(body);
-        std::cout << body;
         is.ignore(5);
     }
+
     return is;
 }

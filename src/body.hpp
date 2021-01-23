@@ -25,10 +25,8 @@ public:
     m_id(id_counter++),
     m_position_old(0.0), m_velocity_old(0.0),  m_force_old(0.0),
     m_accelaration_old(0.0), m_jerk_old(0.0)
-    // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
-      // m_history.push_back(m_position.x); m_history.push_back(m_position.y); };
     {};
-    // { std::cout << "Body constructor called" << std::endl; };
+
     Body(std::string name) :
     m_name(name),
     m_position(0.0), m_velocity(0.0), m_force(0.0),
@@ -37,17 +35,8 @@ public:
     m_id(id_counter++),
     m_position_old(0.0), m_velocity_old(0.0),  m_force_old(0.0),
     m_accelaration_old(0.0), m_jerk_old(0.0)
-    // { std::cout << "Body constructor called" << std::endl; };
-    // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
-      // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
     {};
-    // Body(std::string name) :
-    // m_name(name),
-    // m_position(0.0), m_velocity(0.0), m_force(0.0),
-    // m_accelaration(0.0), m_jerk(0.0),
-    // m_radius(1.0), m_mass(1.0),
-    // m_id(id_counter++)
-    // {};
+
     Body(std::string name, vec3 position, vec3 velocity,
          real radius, real mass) :
     m_name(name),
@@ -57,8 +46,6 @@ public:
     m_id(id_counter++),
     m_position_old(0.0), m_velocity_old(0.0),  m_force_old(0.0),
     m_accelaration_old(0.0), m_jerk_old(0.0)
-    // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
-      // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
     {};
 
     Body(std::string name, vec3 position, vec3 velocity,
@@ -70,35 +57,21 @@ public:
     m_id(id_counter++),
     m_position_old(0.0), m_velocity_old(0.0),  m_force_old(0.0),
     m_accelaration_old(0.0), m_jerk_old(0.0)
-    // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
-      // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
     {};
 
     // IDEA constant force on body (constant force vs gravitational/other)
-    // Body(std::string name, vec3 position, vec3 velocity, vec3 force,
-    //      real radius, real mass) :
-    //      m_name(name),
-    //      m_position(position), m_velocity(velocity),  m_force(force),
-    //      m_radius(radius), m_mass(mass),
-    //      m_id(id_counter++)
-    //      {};
-
-    // ~Body() { std::cout << m_name << " Body destructor called" << std::endl; };
     ~Body() {};
 
 
-    // void Update();
     void Evolve(vec3 accelaration, vec3 jerk, real mass);
-    void Update(real dt);
     void Correct(real dt);
+    void Update(real dt);
     void Reset();
-    // void Translate(vec3 translation);
-    // void ApplyForce(vec3 f);
 
 
-    unsigned int ID() const { return m_id; };
     void SetID(unsigned int id) { m_id = id; };
-    std::string Name() const { return std::to_string(m_id) + " " + m_name; };
+    unsigned int GetID() const { return m_id; };
+    std::string GetName() const { return std::to_string(m_id) + " " + m_name; };
     void SetName(char *name) { m_name = std::string(name); }
 
     std::vector<real> GetHistory() { return m_history; };
@@ -107,13 +80,12 @@ public:
     void SetPosition(vec3 position) { m_position = position; };
     vec3* PositionPtr() { return &m_position; };
 
-// TODO rename to set get
     real GetRadius() const { return m_radius; };
-    void SetRadius(real radius);
+    void SetRadius(real radius) { m_radius = radius; };
     real* RadiusPtr() { return &m_radius; };
 
     real GetMass() const { return m_mass; };
-    void SetMass(real mass);
+    void SetMass(real mass) { m_mass = mass; };
     real* MassPtr() { return &m_mass; }
 
     vec3 GetVelocity() const { return m_velocity; };
@@ -125,7 +97,7 @@ public:
     Color* ColorPtr() { return &m_color; };
     void SetColor(Color color) { m_color = color; };
 
-    void PrintVelocityround() { std::cout << m_name << ": " <<  glm::to_string(m_velocity) << std::endl; };
+    void PrintVelocity() { std::cout << m_name << ": " <<  glm::to_string(m_velocity) << std::endl; };
     void PrintPosition() { std::cout << m_name << ": " << glm::to_string(m_position) << std::endl; };
 
 
