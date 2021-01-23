@@ -168,6 +168,11 @@ void Simulation::Clear() {
 
 /* Save simulation. */
 void Simulation::Save(std::string scene_name) {
+
+    if (scene_name.length() == 0) {
+        return;
+    }
+
     Scene scene(scene_name, m_world, m_camera, m_config);
     scene.Save();
 }
@@ -370,8 +375,8 @@ void Simulation::ShowGuiControl() {
     ImGui::Text("Add a new body");
     ImGui::Spacing();
 
-    body = &m_config.NewBody;
-    name = m_config.NewBodyName;
+    body = &m_config.new_body;
+    name = m_config.new_body_name;
     radius = body->RadiusPtr();
     mass = body->MassPtr();
 
@@ -577,17 +582,21 @@ void Simulation::ShowMenuFile()
 
         ImGui::EndMenu();
     }
-        // ImGui::OpenPopup("Load scene");
 
     ImGui::Button("Save as");
     if (ImGui::BeginPopupContextItem("Save"))
     {
-        ImGui::Text("Enter name:");
-        char buf[20];
-        ImGui::InputTextWithHint("input text (w/ hint)", "enter text here", buf, IM_ARRAYSIZE(buf));
-        // ImGui::InputText("##edit", name, IM_ARRAYSIZE(name));
-        if (ImGui::Button("Save.."))
+        ImGui::Text("Saves with the same name will be overwritten!");
+        ImGui::Spacing();
+        ImGui::Spacing();
+
+        ImGui::InputTextWithHint(" ", "Enter name", m_config.scene_name, IM_ARRAYSIZE(m_config.scene_name));
+        std::string scene_name(m_config.scene_name);
+
+        if (ImGui::Button("Save")) {
+            Save(scene_name);
             ImGui::CloseCurrentPopup();
+        }
 
         ImGui::SameLine();
         if (ImGui::Button("Cancel"))
@@ -595,34 +604,8 @@ void Simulation::ShowMenuFile()
 
         ImGui::EndPopup();
     }
-        // ImGui::TextInput();
     ImGui::OpenPopupContextItem("Save", 0);
 
 
 
-
-    // if (ImGui::Button("Save as"))
-        // ImGui::OpenPopup("Save as");
-
-
-    if (ImGui::BeginPopupModal("Save as", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-    {
-        ImGui::Text("Previous saves with the same name will be overwritten\n\n");
-        static char buf1[64] = "";
-        ImGui::InputText(" ",     buf1, 64);
-        ImGui::Separator();
-
-        // TODO guard against empty filenames
-        if (ImGui::Button("Save", ImVec2(120, 0))) {
-            std::string scene_name(buf1);
-            Save(scene_name);
-            ImGui::CloseCurrentPopup();
-        }
-        ImGui::SetItemDefaultFocus();
-        ImGui::SameLine();
-        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
-            ImGui::CloseCurrentPopup();
-        }
-        ImGui::EndPopup();
-    }
 }

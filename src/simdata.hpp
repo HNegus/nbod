@@ -13,8 +13,9 @@ private:
 
 public:
 
-    Body NewBody;
-    char NewBodyName[64] = "";
+    Body new_body;
+    char new_body_name[64] = "";
+    char scene_name[64] = "";
     std::vector<Body*> bodies;
 
     // TODO for each body, save configuration

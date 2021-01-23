@@ -51,6 +51,9 @@ void SimData::Clear() {
     initialize_world = true;
     run_simulation = false;
     time_current = 0;
+
+    new_body_name[0] = 0;
+    scene_name[0] = 0;
     Update();
 }
 
