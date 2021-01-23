@@ -83,6 +83,10 @@ void Simulation::WorldAddBody(std::string name,
     m_config.RegisterBody(body);
 }
 
+void Simulation::WorldRemoveBody(unsigned int id) {
+    m_config.DeregisterBody(id);
+    m_world.RemoveBody(id);
+}
 
 /* Fit camera to include all bodies on the screen. */
 void Simulation::CameraFit() {
@@ -309,7 +313,6 @@ void Simulation::ShowGuiControl() {
             body = m_config.bodies[i];
             if (ImGui::TreeNode((void*)(intptr_t) body->GetID(), "%s", body->GetName().c_str())) {
 
-
                 radius = body->RadiusPtr();
                 mass = body->MassPtr();
                 position = body->PositionPtr();
@@ -342,10 +345,19 @@ void Simulation::ShowGuiControl() {
                 color = body->ColorPtr();
                 ImGui::ColorEdit4("##RefColor", (float*) color, 0);
 
+                ImGui::Spacing();
+
                 if (ImGui::Button("Focus")) {
                     m_camera.SetCenter(body->GetPosition());
                     m_camera.Center();
                 }
+
+                ImGui::Spacing();
+
+                if (ImGui::Button("Delete")) {
+                    WorldRemoveBody(body->GetID());
+                }
+
                 ImGui::TreePop();
             }
         }

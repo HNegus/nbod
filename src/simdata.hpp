@@ -41,7 +41,6 @@ public:
     void RegisterBody(Body *body);
     void RegisterBodies(std::vector<Body*> bodies);
     void DeregisterBody(unsigned int id);
-    void DeregisterBody(Body *body);
     void RegisterCamera(Camera *camera);
     void Update();
 };

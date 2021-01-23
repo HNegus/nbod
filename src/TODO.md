@@ -41,10 +41,24 @@
 - [ ] Plot system energy (potential + kinetic) *Use relativistic mass*
 - [ ] Work on simulation stepping (how does time work??)
 - [ ] **logging data to files**
-- [ ] Remove body
+- [X] Remove body
 - [ ] Make history display more efficient
    - [ ] Add cache?
 - [ ] Add logging capability
 - [ ] add header comments
 - [ ] Distinguish between saves and scenes
 - [ ] statically link everything
+- [ ] plot center of mass
+
+
+##### Experiments
+###### basic
+- Orbital periods for known systems:
+  - earth/sun
+  - earth/moon
+  - pluto/charon
+- Average distance for known systems
+- Analytical solution for simple system
+
+##### better
+- kinetic + potential energy

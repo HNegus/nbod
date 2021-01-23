@@ -31,7 +31,7 @@ void World::StoreBody(Body *body)
     return;
 }
 
-/* Add body to world. */
+/* Add/remove body. */
 Body* World::AddBody()
 {
     Body *body = new Body;
@@ -70,6 +70,21 @@ Body* World::AddBody(std::string name,
     Body *body = new Body(name, position, velocity, radius, mass, color);
     StoreBody(body);
     return body;
+}
+
+void World::RemoveBody(unsigned int id) {
+    size_t index = -1;
+    for (size_t i = 0; i < m_bodies.size(); i++) {
+        if (m_bodies[i]->GetID() == id) {
+            index = i;
+            break;
+        }
+    }
+    if (index >= 0) {
+        Body *body = m_bodies[index];
+        delete body;
+        m_bodies.erase(m_bodies.begin() + index);
+    }
 }
 
 

@@ -50,8 +50,6 @@ public:
                 vec3 position, vec3 velocity,
                 real radius, real mass, Color color);
     void StoreBody(Body *body);
-
-    // TODO
     void RemoveBody(unsigned int id);
 
     void Init();

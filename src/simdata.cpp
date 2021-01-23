@@ -22,6 +22,21 @@ void SimData::RegisterBodies(std::vector<Body*> in_bodies) {
     Update();
 }
 
+void SimData::DeregisterBody(unsigned int id) {
+    size_t index = -1;
+    for (size_t i = 0; i < bodies.size(); i++) {
+        if (bodies[i]->GetID() == id) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index >= 0) {
+        bodies.erase(bodies.begin() + index);
+    }
+}
+
+
 /* Set camera pointer. */
 void SimData::RegisterCamera(Camera *camera) {
     m_camera = camera;

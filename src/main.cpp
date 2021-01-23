@@ -50,8 +50,8 @@ static GLFWwindow* init() {
     glfwMakeContextCurrent(window);
 
     /* Enable 60+ fps: 0. */
-    glfwSwapInterval(0);
-    glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+    // glfwSwapInterval(0);
+    // glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 
 
     GLenum err = glewInit();
@@ -101,7 +101,8 @@ int main(void) {
         if (simulation.Running()) {
             simulation.Step();
         }
-        simulation.CameraInfo();
+        // TODO remove
+        // simulation.CameraInfo();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
