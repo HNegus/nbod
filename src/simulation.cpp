@@ -189,6 +189,7 @@ void Simulation::Load(std::string scene_name) {
     scene.Load();
     CameraFit();
     m_config.initialize_world = true;
+    m_config.run_simulation = false;
 }
 
 void Simulation::GuiToggle() {
@@ -197,6 +198,14 @@ void Simulation::GuiToggle() {
 
 void Simulation::TogglePlay() {
     m_config.run_simulation = !m_config.run_simulation;
+}
+
+void Simulation::HistoryToggle() {
+    m_config.show_history = !m_config.show_history;
+}
+
+void Simulation::TrackToggle() {
+    m_config.track_body = !m_config.track_body;
 }
 
 
@@ -609,6 +618,7 @@ void Simulation::ShowConfig() {
     ImGui::Text("World parameters");
     ImGui::Spacing();
     ImGui::Text("Gravitational constant");
+    // ImGui::InputFloat("Gravitational constant", &m_config.gravitational_constant, 0.0f, 0.0f, "%e");
     ImGui::Text("Gravity on/off");
 
     ImGui::Separator();

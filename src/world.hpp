@@ -44,8 +44,8 @@ public:
 
     // real m_dt = 60 * 60 * 24 * 365 * 1000;
     // real m_dt = 100000;
-    real m_dt = 60*30;
-    // real m_dt = 10;
+    // real m_dt = 60*30;
+    real m_dt = 60;
 
     World();
     ~World();

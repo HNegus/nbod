@@ -24,7 +24,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             simulation->GuiToggle();
         } else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
             simulation->CameraCenter();
+        } else if (key == GLFW_KEY_T && action == GLFW_PRESS) {
+            simulation->TrackToggle();
+        } else if (key == GLFW_KEY_H && action == GLFW_PRESS) {
+            simulation->HistoryToggle();
         }
+
 
         if (key == GLFW_KEY_LEFT && action == GLFW_REPEAT) {
             move.x +=  5;

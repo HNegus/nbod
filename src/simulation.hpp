@@ -85,6 +85,8 @@ public:
 
     void GuiToggle();
     void TogglePlay();
+    void HistoryToggle();
+    void TrackToggle();
     bool Running() const { return m_config.run_simulation; };
 
     // TODO remove

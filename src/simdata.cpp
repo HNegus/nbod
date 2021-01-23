@@ -6,8 +6,8 @@ SimData::SimData() : bodies(), max_radius(), max_mass(), delta_radius(),
 {
     delta_radius = 0.001 * RADIUS_MOON;
     delta_mass = 0.001 * MASS_MOON;
-    max_radius = 100*RADIUS_EARTH;
-    max_mass = 10*MASS_EARTH;
+    max_radius = FLT_MAX;
+    max_mass = FLT_MAX;
 }
 
 void SimData::RegisterBody(Body* body) {
