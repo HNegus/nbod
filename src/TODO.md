@@ -1,48 +1,49 @@
-# TODO
-- [ ] **3D??**
+#### Done
 - [X] camera control
-- **start making menu**
+- menu:
     - [X] zoom
     - [X] position
-    - **body params control**
+    - body params control:
       - [X] velocity
       - [X] position
       - [X] mass
       - [X] radius
-      - [ ] color?
-    - [ ] timestep control
-    - [ ] control number of calculations per frame
-    - [ ] **fps counter**
-    - [ ] time display
-    - [ ] **add/remove body**
-
+      - [X] color?
+    - [X] time display
+    - [X] add body
 - [X] figure out how to center
-- [ ] clean code
   - [X] remove global variables other than const
   - [X] make use of gui class
-- [ ] **parallelize**
-- [ ] use caching
-- [ ] textures
-- [ ] bloom effect
-- [ ] **collision detection**
-- [ ] #### **visualize direction with arrow and past with line** (important for debugging)
-- [ ] add shortcuts
-- [ ] **figure out shader use** (compute shader? what can i do with fragment shaders)
-- [ ] **logging data to files**
+- [X] add shortcuts
 - [X] scenario class (save/resume)
   - [X] figure out savefile format
 - [X] plot history as lines
-- [ ] put shaders in own directory
-- [ ] Plot system energy (potential + kinetic) *Use relativistic mass*
-- [ ] Add background
-
+- [X] put shaders in own directory
 - [X] Finish import/export
 - [X] Make configuration editable
 - [X] Enable planet tracking
-- [X] Work on simulation stepping (how does time work??)
 
+#### No time
+- [ ] textures
+- [ ] bloom effect
+- [ ] collision detection
+- [ ] 3D??
+- [ ] **visualize direction with arrow and past with line** (important for debugging)
+- [ ] **figure out shader use** (compute shader? what can i do with fragment shaders)
 
-1. Add color
-2. Make history display more efficient
-   1. Add cache?
-3. Add logging capability
+#### TODO:
+- [ ] **parallelize**
+- [ ] clean code
+- [ ] fps counter
+- [ ] timestep control
+- [ ] control number of calculations per frame
+- [ ] use caching
+- [ ] Plot system energy (potential + kinetic) *Use relativistic mass*
+- [ ] Work on simulation stepping (how does time work??)
+- [ ] **logging data to files**
+- [ ] Remove body
+- [ ] Make history display more efficient
+   - [ ] Add cache?
+- [ ] Add logging capability
+- [ ] add header comments
+- [ ] Distinguish between saves and scenes
