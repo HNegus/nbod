@@ -564,50 +564,45 @@ void Simulation::ShowMenuFile()
         Clear();
     }
 
-    if (ImGui::Button("Load scene"))
-        ImGui::OpenPopup("Load scene");
+    if (ImGui::BeginMenu("Load scene")) {
+        // std::vector<std::string> scenes;
+        std::string scene;
 
-    if (ImGui::Button("Save as"))
-        ImGui::OpenPopup("Save as");
+        for (const auto &entry: std::filesystem::directory_iterator(SCENE_DIR)) {
+            scene = entry.path().string().substr(10, -1);
+            if (ImGui::MenuItem(scene.c_str())) {
+                Load(scene);
+            }
+        }
 
-    // Always center this window when appearing
-    ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
-    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        ImGui::EndMenu();
+    }
+        // ImGui::OpenPopup("Load scene");
 
-    if (ImGui::BeginPopupModal("Load scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    ImGui::Button("Save as");
+    if (ImGui::BeginPopupContextItem("Save"))
     {
-
-        std::vector<std::string> scenes;
-        std::string path;
-
-        for (const auto &entry : std::filesystem::directory_iterator("../scenes"))
-            scenes.push_back(entry.path().string().substr(10, -1));
-
-        char **items = new char*[scenes.size()];
-        for (size_t i = 0; i < scenes.size(); i++) {
-            items[i] = (char*) scenes[i].data();
-        }
-
-        // TODO selectables to config
-        static int item_current;
-        {
-            ImGui::ListBox("listbox\n(single select)", &item_current, items, (size_t) scenes.size(), scenes.size() > 10 ? 10 : scenes.size());
-        }
-
-        delete[] items;
-        if (ImGui::Button("Load", ImVec2(120, 0))) {
-            Load(scenes[item_current]);
+        ImGui::Text("Enter name:");
+        char buf[20];
+        ImGui::InputTextWithHint("input text (w/ hint)", "enter text here", buf, IM_ARRAYSIZE(buf));
+        // ImGui::InputText("##edit", name, IM_ARRAYSIZE(name));
+        if (ImGui::Button("Save.."))
             ImGui::CloseCurrentPopup();
-        }
 
-        ImGui::SetItemDefaultFocus();
         ImGui::SameLine();
-        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+        if (ImGui::Button("Cancel"))
             ImGui::CloseCurrentPopup();
-        }
-        ImGui::SetWindowCollapsed("File", false, 0);
+
         ImGui::EndPopup();
     }
+        // ImGui::TextInput();
+    ImGui::OpenPopupContextItem("Save", 0);
+
+
+
+
+    // if (ImGui::Button("Save as"))
+        // ImGui::OpenPopup("Save as");
 
 
     if (ImGui::BeginPopupModal("Save as", NULL, ImGuiWindowFlags_AlwaysAutoResize))

@@ -8,7 +8,7 @@
       - [X] position
       - [X] mass
       - [X] radius
-      - [X] color?
+      - [X] color
     - [X] time display
     - [X] add body
 - [X] figure out how to center
@@ -37,7 +37,6 @@
 - [ ] fps counter
 - [ ] timestep control
 - [ ] control number of calculations per frame
-- [ ] use caching
 - [ ] Plot system energy (potential + kinetic) *Use relativistic mass*
 - [ ] Work on simulation stepping (how does time work??)
 - [ ] **logging data to files**
