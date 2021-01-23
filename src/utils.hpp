@@ -12,6 +12,7 @@
 #include "gtx/string_cast.hpp"
 
 #include "constants.hpp"
+#include "ringbuffer.hpp"
 
 #include <ostream>
 #include <iostream>

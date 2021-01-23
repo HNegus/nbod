@@ -11,6 +11,8 @@ private:
     real m_radius, m_mass;
     Color m_color;
     unsigned int m_id;
+    vec3 m_position_old, m_velocity_old, m_force_old;
+    vec3 m_accelaration_old, m_jerk_old;
     std::vector<real> m_history;
 
 public:
@@ -20,7 +22,9 @@ public:
     m_position(0.0), m_velocity(0.0),  m_force(0.0),
     m_accelaration(0.0), m_jerk(0.0),
     m_radius(1.0), m_mass(1.0), m_color({0.0f, 1.0f, 0.0f, 1.0f}),
-    m_id(id_counter++)
+    m_id(id_counter++),
+    m_position_old(0.0), m_velocity_old(0.0),  m_force_old(0.0),
+    m_accelaration_old(0.0), m_jerk_old(0.0)
     // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
       // m_history.push_back(m_position.x); m_history.push_back(m_position.y); };
     {};
@@ -30,7 +34,9 @@ public:
     m_position(0.0), m_velocity(0.0), m_force(0.0),
     m_accelaration(0.0), m_jerk(0.0),
     m_radius(1.0), m_mass(1.0), m_color({0.0f, 1.0f, 0.0f, 1.0f}),
-    m_id(id_counter++)
+    m_id(id_counter++),
+    m_position_old(0.0), m_velocity_old(0.0),  m_force_old(0.0),
+    m_accelaration_old(0.0), m_jerk_old(0.0)
     // { std::cout << "Body constructor called" << std::endl; };
     // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
       // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
@@ -48,7 +54,9 @@ public:
     m_position(position), m_velocity(velocity), m_force(0.0),
     m_accelaration(0.0), m_jerk(0.0),
     m_radius(radius), m_mass(mass), m_color({0.0f, 1.0f, 0.0f, 1.0f}),
-    m_id(id_counter++)
+    m_id(id_counter++),
+    m_position_old(0.0), m_velocity_old(0.0),  m_force_old(0.0),
+    m_accelaration_old(0.0), m_jerk_old(0.0)
     // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
       // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
     {};
@@ -59,7 +67,9 @@ public:
     m_position(position), m_velocity(velocity), m_force(0.0),
     m_accelaration(0.0), m_jerk(0.0),
     m_radius(radius), m_mass(mass), m_color(color),
-    m_id(id_counter++)
+    m_id(id_counter++),
+    m_position_old(0.0), m_velocity_old(0.0),  m_force_old(0.0),
+    m_accelaration_old(0.0), m_jerk_old(0.0)
     // { m_history.push_back(m_position.x); m_history.push_back(m_position.y);
       // m_history.push_back(m_position.x); m_history.push_back(m_position.y);};
     {};
@@ -77,11 +87,13 @@ public:
     ~Body() {};
 
 
-    void Update();
-    void UpdateNew(real dt);
+    // void Update();
+    void Evolve(vec3 accelaration, vec3 jerk, real mass);
+    void Update(real dt);
+    void Correct(real dt);
+    void Reset();
     // void Translate(vec3 translation);
-    void ApplyForce(vec3 f);
-    void ApplyParams(vec3 accelaration, vec3 jerk, real mass);
+    // void ApplyForce(vec3 f);
 
 
     unsigned int ID() const { return m_id; };

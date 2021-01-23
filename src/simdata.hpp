@@ -23,6 +23,7 @@ public:
 
     vec3 camera_position;
 
+    bool initialize_world = true;
     bool show_gui = true;
     bool run_simulation = false;
     bool auto_resize_camera = false;

@@ -12,6 +12,7 @@ class World {
 
 private:
     // real G = 6.674 * pow(10, -11);
+    RingBuffer<real> m_energy_buffer;
     std::vector<Body*> m_bodies;
 
     // std::vector<real> m_BodiesVbData;
@@ -44,6 +45,7 @@ public:
     // real m_dt = 60 * 60 * 24 * 365 * 1000;
     // real m_dt = 100000;
     real m_dt = 60*30;
+    // real m_dt = 10;
 
     World();
     ~World();
@@ -67,10 +69,18 @@ public:
     unsigned int GetCount() const { return m_body_count; };
     void Do();
 
-    void UpdateBodies();
-    void UpdateBodiesNew();
+
+
+    // void UpdateBodiesNew();
+    void Init();
+    // void Evolve();
     void Step();
-    void StepNew();
+    // void StepNew();
+
+    void ResetBodies();
+    void UpdateBodies();
+    void EvolveBodies();
+    void CorrectBodies();
 
 
     void SetBodiesVb(VertexBuffer& vb);
@@ -79,10 +89,10 @@ public:
     void SetBodiesHistoryColorsVb(VertexBuffer& vb);
     void SetBodiesHistoryIb(IndexBuffer& ib);
 
-    double PotentialEnergy();
-    double KineticEnergy();
-    double TotalEnergy() { return PotentialEnergy() + KineticEnergy(); }
-
+    real PotentialEnergy();
+    real KineticEnergy();
+    real TotalEnergy() { return PotentialEnergy() + KineticEnergy(); }
+    std::vector<real> TotalEnergyHistory() const { return m_energy_buffer.GetAll(); };
 
     friend std::ostream& operator<<(std::ostream& os, const World& world);
     friend std::istream& operator>>(std::istream& is, World& world);

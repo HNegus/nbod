@@ -1,6 +1,6 @@
 #include "world.hpp"
 
-World::World() : m_body_count(0) {
+World::World() : m_energy_buffer(1000), m_body_count(0) {
 
 }
 
@@ -24,6 +24,11 @@ void World::Clear() {
     m_bodies.clear();
 }
 
+void World::ResetBodies() {
+    for (Body *body: m_bodies) {
+        body->Reset();
+    }
+}
 
 void World::Do() {
     for (Body *body : m_bodies) {
@@ -32,7 +37,12 @@ void World::Do() {
     std::cout << std::endl;
 }
 
-void World::StepNew() {
+void World::Init() {
+    EvolveBodies();
+}
+
+void World::EvolveBodies() {
+
 
     Body *b1, *b2;
 
@@ -56,54 +66,66 @@ void World::StepNew() {
 
             dacc = diff_pos / r3;
             djerk = (diff_v - 3.0 * rv_r2 * diff_pos) / r3;
-            std::cout << diff_pos.x << " " << diff_pos.y << std::endl;
-            std::cout << dacc.x << " " << dacc.y << std::endl;
+            // std::cout << diff_pos.x << " " << diff_pos.y << std::endl;
+            // std::cout << dacc.x << " " << dacc.y << std::endl;
             // std::cout << r << " " << r2 << " " << r3 << std::endl;
-            std::cout << std::endl;
+            // std::cout << std::endl;
 
-            b1->ApplyParams(dacc, djerk, b2->GetMass());
-            b2->ApplyParams(-dacc, -djerk, b1->GetMass());
+            b1->Evolve(dacc, djerk, b2->GetMass());
+            b2->Evolve(-dacc, -djerk, b1->GetMass());
         }
     }
+}
 
-    UpdateBodiesNew();
-
+void World::CorrectBodies() {
+    for (Body *body: m_bodies) {
+        body->Correct(m_dt);
+    }
 }
 
 void World::Step() {
-    vec3 pos1, pos2, diff;
-    vec3 force;
-    double r, F, fx, fy, theta;
-
-    // TODO this
-    for (Body *b1: m_bodies) {
-        force = vec3(0.0f);
-        pos1 = b1->GetPosition();
-
-        for (Body *b2: m_bodies) {
-
-            if (b1->ID() == b2->ID()) continue;
-
-            pos2 = b2->GetPosition();
-            diff = pos2 - pos1;
-
-            r = length(diff);
-            // F = G * (b2->GetMass() / pow(r, 3));
-
-            F = G * (b2->GetMass() / pow(r, 2)) * b1->GetMass();
-
-            theta = atan2(diff.y, diff.x);
-            fx = F * cos(theta);
-            fy = F * sin(theta);
-
-            force.x += fx;
-            force.y += fy;
-            b1->ApplyForce(force);
-        }
-    }
 
     UpdateBodies();
+    EvolveBodies();
+    CorrectBodies();
+    m_energy_buffer.Add(PotentialEnergy() + KineticEnergy());
+
 }
+
+// void World::Step() {
+//     vec3 pos1, pos2, diff;
+//     vec3 force;
+//     real r, F, fx, fy, theta;
+//
+//     // TODO this
+//     for (Body *b1: m_bodies) {
+//         force = vec3(0.0f);
+//         pos1 = b1->GetPosition();
+//
+//         for (Body *b2: m_bodies) {
+//
+//             if (b1->ID() == b2->ID()) continue;
+//
+//             pos2 = b2->GetPosition();
+//             diff = pos2 - pos1;
+//
+//             r = length(diff);
+//             // F = G * (b2->GetMass() / pow(r, 3));
+//
+//             F = G * (b2->GetMass() / pow(r, 2)) * b1->GetMass();
+//
+//             theta = atan2(diff.y, diff.x);
+//             fx = F * cos(theta);
+//             fy = F * sin(theta);
+//
+//             force.x += fx;
+//             force.y += fy;
+//             b1->ApplyForce(force);
+//         }
+//     }
+//
+//     UpdateBodies();
+// }
 
 void World::StoreBody(Body *body)
 {
@@ -154,29 +176,31 @@ Body* World::AddBody(std::string name,
 }
 
 
+// void World::UpdateBodies() {
+//     for (Body *body: m_bodies) {
+//         body->Update();
+//     }
+// }
+
+
 void World::UpdateBodies() {
+    ResetBodies();
+
     for (Body *body: m_bodies) {
-        body->Update();
+        body->Update(m_dt);
     }
 }
 
-
-void World::UpdateBodiesNew() {
-    for (Body *body: m_bodies) {
-        body->UpdateNew(m_dt);
-    }
-}
-
-double World::KineticEnergy() {
-    double total = 0.0;
+real World::KineticEnergy() {
+    real total = 0.0;
     for (Body *body: m_bodies) {
         total += body->GetMass() * pow(body->GetVelocityMagnitude(), 2) * 0.5;
     }
     return total;
 }
 
-double World::PotentialEnergy() {
-    double total = 0.0;
+real World::PotentialEnergy() {
+    real total = 0.0;
     real r;
     for (Body *b1: m_bodies) {
         for (Body *b2: m_bodies) {

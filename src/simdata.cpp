@@ -14,6 +14,7 @@ void SimData::RegisterBody(Body* body) {
 
     bodies.push_back(body);
     Update();
+    initialize_world = true;
 }
 
 void SimData::RegisterBodies(std::vector<Body*> in_bodies) {

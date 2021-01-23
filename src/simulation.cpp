@@ -119,7 +119,12 @@ void Simulation::CameraInfo() {
 /* Simulation */
 void Simulation::Step() {
     // m_world.Step();
-    m_world.StepNew();
+    if (m_config.initialize_world) {
+        m_world.Init();
+        m_config.initialize_world = false;
+    }
+
+    m_world.Step();
 
     if (m_config.track_body) {
         CameraSetCenter(m_config.bodies[m_config.track_body_idx]->GetPosition());
@@ -183,6 +188,7 @@ void Simulation::Load(std::string scene_name) {
     Scene scene(scene_name, m_world, m_camera, m_config);
     scene.Load();
     CameraFit();
+    m_config.initialize_world = true;
 }
 
 void Simulation::GuiToggle() {
@@ -306,6 +312,7 @@ void Simulation::ShowMenuFile()
         if (ImGui::Button("Cancel", ImVec2(120, 0))) {
             ImGui::CloseCurrentPopup();
         }
+        ImGui::SetWindowCollapsed("File", false, 0);
         ImGui::EndPopup();
     }
 
@@ -578,6 +585,14 @@ void Simulation::ShowDebug2() {
     ImGui::Text("Elapsed time: %f s", m_config.time_current);
     ImGui::Text("Elapsed time: %d days", days);
     ImGui::Text("Elapsed time: %f years", years);
+
+    std::cout << m_world.KineticEnergy() << "\t" << m_world.PotentialEnergy() << "\t" << m_world.TotalEnergy() << std::endl;
+
+    std::vector<real> history = m_world.TotalEnergyHistory();
+    std::vector<float> values(history.begin(), history.end());
+    // double values[11] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 10.0f, 5.0f, 1.0f, 0.0f, -1.0f, -10.0f};
+    ImGui::PlotLines("Lines", values.data(), values.size(), 0, "text", FLT_MIN, FLT_MAX, ImVec2(0, 80.0f));
+
 
     ImGui::End();
 
