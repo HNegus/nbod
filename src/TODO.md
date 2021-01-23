@@ -33,12 +33,12 @@
 
 #### TODO:
 - [ ] **parallelize**
-- [ ] clean code
+- [X] clean code
 - [ ] fps counter
 - [ ] timestep control
+- [ ] Add variable timesteps
 - [ ] control number of calculations per frame
 - [ ] Plot system energy (potential + kinetic) *Use relativistic mass*
-- [ ] Work on simulation stepping (how does time work??)
 - [ ] **logging data to files**
 - [X] Remove body
 - [ ] Make history display more efficient
