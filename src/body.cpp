@@ -21,7 +21,11 @@ void Body::Update(real dt) {
     m_position += m_velocity * dt + m_accelaration * dt * dt/2.0 + m_jerk * dt * dt * dt/6.0;
     m_velocity += m_accelaration * dt + m_jerk * dt * dt/2.0;
 
-    // Save new position.
+}
+
+
+/* Save current position to history; */
+void Body::SaveLocation() {
     m_history.push_back(m_position.x);
     m_history.push_back(m_position.y);
 }

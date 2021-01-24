@@ -105,6 +105,8 @@ void World::EvolveBodies() {
 
     Body *b1, *b2;
 
+    real coll_time = 1e300;
+    real coll;
     vec3 diff_pos(0), diff_v(0), dacc(0), djerk(0);
     real r2, v2, rv_r2, r, r3;
 
@@ -127,7 +129,26 @@ void World::EvolveBodies() {
 
             b1->Evolve(dacc, djerk, b2->GetMass());
             b2->Evolve(-dacc, -djerk, b1->GetMass());
+
+
+            coll = (r2*r2) / (v2*v2);
+            if (coll_time > coll)
+                coll_time = coll;
         }
+    }
+
+    if (fmod(m_current_time, 10.0) < 1.0) {
+        // std::cout << m_current_time << std::endl;
+        // std::cout << m_dt << std::endl;
+        // std::cout << std::endl;
+        SaveBodyLocations();
+    }
+
+    m_current_time += m_dt;
+
+    if (m_variable_dt) {
+        // std::cout << sqrt(sqrt(coll_time)) << std::endl;
+        m_dt = 0.01 * sqrt(sqrt(coll_time));
     }
 }
 
@@ -147,6 +168,12 @@ void World::UpdateBodies() {
     }
 }
 
+void World::SaveBodyLocations() {
+
+    for (Body *body: m_bodies) {
+        body->SaveLocation();
+    }
+}
 
 /* Advance world to next timestep. */
 void World::Step() {

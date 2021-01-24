@@ -18,21 +18,23 @@ private:
 
     std::vector<real> m_HistoryPositionVbData;
     std::vector<unsigned int> m_HistoryPositionIbData;
-    unsigned int m_HistoryPositionVbSize;
-    unsigned int m_HistoryPositionIbSize;
 
     unsigned int m_body_count;
 
     World(const World&);
 
-public:
-
     // TODO remove/move to private
     // real m_dt = 60 * 60 * 24 * 365 * 1000;
     // real m_dt = 100000;
-    // real m_dt = 60*30;
-    real m_dt = 60;
+
+    // real m_dt = 60;
     // real m_dt = 1;
+    bool m_variable_dt = true;
+    real m_current_time = 0.0;
+    real m_dt = 60*30;
+
+public:
+
 
     World();
     ~World();
@@ -57,6 +59,7 @@ public:
     void EvolveBodies();
     void CorrectBodies();
     void UpdateBodies();
+    void SaveBodyLocations();
     void Step();
 
     real PotentialEnergy();
@@ -68,6 +71,9 @@ public:
     void SetBodiesHistoryColorsVb(VertexBuffer& vb);
     void SetBodiesHistoryIb(IndexBuffer& ib);
 
+
+    real GetTime() const { return m_current_time; };
+    real GetDeltaTime() const { return m_dt; };
 
     std::vector<Body*> GetBodies() const { return m_bodies; };
     unsigned int GetCount() const { return m_body_count; };

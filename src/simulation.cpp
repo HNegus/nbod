@@ -156,7 +156,7 @@ void Simulation::Step() {
     }
 
     // Advance timer.
-    m_config.time_current += m_world.m_dt;
+    m_config.time_current = m_world.GetTime();
 }
 
 /* Remove all bodies and reset camera and configuration. */

@@ -67,6 +67,7 @@ public:
     void Correct(real dt);
     void Update(real dt);
     void Reset();
+    void SaveLocation();
 
 
     void SetID(unsigned int id) { m_id = id; };

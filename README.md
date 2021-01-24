@@ -15,6 +15,7 @@ After building, run with:
 |-----|----- |
 Spacebar | Run/pause simulation
 | H | Show/hide history
+| G | Show/hide GUI |
 | T | Enable/disable tracking
 | Arrow keys | Move left/right/up/down |
 | Mouse wheel | Zoom in/out |
@@ -22,11 +23,15 @@ Spacebar | Run/pause simulation
 #### GUI
 The top menu bar allows you to save/load configurations (see [loading and saving](#loading-and-saving)).
 
+##### Body/camera control
+
+##### Configuration
+
+##### Info
 
 ## Project structure
 
 ## Loading and saving
-
 
 
 ## Dependencies and requirements
