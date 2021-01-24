@@ -8,7 +8,7 @@ LDIR=../lib
 ROOT=$(shell cd ..; pwd)
 INC=$(wildcard $(ROOT)/src/vendor/*/) $(ROOT)/include $(ROOT)/src
 INC_PARAMS=$(foreach d, $(INC), -I $d)
-LIBS=-L$(LDIR) -lglew -lglfw3 -Wl,-Bdynamic -lGL -ldl -lX11 -lstdc++ -pthread -lm -static
+LIBS=-L$(LDIR) -lGLEW -lglfw3 -Wl,-Bdynamic -lGL -ldl -lX11 -lstdc++ -pthread -lm -static
 
 # Flags according to build type
 DEBUG=-D_GLIBCXX_DEBUG -g -O0

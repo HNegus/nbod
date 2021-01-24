@@ -21,21 +21,15 @@ rm -rf $BUILD_DIR/*
 echo done
 echo
 
-# echo Building GLFW
-# cd $BUILD_DIR
-# cmake -DBUILD_SHARED_LIBS=OFF $GLFW_SRC
-# cd $BUILD_DIR/src
-# make
-# cp libglfw3.a $LDIR
-
-# cp $(BUILD_DIR)/src/libglfw3.a $(LDIR)
+echo Building GLFW
+cd $BUILD_DIR
+cmake -DBUILD_SHARED_LIBS=OFF $GLFW_SRC
+cd $BUILD_DIR/src
+make
+cp libglfw3.a $LDIR
+cp $(BUILD_DIR)/src/libglfw3.a $(LDIR)
+rm -rf $BUILD_DIR/*
 
 
 # $(CC) -c -o $(BUILD_DIR)/glew.o $(GLEW_SRC_FILE)
 # ar rcs $(LDIR)/libglew.a $(BUILD_DIR)/glew.o
-
-
-
-
-
-rm -rf $BUILD_DIR/*
