@@ -26,7 +26,7 @@ cd $BUILD_DIR
 cmake -DBUILD_SHARED_LIBS=OFF $GLFW_SRC
 cd $BUILD_DIR/src
 make
-cp libglfw3.a $LDIR
+cp libglfw3.a $LDIR/
 cp $(BUILD_DIR)/src/libglfw3.a $(LDIR)
 rm -rf $BUILD_DIR/*
 
