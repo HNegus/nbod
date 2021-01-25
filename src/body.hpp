@@ -73,6 +73,7 @@ public:
     void SetID(unsigned int id) { m_id = id; };
     unsigned int GetID() const { return m_id; };
     std::string GetIDName() const { return std::to_string(m_id) + " " + m_name; };
+    std::string GetName() const { return m_name; };
     void SetName(char *name) { m_name = std::string(name); }
 
     std::vector<real> GetHistory() { return m_history; };
@@ -98,6 +99,7 @@ public:
     Color* ColorPtr() { return &m_color; };
     void SetColor(Color color) { m_color = color; };
 
+    std::string LogString();
     void PrintVelocity() { std::cout << m_name << ": " <<  glm::to_string(m_velocity) << std::endl; };
     void PrintPosition() { std::cout << m_name << ": " << glm::to_string(m_position) << std::endl; };
 

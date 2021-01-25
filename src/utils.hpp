@@ -13,6 +13,7 @@
 #include "ringbuffer.hpp"
 #include "color.hpp"
 
+#include <ctime>
 #include <ostream>
 #include <iostream>
 #include <fstream>

@@ -18,8 +18,12 @@ void Simulation::Init() {
 
     InitBodyBuffers();
     InitHistoryBuffers();
+    std::filesystem::create_directory(SCENE_DIR);
+    std::filesystem::create_directory(SAVE_DIR);
+    std::filesystem::create_directory(LOG_DIR);
     LoadScene("default");
-    CameraSetCenter(m_config.bodies[0]->GetPosition());
+    if (m_config.bodies.size() > 0)
+        CameraSetCenter(m_config.bodies[0]->GetPosition());
     CameraFit();
 }
 
@@ -143,7 +147,12 @@ void Simulation::Step() {
         m_config.initialize_world = false;
     }
 
+
     m_world.Step();
+
+    if (m_config.logging) {
+        m_logger.Log();
+    }
 
     // Update camera position if tracking is enabled.
     if (m_config.track_body) {
@@ -188,6 +197,16 @@ void Simulation::LoadSave(std::string scene_name) {
     Scene scene(scene_name, m_world, m_camera, m_config);
     scene.LoadSave();
     CameraFit();
+}
+
+void Simulation::StartLogging() {
+    m_logger.Start(m_config.scene_name, &m_world);
+    m_config.logging = true;
+}
+
+void Simulation::StopLogging() {
+    m_logger.Close();
+    m_config.logging = false;
 }
 
 /* Functions to enable shortcuts. */
@@ -271,29 +290,34 @@ void Simulation::RenderGui() {
 
     m_gui.NewFrame();
 
-    // TODO remove demo window
-    ImGui::ShowDemoWindow();
-
-    // Menu bar
     ImVec2 menu_size = ShowGuiMenu();
     int screen_w = m_camera.ScreenWidth();
     int screen_h = m_camera.ScreenHeight();
     int window_w = 350;
 
-    // World editing
-    ImGui::SetNextWindowPos(ImVec2(0, menu_size.y), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(window_w, screen_h), ImGuiCond_Once);
-    ShowGuiControl();
 
+    if (!m_config.logging) {
+        // TODO remove demo window
+        ImGui::ShowDemoWindow();
+
+        // Menu bar
+
+        // World editing
+        ImGui::SetNextWindowPos(ImVec2(0, menu_size.y), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(window_w, screen_h), ImGuiCond_Once);
+        ShowGuiControl();
+
+        // Configuration
+        ImGui::SetNextWindowPos(ImVec2(screen_w - window_w, menu_size.y), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(window_w, screen_h / 2), ImGuiCond_Once);
+        ShowGuiConfig();
+    }
     // World info
     ImGui::SetNextWindowPos(ImVec2(screen_w - window_w, menu_size.y + (screen_h / 2)), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(window_w, screen_h / 2), ImGuiCond_Once);
     ShowGuiInfo();
 
-    // Configuration
-    ImGui::SetNextWindowPos(ImVec2(screen_w - window_w, menu_size.y), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(window_w, screen_h / 2), ImGuiCond_Once);
-    ShowGuiConfig();
+
 
     m_gui.Render();
 }
@@ -496,6 +520,14 @@ void Simulation::ShowGuiInfo() {
     std::vector<float> values(history.begin(), history.end());
     ImGui::PlotLines("Lines", values.data(), values.size(), 0, "text", FLT_MIN, FLT_MAX, ImVec2(0, 80.0f));
 
+
+
+    if (m_config.logging) {
+        if (ImGui::Button("Stop logging")) {
+            StopLogging();
+        }
+    }
+
     ImGui::End();
 }
 
@@ -509,6 +541,15 @@ void Simulation::ShowGuiConfig() {
 
     ImGui::Text("World parameters");
     ImGui::Spacing();
+    ImGui::Separator();
+
+    ImGui::Spacing();
+    ImGui::InputText("Scene name", m_config.scene_name, IM_ARRAYSIZE(m_config.scene_name));
+    std::string scene_name(m_config.scene_name);
+    ImGui::Spacing();
+    ImGui::Separator();
+
+
     ImGui::Text("Gravitational constant");
     // TODO
     // ImGui::InputFloat("Gravitational constant", &m_config.gravitational_constant, 0.0f, 0.0f, "%e");
@@ -573,10 +614,17 @@ void Simulation::ShowGuiConfig() {
 
 
     ImGui::Spacing();
+    ImGui::Separator();
 
     if (ImGui::Button("Step Once")) {
         Step();
     }
+
+    ImGui::Spacing();
+    if (scene_name.length() != 0 && ImGui::Button("Start logging")) {
+        StartLogging();
+    }
+
 
     ImGui::End();
 }
@@ -627,7 +675,7 @@ void Simulation::ShowMenuFile()
         std::string scene;
         if (std::filesystem::exists(SAVE_DIR)) {
             for (const auto &entry: std::filesystem::directory_iterator(SAVE_DIR)) {
-                scene = entry.path().string().substr(10, -1);
+                scene = entry.path().string().substr(9, -1);
                 if (ImGui::MenuItem(scene.c_str())) {
                     LoadSave(scene);
                 }

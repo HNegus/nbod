@@ -41,7 +41,13 @@ void Body::Reset() {
     m_jerk = vec3(0);
 }
 
+std::string Body::LogString() {
+    std::string result;
 
+    result += std::to_string(m_position.x) + " " + std::to_string(m_position.y);
+    result += std::to_string(m_velocity.x) + " " + std::to_string(m_velocity.y);
+    return result;
+}
 
 std::ostream& operator<<(std::ostream& os, const Body& body) {
 

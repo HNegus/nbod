@@ -47,6 +47,7 @@ void SimData::RegisterCamera(Camera *camera) {
 void SimData::Clear() {
     bodies.clear();
 
+    logging = false;
     limit_framerate = true;
     variable_dt = true;
     track_body_idx = 0;

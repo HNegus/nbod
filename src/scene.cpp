@@ -32,6 +32,7 @@ void Scene::LoadScene() {
     m_dir = SCENE_DIR;
     m_world.Clear();
     m_config.Clear();
+    strcpy(m_config.scene_name, m_name.c_str());
     LoadWorld();
 }
 

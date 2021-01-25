@@ -72,12 +72,15 @@ public:
     void SetBodiesHistoryIb(IndexBuffer& ib);
 
 
+    std::string GetBodyNames();
+    std::string LogString();
+
     real GetTime() const { return m_current_time; };
     real GetDeltaTime() const { return m_dt; };
     void SetDeltaTime(real dt) { m_dt = dt; };
 
     std::vector<Body*> GetBodies() const { return m_bodies; };
-    unsigned int GetCount() const { return m_body_count; };
+    unsigned int GetBodyCount() const { return m_body_count; };
 
     real TotalEnergy() { return PotentialEnergy() + KineticEnergy(); }
     std::vector<real> TotalEnergyHistory() const { return m_energy_buffer.GetAll(); };

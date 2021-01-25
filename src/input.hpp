@@ -30,7 +30,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             simulation->HistoryToggle();
         } else if (key == GLFW_KEY_V && action == GLFW_PRESS) {
             simulation->VariableTimeStepToggle();
-        } else if (key == GLFW_KEY_L && action == GLFW_PRESS) {
+        } else if (key == GLFW_KEY_F && action == GLFW_PRESS) {
             simulation->LimitToggle();
         }
 

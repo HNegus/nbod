@@ -14,6 +14,7 @@
 #include "world.hpp"
 #include "simdata.hpp"
 #include "scene.hpp"
+#include "logger.hpp"
 
 class Simulation {
 
@@ -21,6 +22,7 @@ private:
     GLFWwindow *m_window;
     const Gui &m_gui;
     const Renderer m_renderer;
+    Logger m_logger;
     Camera m_camera;
     World m_world;
 
@@ -70,6 +72,8 @@ public:
     void Save(std::string scene_name);
     void LoadScene(std::string scene_name);
     void LoadSave(std::string scene_name);
+    void StartLogging();
+    void StopLogging();
 
     void Render();
     void RenderWorld();

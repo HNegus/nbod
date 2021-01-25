@@ -325,6 +325,33 @@ void World::SetBodiesHistoryIb(IndexBuffer& ib) {
 }
 
 
+std::string World::GetBodyNames() {
+    std::string result;
+
+    for (Body *body: m_bodies) {
+        result += body->GetName() + " ";
+    }
+
+    if (result.length() > 0)
+        result.pop_back();
+
+    return result;
+}
+
+std::string World::LogString() {
+    std::string result;
+
+    result += std::to_string(m_current_time) + " ";
+    for (Body *body: m_bodies) {
+        result += body->LogString() + " ";
+    }
+
+    if (result.length() > 0)
+        result.pop_back();
+
+    return result;
+}
+
 std::ostream& operator<<(std::ostream& os, const World& world) {
     for (Body *body: world.m_bodies) {
         os << (*body);
