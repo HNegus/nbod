@@ -14,7 +14,7 @@
 #if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
 #include <GL/gl3w.h>            // Initialize with gl3wInit()
 #elif defined(IMGUI_IMPL_OPENGL_LOADER_GLEW)
-#include "glew.h"            // Initialize with glewInit()
+#include <GL/glew.h>            // Initialize with glewInit()
 #elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)
 #include <glad/glad.h>          // Initialize with gladLoadGL()
 #elif defined(IMGUI_IMPL_OPENGL_LOADER_GLBINDING2)
@@ -32,7 +32,7 @@ using namespace gl;
 #endif
 
 // Include glfw3.h after our OpenGL definitions
-#include "glfw.h"
+#include <GLFW/glfw3.h>
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.

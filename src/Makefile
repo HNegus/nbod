@@ -40,7 +40,7 @@ release: main
 
 
 main: $(OBJS)
-	$(CC) $(OBJS) -L $(LDIR) $(LIBS) -o main
+	$(CC) $(OBJS) $(LIBS) -o main
 
 
 # Generate dependency files for recompilation on header file changes

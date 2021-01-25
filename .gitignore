@@ -6,7 +6,6 @@ a.out
 *.png
 *.jpg
 .atom-beautify*
-vendor
 *.d
 *.ini
 .idea
