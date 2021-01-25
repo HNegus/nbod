@@ -4,11 +4,10 @@ MAKEFLAGS+=-j8
 CC=clang++
 CPPFLAGS=-Wall -Wextra -Wpedantic -std=c++17
 
-LDIR=../lib
 ROOT=$(shell cd ..; pwd)
 INC=$(wildcard $(ROOT)/src/vendor/*/) $(ROOT)/include $(ROOT)/src
 INC_PARAMS=$(foreach d, $(INC), -I $d)
-LIBS=-L$(LDIR) -lGLEW -lglfw3 -Wl,-Bdynamic -lGL -ldl -lX11 -lstdc++ -pthread -lm -static
+LIBS=-lGLEW -lglfw -lGL -lstdc++ -lm
 
 # Flags according to build type
 DEBUG=-D_GLIBCXX_DEBUG -g -O0
