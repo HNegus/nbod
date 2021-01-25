@@ -13,6 +13,7 @@ private:
     World& m_world;
     Camera& m_camera;
     SimData& m_config;
+    std::string m_dir;
 
 public:
     Scene();
@@ -21,7 +22,8 @@ public:
     {};
     ~Scene() {};
 
-    void Load();
+    void LoadScene();
+    void LoadSave();
     void LoadWorld();
     void LoadCamera();
     void LoadConfig();

@@ -18,7 +18,7 @@ void Simulation::Init() {
 
     InitBodyBuffers();
     InitHistoryBuffers();
-    Load("default");
+    LoadScene("default");
     CameraSetCenter(m_config.bodies[0]->GetPosition());
     CameraFit();
 }
@@ -178,9 +178,15 @@ void Simulation::Save(std::string scene_name) {
 }
 
 /* Load simulation. */
-void Simulation::Load(std::string scene_name) {
+void Simulation::LoadScene(std::string scene_name) {
     Scene scene(scene_name, m_world, m_camera, m_config);
-    scene.Load();
+    scene.LoadScene();
+    CameraFit();
+}
+
+void Simulation::LoadSave(std::string scene_name) {
+    Scene scene(scene_name, m_world, m_camera, m_config);
+    scene.LoadSave();
     CameraFit();
 }
 
@@ -201,6 +207,13 @@ void Simulation::TrackToggle() {
     m_config.track_body = !m_config.track_body;
 }
 
+void Simulation::LimitToggle() {
+    m_config.limit_framerate = !m_config.limit_framerate;
+}
+
+void Simulation::VariableTimeStepToggle() {
+    m_config.variable_dt = !m_config.variable_dt;
+}
 
 /************************* Rendering. **************************/
 /* Render scene/GUI. */
@@ -212,6 +225,16 @@ void Simulation::Render() {
 
 /* Render scene. */
 void Simulation::RenderWorld() {
+
+    if (m_config.limit_framerate) {
+        glfwSwapInterval(1);
+    } else {
+        glfwSwapInterval(0);
+    }
+
+    m_world.m_variable_dt = m_config.variable_dt;
+    // TODO Put this in SimData.Update()
+    m_config.dt = m_world.GetDeltaTime();
 
     // Bind body buffers and draw
     m_va_bodies.Bind();
@@ -255,7 +278,7 @@ void Simulation::RenderGui() {
     ImVec2 menu_size = ShowGuiMenu();
     int screen_w = m_camera.ScreenWidth();
     int screen_h = m_camera.ScreenHeight();
-    int window_w = 300;
+    int window_w = 350;
 
     // World editing
     ImGui::SetNextWindowPos(ImVec2(0, menu_size.y), ImGuiCond_Always);
@@ -316,7 +339,7 @@ void Simulation::ShowGuiControl() {
         for (std::size_t i = 0; i < m_config.bodies.size(); i++) {
 
             body = m_config.bodies[i];
-            if (ImGui::TreeNode((void*)(intptr_t) body->GetID(), "%s", body->GetName().c_str())) {
+            if (ImGui::TreeNode((void*)(intptr_t) body->GetID(), "%s", body->GetIDName().c_str())) {
 
                 radius = body->RadiusPtr();
                 mass = body->MassPtr();
@@ -455,8 +478,10 @@ void Simulation::ShowGuiInfo() {
 
     vec3 position = m_config.camera_position;
     ImGui::Text("Camera position\n x: %f \n y: %f", position.x, position.y);
-    ImGui::Text("Horizontal view distance %f meters", m_camera.HorizontalDistance());
-    ImGui::Text("Fps");
+    ImGui::Spacing();
+    ImGui::Text("Horizontal view distance:\n %f meters", m_camera.HorizontalDistance());
+    ImGui::Spacing();
+    ImGui::Text("Seconds per step:\n %f", m_world.GetDeltaTime());
 
     int days = (int) round(m_config.time_current / SECONDS_PER_DAY);
     float years = days / DAYS_PER_YEAR;
@@ -492,16 +517,18 @@ void Simulation::ShowGuiConfig() {
     ImGui::Separator();
     ImGui::Spacing();
 
-    real *delta_position = &m_config.delta_position;
-    real *delta_velocity = &m_config.delta_velocity;
-    real *delta_radius = &m_config.delta_radius;
-    real *delta_mass = &m_config.delta_mass;
 
-
-    ImGui::InputScalar("delta position", ImGuiDataType_Real, delta_position);
-    ImGui::InputScalar("delta velocity", ImGuiDataType_Real, delta_velocity);
-    ImGui::InputScalar("delta mass", ImGuiDataType_Real, delta_mass);
-    ImGui::InputScalar("delta radius", ImGuiDataType_Real, delta_radius);
+    ImGui::InputScalar("Delta position", ImGuiDataType_Real, &m_config.delta_position);
+    ImGui::InputScalar("Delta velocity", ImGuiDataType_Real, &m_config.delta_velocity);
+    ImGui::InputScalar("Delta mass", ImGuiDataType_Real, &m_config.delta_radius);
+    ImGui::InputScalar("Delta radius", ImGuiDataType_Real, &m_config.delta_mass);
+    if (!m_config.variable_dt) {
+        ImGui::Spacing();
+        ImGui::InputScalar("Time step", ImGuiDataType_Real, &m_config.dt);
+        if (m_config.dt != m_world.GetDeltaTime()) {
+            m_world.SetDeltaTime(m_config.dt);
+        }
+    }
 
     ImGui::Separator();
     ImGui::Spacing();
@@ -513,15 +540,28 @@ void Simulation::ShowGuiConfig() {
     ImGui::Spacing();
     ImGui::Checkbox("Enable tracking", &m_config.track_body);
 
+    ImGui::Spacing();
+
+    ImGui::Checkbox("Show history", &m_config.show_history);
+
+    ImGui::Spacing();
+
+    ImGui::Checkbox("Limit framerate", &m_config.limit_framerate);
+
+    ImGui::Spacing();
+
+    ImGui::Checkbox("Variable timestep", &m_config.variable_dt);
+
+
     if (m_config.bodies.size() > 0) {
 
-        char *current = (char*) m_config.bodies[m_config.track_body_idx]->GetName().c_str();
+        char *current = (char*) m_config.bodies[m_config.track_body_idx]->GetIDName().c_str();
         if (ImGui::BeginCombo("Body to track", current, 0))
         {
             for (int n = 0; n < (int) m_config.bodies.size(); n++)
             {
                 const bool is_selected = (m_config.track_body_idx == n);
-                if (ImGui::Selectable(m_config.bodies[n]->GetName().c_str(), is_selected))
+                if (ImGui::Selectable(m_config.bodies[n]->GetIDName().c_str(), is_selected))
                     m_config.track_body_idx = n;
 
                 if (is_selected)
@@ -531,9 +571,6 @@ void Simulation::ShowGuiConfig() {
         }
     }
 
-    ImGui::Spacing();
-
-    ImGui::Checkbox("Show history", &m_config.show_history);
 
     ImGui::Spacing();
 
@@ -573,10 +610,27 @@ void Simulation::ShowMenuFile()
         // std::vector<std::string> scenes;
         std::string scene;
 
-        for (const auto &entry: std::filesystem::directory_iterator(SCENE_DIR)) {
-            scene = entry.path().string().substr(10, -1);
-            if (ImGui::MenuItem(scene.c_str())) {
-                Load(scene);
+        if (std::filesystem::exists(SCENE_DIR)) {
+            for (const auto &entry: std::filesystem::directory_iterator(SCENE_DIR)) {
+                scene = entry.path().string().substr(10, -1);
+                if (ImGui::MenuItem(scene.c_str())) {
+                    LoadScene(scene);
+                }
+            }
+        }
+
+        ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Load save")) {
+        // std::vector<std::string> scenes;
+        std::string scene;
+        if (std::filesystem::exists(SAVE_DIR)) {
+            for (const auto &entry: std::filesystem::directory_iterator(SAVE_DIR)) {
+                scene = entry.path().string().substr(10, -1);
+                if (ImGui::MenuItem(scene.c_str())) {
+                    LoadSave(scene);
+                }
             }
         }
 

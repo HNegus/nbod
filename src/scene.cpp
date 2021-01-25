@@ -3,7 +3,8 @@
 /* Save the scene to disk. */
 void Scene::Save() {
 
-    std::filesystem::create_directories(SCENE_DIR + m_name);
+    m_dir = SAVE_DIR;
+    std::filesystem::create_directories(m_dir + m_name);
     SaveWorld();
     SaveCamera();
     SaveConfig();
@@ -12,7 +13,7 @@ void Scene::Save() {
 /* Save the world. */
 void Scene::SaveWorld() {
     std::ofstream ofs;
-    ofs.open(SCENE_DIR + m_name + "/world.cfg");
+    ofs.open(m_dir + m_name + "/world.cfg");
     ofs << m_world;
     ofs.close();
 }
@@ -27,17 +28,23 @@ void Scene::SaveConfig() {
 }
 
 /* Load a scene from disk. */
-void Scene::Load() {
+void Scene::LoadScene() {
+    m_dir = SCENE_DIR;
     m_world.Clear();
     m_config.Clear();
     LoadWorld();
 }
 
+void Scene::LoadSave() {
+    assert(false);
+}
+
+
 /* Load world. */
 void Scene::LoadWorld() {
 
     std::ifstream ifs;
-    std::filesystem::path path {SCENE_DIR + m_name + "/world.cfg" };
+    std::filesystem::path path {m_dir + m_name + "/world.cfg" };
     if (std::filesystem::exists(path)) {
         ifs.open(path);
         ifs >> m_world;

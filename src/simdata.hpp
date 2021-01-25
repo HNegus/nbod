@@ -23,6 +23,8 @@ public:
     real delta_radius, delta_mass, delta_position, delta_velocity;
     vec3 camera_position;
 
+    bool limit_framerate = true;
+    bool variable_dt = true;
     bool initialize_world = true;
     bool show_gui = true;
     bool run_simulation = false;
@@ -33,6 +35,7 @@ public:
 
     int track_body_idx = 0;
     real time_current = 0;
+    real dt = 1000.0;
 
     SimData();
     ~SimData() {};

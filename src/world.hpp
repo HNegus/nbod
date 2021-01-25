@@ -29,12 +29,12 @@ private:
 
     // real m_dt = 60;
     // real m_dt = 1;
-    bool m_variable_dt = true;
     real m_current_time = 0.0;
     real m_dt = 60*30;
 
 public:
 
+    bool m_variable_dt = true;
 
     World();
     ~World();
@@ -74,6 +74,7 @@ public:
 
     real GetTime() const { return m_current_time; };
     real GetDeltaTime() const { return m_dt; };
+    void SetDeltaTime(real dt) { m_dt = dt; };
 
     std::vector<Body*> GetBodies() const { return m_bodies; };
     unsigned int GetCount() const { return m_body_count; };

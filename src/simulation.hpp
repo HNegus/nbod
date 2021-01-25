@@ -60,13 +60,16 @@ public:
     void TogglePlay();
     void HistoryToggle();
     void TrackToggle();
+    void LimitToggle();
+    void VariableTimeStepToggle();
     bool Running() const { return m_config.run_simulation; };
 
     void Step();
     void Clear();
 
     void Save(std::string scene_name);
-    void Load(std::string scene_name);
+    void LoadScene(std::string scene_name);
+    void LoadSave(std::string scene_name);
 
     void Render();
     void RenderWorld();

@@ -46,11 +46,15 @@ void SimData::RegisterCamera(Camera *camera) {
 /* Reset configuration. */
 void SimData::Clear() {
     bodies.clear();
+
+    limit_framerate = true;
+    variable_dt = true;
     track_body_idx = 0;
     track_body = false;
     initialize_world = true;
     run_simulation = false;
     time_current = 0;
+    dt = 1000.0;
 
     new_body_name[0] = 0;
     scene_name[0] = 0;

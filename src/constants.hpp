@@ -10,6 +10,8 @@ const std::string HIST_SHADER_VERT = "hist.vert";
 const std::string HIST_SHADER_FRAG = "hist.frag";
 
 const std::string SCENE_DIR = "../scenes/";
+const std::string SAVE_DIR = "../saves/";
+const std::string LOG_DIR = "../logs/";
 
 
 

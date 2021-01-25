@@ -50,7 +50,7 @@ static GLFWwindow* init() {
     glfwMakeContextCurrent(window);
 
     /* Enable 60+ fps: 0. */
-    glfwSwapInterval(0);
+    // glfwSwapInterval(0);
     glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 
 

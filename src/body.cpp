@@ -49,7 +49,6 @@ std::ostream& operator<<(std::ostream& os, const Body& body) {
     os << body.m_name << std::endl;
     os << body.m_position.x << " " << body.m_position.y << std::endl;
     os << body.m_velocity.x << " " << body.m_velocity.y << std::endl;
-    os << body.m_force.x << " " << body.m_force.y << std::endl;
     os << body.m_radius << std::endl;
     os << body.m_mass << std::endl;
     os << (int) (body.m_color.r * 255.0f) << " " << (int) (body.m_color.g * 255.0f) << " " << (int) (body.m_color.b * 255.0f) << " " << (int) (body.m_color.a * 255.0f) << std::endl;
@@ -63,7 +62,6 @@ std::istream& operator>>(std::istream& is, Body& body) {
     is >> body.m_name;
     is >> body.m_position.x >> body.m_position.y;
     is >> body.m_velocity.x >> body.m_velocity.y;
-    is >> body.m_force.x >> body.m_force.y;
     is >> body.m_radius;
     is >> body.m_mass;
     int c[4];
