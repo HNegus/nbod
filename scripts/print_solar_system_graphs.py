@@ -8,74 +8,6 @@ from scipy.interpolate import interp1d
 from mpl_toolkits.mplot3d import Axes3D
 
 
-def test():
-
-    n = 0
-    data = {}
-    names, T = [], []
-
-    earth_moon = "logs/default-1611592863.log"
-    sun_earth = "logs/sun_earth-1611597946.log"
-
-    with open(sun_earth, 'r') as f:
-
-
-
-        data = {name: {'x': [], 'y': []} for name in names}
-        T = []
-        for line in f.readlines():
-            line = [float(x) for x in line.strip().split(" ")]
-
-            T.append(line.pop(0))
-            for name in names:
-                data[name]['x'].append(line.pop(0))
-                data[name]['y'].append(line.pop(0))
-                line.pop(0)
-                line.pop(0)
-
-    T = np.array(T)
-    MoonY = np.array(data['moon']['y'])
-    EarthY = np.array(data['earth']['y'])
-
-    MoonY -= EarthY
-    EarthY /= np.max(EarthY)
-    MoonY /= np.max(MoonY)
-
-    # plt.plot(T, np.sin(1/(60*60*24*356.25) * T * 2*np.pi), label='true earth')
-    # plt.plot(T, EarthY, label='earth')
-    # plt.legend()
-    # plt.show()
-
-    # plt.plot(T, np.sin(1/(60*60*24*27) * T * 2*np.pi), label='true moon')
-    # plt.plot(T, MoonY, label='moon')
-    # plt.legend()
-    # plt.show()
-
-    MoonX = np.array(data['moon']['x'])
-    EarthX = np.array(data['earth']['x'])
-
-    MoonX -= EarthX
-    EarthX /= np.max(EarthX)
-    MoonX /= np.max(MoonX)
-
-    # plt.plot(T, MoonX, label='moon')
-    plt.plot(T, EarthX, label='earth')
-    plt.plot(T, np.cos(1 / (60 * 60 * 24 * 356.25)
-                       * T * 2 * np.pi), label='true earth')
-
-    plt.legend()
-    plt.show()
-
-    # plt.plot(T, np.sin(1/(60*60*24*356.25) * T * 2*np.pi), label='true earth')
-    # plt.plot(T, EarthY, label='earth')
-    # plt.legend()
-    # plt.show()
-
-    # plt.plot(T, np.sin(1/(60*60*24*27) * T * 2*np.pi), label='true moon')
-    # plt.plot(T, MoonY, label='moon')
-    # plt.legend()
-    # plt.show()
-
 def get_data(filename):
 
     with open(filename, 'r') as f:
@@ -98,26 +30,6 @@ def get_data(filename):
                 data[name]['vy'].append(line.pop(0))
                 data[name]['vz'].append(line.pop(0))
     return np.array(T), data
-
-def show_mse_positions(labels, x, y, z):
-
-    X = np.arange(len(labels))
-    x = np.array(x) / METER_PER_AU
-    y = np.array(y) / METER_PER_AU
-    z = np.array(z) / METER_PER_AU
-    width = 0.3
-
-    fig, ax = plt.subplots()
-    rects1 = ax.bar(X - width, x, width, label='x')
-    rects2 = ax.bar(X, y, width, label='y')
-    rects3 = ax.bar(X + width, z, width, label='z')
-
-    ax.set_xticks(X)
-    ax.set_xticklabels(labels)
-    ax.autoscale(tight=True)
-    ax.legend()
-
-    plt.show()
 
 
 def show_positional_error(filename, show=True, save=False):

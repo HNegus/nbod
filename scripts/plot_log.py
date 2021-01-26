@@ -1,3 +1,4 @@
+#! /bin/python3 
 from constants import *
 import sys
 from os import makedirs
