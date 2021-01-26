@@ -181,4 +181,4 @@ them, or increase the rate at which a location is sampled to speed up computatio
 
 #### Known bugs
 - File dialog staying open after saving
-- Program hangs when loading incorrectly formatted configuration files is wrongly
+- Program hangs when loading incorrectly formatted configuration files
