@@ -11,8 +11,7 @@ class World {
 
 
 private:
-    // TODO set G in this class
-    // real G = 6.674 * pow(10, -11);
+    // IDEA variable parameter G
     RingBuffer<real> m_energy_buffer;
     std::vector<Body*> m_bodies;
 
@@ -22,12 +21,7 @@ private:
     unsigned int m_body_count;
 
 
-    // TODO remove/move to private
-    // real m_dt = 60 * 60 * 24 * 365 * 1000;
-    // real m_dt = 100000;
 
-    // real m_dt = 60;
-    // real m_dt = 1;
     real m_current_time = 0.0;
     real m_dt = 60*30;
     unsigned int m_history_resolution = 1;
@@ -44,7 +38,7 @@ public:
 
     void Clear();
 
-    // TODO Give body parameters that are similar to other bodies.
+    // IDEA Give body parameters that are similar to other bodies.
     Body* AddBody();
     Body* AddBody(Body other_body);
     Body* AddBody(std::string name);

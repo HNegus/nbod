@@ -20,7 +20,7 @@ class Simulation {
 
 private:
     GLFWwindow *m_window;
-    const Gui &m_gui;
+    Gui *m_gui;
     const Renderer m_renderer;
     Logger m_logger;
     Camera m_camera;
@@ -36,7 +36,9 @@ private:
 
 public:
 
-    Simulation(GLFWwindow *window, const Gui &gui);
+    Simulation() {};
+    // Simulation(Gui *gui) : m_gui(gui) {};
+    Simulation(GLFWwindow *window, Gui *gui);
     ~Simulation() {};
 
     void Init();
@@ -72,6 +74,7 @@ public:
 
     void Save(std::string scene_name);
     void LoadScene(std::string scene_name);
+    void LoadSceneHeadless(std::string scene_name);
     void LoadSave(std::string scene_name);
     void StartLogging();
     void StopLogging();

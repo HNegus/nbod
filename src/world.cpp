@@ -262,7 +262,6 @@ void World::SetBodiesIb(IndexBuffer& ib) {
                                 1 + i * 4, 3 + i * 4, 2 + i * 4});
     }
 
-    // TODO magic numbers
     ib.Update(bodies_data.data(), bodies_data.size());
 }
 

@@ -33,6 +33,7 @@ void Scene::LoadScene() {
     Load();
 }
 
+
 void Scene::LoadSave() {
     m_dir = SAVE_DIR;
     Load();
@@ -44,6 +45,8 @@ void Scene::Load() {
     strcpy(m_config.scene_name, m_name.c_str());
     LoadWorld();
 }
+
+
 
 /* Load world. */
 void Scene::LoadWorld() {

@@ -17,6 +17,7 @@ private:
 
 public:
     Scene();
+    // Scene(std::string name, World& world)
     Scene(std::string name, World& world, Camera& camera, SimData& config) :
           m_name(name), m_world(world), m_camera(camera), m_config(config)
     {};

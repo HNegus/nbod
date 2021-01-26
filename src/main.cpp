@@ -67,16 +67,34 @@ static GLFWwindow* init() {
 }
 
 
-int main(void) {
+int main(int argc, char *argv[]) {
 
 
     GLFWwindow* window = init();
-
     if (!window) return -1;
+
+    /* Headless mode. */
+    if (argc == 2) {
+
+        std::string scene_name(argv[1]);
+        std::cout << scene_name << std::endl;
+        Gui gui(nullptr);
+        Simulation simulation;
+        simulation.LoadSceneHeadless(scene_name);
+        simulation.StartLogging();
+
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        while (1) {
+            simulation.Step();
+        }
+        return 0;
+    }
+
 
 
     Gui gui(window);
-    Simulation simulation(window, gui);
+    Simulation simulation(window, &gui);
 
     glfwSetWindowUserPointer(window, (void *) &simulation);
     glfwSetScrollCallback(window, scroll_callback);
@@ -101,8 +119,6 @@ int main(void) {
         if (simulation.Running()) {
             simulation.Step();
         }
-        // TODO remove
-        // simulation.CameraInfo();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

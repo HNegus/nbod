@@ -1,7 +1,7 @@
 #include "simulation.hpp"
 
 /************************* Initialization and setup. *************************/
-Simulation::Simulation(GLFWwindow *window, const Gui &gui) :
+Simulation::Simulation(GLFWwindow *window, Gui *gui) :
     m_window(window), m_gui(gui)
 {
 
@@ -60,7 +60,6 @@ void Simulation::InitHistoryBuffers() {
 
 /************************* Manage simulation. *************************/
 /* Add body to world. */
-// TODO remove body
 void Simulation::WorldAddBody() {
     Body* body = m_world.AddBody();
     m_config.RegisterBody(body);
@@ -154,9 +153,12 @@ void Simulation::Step() {
 
     m_world.Step();
 
+
     if (m_config.logging) {
         m_logger.Log();
     }
+
+    if (m_config.headless) return;
 
     // Update camera position if tracking is enabled.
     if (m_config.track_body) {
@@ -196,6 +198,36 @@ void Simulation::LoadScene(std::string scene_name) {
     scene.LoadScene();
     CameraFit();
 }
+
+void Simulation::LoadSceneHeadless(std::string scene_name) {
+    std::ifstream ifs;
+    std::filesystem::path path {SCENE_DIR + scene_name + "/world.cfg" };
+    if (std::filesystem::exists(path)) {
+        ifs.open(path);
+        ifs >> m_world;
+    }
+
+    std::vector<Body *> bodies = m_world.GetBodies();
+    int max_id = -1;
+    int id;
+
+    for (Body *body: bodies) {
+        id = body->GetID();
+
+        if (id > max_id) {
+            max_id = (int) id;
+        }
+    }
+
+    std::cout << m_world;
+
+    Body::SetIDCounter(++max_id);
+
+    m_config.headless = true;
+    strcpy(m_config.scene_name, scene_name.c_str());
+
+};
+
 
 void Simulation::LoadSave(std::string scene_name) {
     Scene scene(scene_name, m_world, m_camera, m_config);
@@ -292,8 +324,9 @@ void Simulation::RenderGui() {
 
     m_config.Update();
 
-    m_gui.NewFrame();
+    m_gui->NewFrame();
 
+    // Menu bar
     ImVec2 menu_size = ShowGuiMenu();
     int screen_w = m_camera.ScreenWidth();
     int screen_h = m_camera.ScreenHeight();
@@ -301,10 +334,6 @@ void Simulation::RenderGui() {
 
 
     if (!m_config.logging) {
-        // TODO remove demo window
-        ImGui::ShowDemoWindow();
-
-        // Menu bar
 
         // World editing
         ImGui::SetNextWindowPos(ImVec2(0, menu_size.y), ImGuiCond_Always);
@@ -323,7 +352,7 @@ void Simulation::RenderGui() {
 
 
 
-    m_gui.Render();
+    m_gui->Render();
 }
 
 /* Helper function to display help markers in GUI. */
@@ -458,7 +487,6 @@ void Simulation::ShowGuiControl() {
     ImGui::Spacing();
     ImGui::Spacing();
 
-    // TODO sliders or no?
     ImGui::Text("Radius:");
     ImGui::InputScalar("m", ImGuiDataType_Real, (void *) radius, &m_config.delta_radius);
 
@@ -492,10 +520,9 @@ void Simulation::ShowGuiControl() {
 
     ImGui::Spacing();
 
-    // TODO
-    if (ImGui::Button("Resize bodies")) {
-
-    }
+    // TODO resize bodies
+    // if (ImGui::Button("Resize bodies")) {
+    // }
 
     ImGui::End();
 }
@@ -521,12 +548,10 @@ void Simulation::ShowGuiInfo() {
     ImGui::Text("Elapsed time: %d days", days);
     ImGui::Text("Elapsed time: %f years", years);
 
-    // TODO logging and showing total energy.
-    // std::cout << m_world.KineticEnergy() << "\t" << m_world.PotentialEnergy() << "\t" << m_world.TotalEnergy() << std::endl;
-
+    // TODO Improve logging total energy in the system
     std::vector<real> history = m_world.TotalEnergyHistory();
     std::vector<float> values(history.begin(), history.end());
-    ImGui::PlotLines("Lines", values.data(), values.size(), 0, "text", FLT_MIN, FLT_MAX, ImVec2(0, 80.0f));
+    ImGui::PlotLines("Energy in system", values.data(), values.size(), 0, " ", FLT_MIN, FLT_MAX, ImVec2(0, 80.0f));
 
 
 
@@ -554,7 +579,7 @@ void Simulation::ShowGuiConfig() {
     ImGui::Separator();
 
 
-    // TODO
+    // TODO extra options
     // ImGui::Text("Gravitational constant");
     // ImGui::InputFloat("Gravitational constant", &m_config.gravitational_constant, 0.0f, 0.0f, "%e");
     // ImGui::Text("Gravity on/off");

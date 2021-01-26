@@ -23,6 +23,7 @@ public:
     real delta_radius, delta_mass, delta_position, delta_velocity;
     vec3 camera_position;
 
+    bool headless = false;
     bool logging = false;
     bool limit_framerate = true;
     bool variable_dt = true;
