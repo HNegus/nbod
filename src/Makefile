@@ -20,10 +20,8 @@ OBJS=$(patsubst %.cpp, %.o, $(CPPFILES))
 DEPENDS=$(OBJS:.o=.d)
 
 
-
 .DEFAULT: make
 .PHONY: make main
-
 
 
 make: CPPFLAGS += $(DEBUG)
@@ -57,8 +55,3 @@ run: make
 
 clean:
 	rm -f main a.out $(OBJS) $(DEPENDS)
-
-#
-# imgui
-# GLEW
-# GLFW
