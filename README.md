@@ -122,6 +122,21 @@ ID's must be a unique integer and RGBA should be integers from the range 0-255
 representing color values;
 See the scenes directory for examples.
 
+Worlds created by users in the simulator are always saved to the 'saves' directory.
+
+#### Logs
+
+Log files have a different structure:
+```
+[N]
+[Name 1] [Name 2]
+[t0] [x1] [y1] [z1] [vx1] [vy1] [vz1] [x2] [y2] [z2] [vx2] [vy2] [vz2]
+[t1] [x1] [y1] [z1] [vx1] [vy1] [vz1] [x2] [y2] [z2] [vx2] [vy2] [vz2]
+[t2] [x1] [y1] [z1] [vx1] [vy1] [vz1] [x2] [y2] [z2] [vx2] [vy2] [vz2]
+```
+
+Where `[N]` is the number of bodies, followed by their names.
+The next lines log all body positions and velocities for each time step.
 
 ## Dependencies and requirements
 
@@ -149,7 +164,7 @@ Change the Makefile to compile with anything other than clang++
 - Some code OpenGL code is taken from tutorials by [The Cherno](https://www.youtube.com/watch?v=W3gAzLwfIP0&list=PLlrATfBNZ98foTJPJ_Ev03o2oq3-GGOS2)
 - The actual n-body interactions are calculated using [code by Piet Hut](https://www.ias.edu/ids/~piet/act/comp/algorithms/starter)
 - Initial conditions for the scene 'solar_system' and data used in the experiments are from
-  [NASA's HORIZONS system](https://ssd.jpl.nasa.gov/?horizons) 
+  [NASA's HORIZONS system](https://ssd.jpl.nasa.gov/?horizons)
 
 ## Notes
 - The simulation is limited to 60fps per second. Uncheck the 'limit framerate'
