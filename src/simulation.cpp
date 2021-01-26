@@ -625,9 +625,9 @@ void Simulation::ShowGuiConfig() {
 
     ImGui::Spacing();
 
-    ImGui::Checkbox("Auto-resize bodies", &m_config.auto_resize_bodies);
-
-    ImGui::Spacing();
+    // TODO
+    // ImGui::Checkbox("Auto-resize bodies", &m_config.auto_resize_bodies);
+    // ImGui::Spacing();
 
     ImGui::Checkbox("Show history", &m_config.show_history);
 
