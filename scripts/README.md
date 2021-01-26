@@ -6,6 +6,8 @@ In order to accomplish this, we simulate the Newtonian gravitational
 interactions between all major bodies in the solar system (the sun and all
 planets + Pluto).
 
+**The programs only show plots by default, but command line arguments can be provided to save figures to a folder called 'data'**
+
 #### download_solar_orbits.py
 
 This program downloads the positions and velocities for all bodies over the time
