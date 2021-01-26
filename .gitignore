@@ -1,5 +1,8 @@
 *.zip
 main
+nbod
+logs
+saves
 a.out
 *.o
 .clangd
