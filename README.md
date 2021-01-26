@@ -8,6 +8,9 @@ of Amsterdam.
 See the README in the 'scripts' directory for instructions on how to reproduce
 the experiments.
 
+![Screenshot](nbod.png)
+*screenshot from simulator*
+
 # Project structure
 
 ```
@@ -63,6 +66,9 @@ with a valid scene name. This will output results to a file in the log directory
 | L | Toggle between 60 and 60+ fps |
 
 #### GUI
+![Screenshot GUI](nbod_gui.png)
+*Screenshot showing GUI*
+
 The top menu bar allows you to save/load worlds (see [loading and saving](#loading-and-saving)).
 
 ##### Body/camera control
