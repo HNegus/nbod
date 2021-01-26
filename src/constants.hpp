@@ -13,8 +13,6 @@ const std::string SCENE_DIR = "../scenes/";
 const std::string SAVE_DIR = "../saves/";
 const std::string LOG_DIR = "../logs/";
 
-
-
 const ImGuiDataType_ ImGuiDataType_Real = ImGuiDataType_Double;
 
 typedef double real;
@@ -31,27 +29,6 @@ typedef glm::dvec3 dvec3;
 typedef glm::dmat4 dmat4;
 
 const real G = 6.674 * pow(10, -11);
-
-
-// TODO remove
-// const real FLOAT_ZERO = 0.0f;
-// const real MASS_EARTH = 5.972 * pow(10, 24);
-// const real MASS_MOON = 7.348 * pow(10, 22);
-// const real DISTANCE_MOON_EARTH = 384402 * pow(10, 3);
-// const real RADIUS_EARTH = 6371 * pow(10, 3);
-// const real RADIUS_MOON = 1737 * pow(10, 3);
-// const real VELOCITY_MOON = 1 * pow(10, 3);
-// const real DELTA_TIME = 86400;
-// const real DELTA_TIME = 60*60;
-
-
-// const real MAX_MASS = 10 * MASS_EARTH;
-// const real MAX_MASS = (FLT_MAX - 1)/2;
-// const real SLIDERFLOAT_MAX = FLT_MAX/2.0f;
-// const real SLIDERFLOAT_MIN = -FLT_MAX/2.0f;
-
-// const real MAX_RADIUS = 10 * RADIUS_EARTH;
-// const real MAX_RADIUS = (FLT_MAX - 1)/2;
 const unsigned int RESTART_INDEX = 0xFFFFFFFF;
 
 const int SECONDS_PER_DAY = 86400;
