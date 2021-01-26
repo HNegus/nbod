@@ -40,7 +40,7 @@ release: main
 
 
 main: $(OBJS)
-	$(CC) $(OBJS) $(LIBS) -o main
+	$(CC) $(OBJS) $(LIBS) -o nbod
 
 
 # Generate dependency files for recompilation on header file changes
@@ -53,7 +53,7 @@ main: $(OBJS)
 	@echo
 
 run: make
-	./main
+	./nbod
 
 clean:
 	rm -f main a.out $(OBJS) $(DEPENDS)
