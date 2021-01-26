@@ -21,6 +21,9 @@ void World::Clear() {
         delete body;
     }
     m_bodies.clear();
+
+    m_current_time = 0;
+    m_tick = 0;
 }
 
 /* Push new body to list of bodies. */
@@ -137,12 +140,6 @@ void World::EvolveBodies() {
         }
     }
 
-    if (fmod(m_current_time, 10.0) < 1.0) {
-        // std::cout << m_current_time << std::endl;
-        // std::cout << m_dt << std::endl;
-        // std::cout << std::endl;
-        SaveBodyLocations();
-    }
 
     m_current_time += m_dt;
 
@@ -175,12 +172,25 @@ void World::SaveBodyLocations() {
     }
 }
 
+void World::ClearBodyHistories() {
+
+    for (Body *body: m_bodies) {
+        body->ClearHistory();
+    }
+}
+
 /* Advance world to next timestep. */
 void World::Step() {
 
+    m_tick++;
     UpdateBodies();
     EvolveBodies();
     CorrectBodies();
+
+    if (m_tick >= m_history_resolution) {
+        SaveBodyLocations();
+        m_tick = 0;
+    }
     m_energy_buffer.Add(PotentialEnergy() + KineticEnergy());
 
 }

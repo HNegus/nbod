@@ -30,16 +30,20 @@ void Scene::SaveConfig() {
 /* Load a scene from disk. */
 void Scene::LoadScene() {
     m_dir = SCENE_DIR;
+    Load();
+}
+
+void Scene::LoadSave() {
+    m_dir = SAVE_DIR;
+    Load();
+}
+
+void Scene::Load() {
     m_world.Clear();
     m_config.Clear();
     strcpy(m_config.scene_name, m_name.c_str());
     LoadWorld();
 }
-
-void Scene::LoadSave() {
-    assert(false);
-}
-
 
 /* Load world. */
 void Scene::LoadWorld() {

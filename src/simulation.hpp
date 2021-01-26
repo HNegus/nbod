@@ -50,6 +50,7 @@ public:
     void WorldAddBody(std::string name, vec3 position, vec3 force,
                     real radius, real mass, Color color);
     void WorldRemoveBody(unsigned int id);
+    void WorldClearHistory();
 
     void CameraFit();
     void CameraZoom(int direction);

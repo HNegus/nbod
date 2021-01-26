@@ -34,6 +34,7 @@ public:
     bool track_body = false;
     bool show_history = true;
 
+    unsigned int history_resolution = 10;
     int track_body_idx = 0;
     real time_current = 0;
     real dt = 1000.0;

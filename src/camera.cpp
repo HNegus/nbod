@@ -64,6 +64,7 @@ void Camera::Zoom(const int direction) {
 void Camera::SetCenter(vec3 center) {
     // View matrix must be translated inversely to camera position.
     m_center = -center;
+    m_center.z = 0.0;
     Update();
     Center();
 }

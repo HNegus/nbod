@@ -44,8 +44,9 @@ void Body::Reset() {
 std::string Body::LogString() {
     std::string result;
 
-    result += std::to_string(m_position.x) + " " + std::to_string(m_position.y);
-    result += std::to_string(m_velocity.x) + " " + std::to_string(m_velocity.y);
+    result += std::to_string(m_position.x) + " " + std::to_string(m_position.y) + " " + std::to_string(m_position.z);
+    result += " ";
+    result += std::to_string(m_velocity.x) + " " + std::to_string(m_velocity.y) + " " + std::to_string(m_velocity.z);
     return result;
 }
 
@@ -53,8 +54,8 @@ std::ostream& operator<<(std::ostream& os, const Body& body) {
 
     os << body.m_id << std::endl;
     os << body.m_name << std::endl;
-    os << body.m_position.x << " " << body.m_position.y << std::endl;
-    os << body.m_velocity.x << " " << body.m_velocity.y << std::endl;
+    os << body.m_position.x << " " << body.m_position.y << " " << body.m_position.z << std::endl;
+    os << body.m_velocity.x << " " << body.m_velocity.y << " " << body.m_velocity.z << std::endl;
     os << body.m_radius << std::endl;
     os << body.m_mass << std::endl;
     os << (int) (body.m_color.r * 255.0f) << " " << (int) (body.m_color.g * 255.0f) << " " << (int) (body.m_color.b * 255.0f) << " " << (int) (body.m_color.a * 255.0f) << std::endl;
@@ -66,8 +67,8 @@ std::ostream& operator<<(std::ostream& os, const Body& body) {
 std::istream& operator>>(std::istream& is, Body& body) {
     is >> body.m_id;
     is >> body.m_name;
-    is >> body.m_position.x >> body.m_position.y;
-    is >> body.m_velocity.x >> body.m_velocity.y;
+    is >> body.m_position.x >> body.m_position.y >> body.m_position.z;
+    is >> body.m_velocity.x >> body.m_velocity.y >> body.m_velocity.z;
     is >> body.m_radius;
     is >> body.m_mass;
     int c[4];

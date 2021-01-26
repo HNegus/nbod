@@ -92,6 +92,10 @@ void Simulation::WorldRemoveBody(unsigned int id) {
     m_world.RemoveBody(id);
 }
 
+void Simulation::WorldClearHistory() {
+    m_world.ClearBodyHistories();
+}
+
 /* Fit camera to include all bodies on the screen. */
 void Simulation::CameraFit() {
     glm::vec2 lbound(0.0f), rbound(0.0f);
@@ -309,12 +313,12 @@ void Simulation::RenderGui() {
 
         // Configuration
         ImGui::SetNextWindowPos(ImVec2(screen_w - window_w, menu_size.y), ImGuiCond_Always);
-        ImGui::SetNextWindowSize(ImVec2(window_w, screen_h / 2), ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(window_w, 2 * (screen_h / 3)), ImGuiCond_Once);
         ShowGuiConfig();
     }
     // World info
-    ImGui::SetNextWindowPos(ImVec2(screen_w - window_w, menu_size.y + (screen_h / 2)), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(window_w, screen_h / 2), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(screen_w - window_w, menu_size.y + 2 * (screen_h / 3)), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(window_w, screen_h / 3), ImGuiCond_Once);
     ShowGuiInfo();
 
 
@@ -375,12 +379,14 @@ void Simulation::ShowGuiControl() {
                 ImGui::Text("Coordinates:");
                 ImGui::InputScalar("x ",   ImGuiDataType_Real,  &position->x, &m_config.delta_position);
                 ImGui::InputScalar("y ",   ImGuiDataType_Real,  &position->y, &m_config.delta_position);
+                ImGui::InputScalar("z ",   ImGuiDataType_Real,  &position->z, &m_config.delta_position);
 
                 ImGui::Spacing();
 
                 ImGui::Text("Velocity:");
                 ImGui::InputScalar("x",   ImGuiDataType_Real,  &velocity->x, &m_config.delta_velocity);
                 ImGui::InputScalar("y",   ImGuiDataType_Real,  &velocity->y, &m_config.delta_velocity);
+                ImGui::InputScalar("z",   ImGuiDataType_Real,  &velocity->z, &m_config.delta_velocity);
 
                 ImGui::Spacing();
                 ImGui::Spacing();
@@ -438,6 +444,7 @@ void Simulation::ShowGuiControl() {
     ImGui::Text("Coordinates:");
     ImGui::InputScalar("x ",   ImGuiDataType_Real,  &position->x, &m_config.delta_position);
     ImGui::InputScalar("y ",   ImGuiDataType_Real,  &position->y, &m_config.delta_position);
+    ImGui::InputScalar("z ",   ImGuiDataType_Real,  &position->y, &m_config.delta_position);
 
 
     ImGui::Spacing();
@@ -445,6 +452,7 @@ void Simulation::ShowGuiControl() {
     ImGui::Text("Velocity:");
     ImGui::InputScalar("x",   ImGuiDataType_Real,  &velocity->x, &m_config.delta_velocity);
     ImGui::InputScalar("y",   ImGuiDataType_Real,  &velocity->y, &m_config.delta_velocity);
+    ImGui::InputScalar("z",   ImGuiDataType_Real,  &velocity->z, &m_config.delta_velocity);
 
 
     ImGui::Spacing();
@@ -539,10 +547,6 @@ void Simulation::ShowGuiConfig() {
         return;
     }
 
-    ImGui::Text("World parameters");
-    ImGui::Spacing();
-    ImGui::Separator();
-
     ImGui::Spacing();
     ImGui::InputText("Scene name", m_config.scene_name, IM_ARRAYSIZE(m_config.scene_name));
     std::string scene_name(m_config.scene_name);
@@ -550,20 +554,34 @@ void Simulation::ShowGuiConfig() {
     ImGui::Separator();
 
 
-    ImGui::Text("Gravitational constant");
     // TODO
+    // ImGui::Text("Gravitational constant");
     // ImGui::InputFloat("Gravitational constant", &m_config.gravitational_constant, 0.0f, 0.0f, "%e");
-    ImGui::Text("Gravity on/off");
+    // ImGui::Text("Gravity on/off");
+    // ImGui::Separator();
 
-    ImGui::Separator();
     ImGui::Spacing();
-
 
     ImGui::InputScalar("Delta position", ImGuiDataType_Real, &m_config.delta_position);
     ImGui::InputScalar("Delta velocity", ImGuiDataType_Real, &m_config.delta_velocity);
     ImGui::InputScalar("Delta mass", ImGuiDataType_Real, &m_config.delta_radius);
     ImGui::InputScalar("Delta radius", ImGuiDataType_Real, &m_config.delta_mass);
+
+    ImGui::Spacing();
+    ImGui::Separator();
+
+    ImGui::Text("History sampling resolution");
+    ImGui::InputScalar(" ", ImGuiDataType_U64, &m_config.history_resolution);
+    if (m_config.history_resolution != m_world.GetHistoryResolution()) {
+        m_world.SetHistoryResolution(m_config.history_resolution);
+    }
+
+    if (ImGui::Button("Clear history")) {
+        WorldClearHistory();
+    }
+
     if (!m_config.variable_dt) {
+        ImGui::Separator();
         ImGui::Spacing();
         ImGui::InputScalar("Time step", ImGuiDataType_Real, &m_config.dt);
         if (m_config.dt != m_world.GetDeltaTime()) {
@@ -575,11 +593,14 @@ void Simulation::ShowGuiConfig() {
     ImGui::Spacing();
 
     ImGui::Checkbox("Run simulation", &m_config.run_simulation);
-    ImGui::Checkbox("Auto-resize camera", &m_config.auto_resize_camera);
-    ImGui::Checkbox("Auto-resize bodies", &m_config.auto_resize_bodies);
 
     ImGui::Spacing();
-    ImGui::Checkbox("Enable tracking", &m_config.track_body);
+
+    ImGui::Checkbox("Auto-resize camera", &m_config.auto_resize_camera);
+
+    ImGui::Spacing();
+
+    ImGui::Checkbox("Auto-resize bodies", &m_config.auto_resize_bodies);
 
     ImGui::Spacing();
 
@@ -593,6 +614,8 @@ void Simulation::ShowGuiConfig() {
 
     ImGui::Checkbox("Variable timestep", &m_config.variable_dt);
 
+    ImGui::Spacing();
+    ImGui::Checkbox("Enable tracking", &m_config.track_body);
 
     if (m_config.bodies.size() > 0) {
 

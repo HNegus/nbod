@@ -21,7 +21,6 @@ private:
 
     unsigned int m_body_count;
 
-    World(const World&);
 
     // TODO remove/move to private
     // real m_dt = 60 * 60 * 24 * 365 * 1000;
@@ -31,6 +30,10 @@ private:
     // real m_dt = 1;
     real m_current_time = 0.0;
     real m_dt = 60*30;
+    unsigned int m_history_resolution = 1;
+    unsigned int m_tick = 0;
+
+    World(const World&);
 
 public:
 
@@ -60,6 +63,7 @@ public:
     void CorrectBodies();
     void UpdateBodies();
     void SaveBodyLocations();
+    void ClearBodyHistories();
     void Step();
 
     real PotentialEnergy();
@@ -75,6 +79,8 @@ public:
     std::string GetBodyNames();
     std::string LogString();
 
+    unsigned int GetHistoryResolution() const { return m_history_resolution; }
+    void SetHistoryResolution(unsigned int resolution) { m_history_resolution = resolution; }
     real GetTime() const { return m_current_time; };
     real GetDeltaTime() const { return m_dt; };
     void SetDeltaTime(real dt) { m_dt = dt; };

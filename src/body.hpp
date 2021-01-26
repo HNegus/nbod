@@ -77,6 +77,7 @@ public:
     void SetName(char *name) { m_name = std::string(name); }
 
     std::vector<real> GetHistory() { return m_history; };
+    void ClearHistory() { m_history.clear(); };
 
     vec3 GetPosition() const { return m_position; };
     void SetPosition(vec3 position) { m_position = position; };

@@ -22,6 +22,7 @@ public:
     {};
     ~Scene() {};
 
+    void Load();
     void LoadScene();
     void LoadSave();
     void LoadWorld();
