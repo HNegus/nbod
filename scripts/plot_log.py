@@ -31,7 +31,7 @@ def get_data(filename):
     return np.array(T), data
 
 
-def print_orbital_periods(name, X, Y, Z):
+def print_orbital_periods(name, X, Y, Z, T):
 
     Xpeaks = find_peaks(X)[0]
     Ypeaks = find_peaks(Y)[0]
@@ -98,8 +98,7 @@ z:  {Zpeaks}
 """)
 
 
-def main(filename, show, save):
-
+def plot_orbits_3d(filename, show, save):
     T, data = get_data(filename)
     names = list(data.keys())
 
@@ -128,7 +127,7 @@ def main(filename, show, save):
         plt.plot(T, Y, label='y position')
         plt.plot(T, Z, label='z position')
 
-        print_orbital_periods(name, X, Y, Z)
+        print_orbital_periods(name, X, Y, Z, T)
 
         plt.xlabel('time (s)')
         plt.ylabel('position')
@@ -136,7 +135,38 @@ def main(filename, show, save):
         plt.legend()
         if show:
             plt.show()
+
+        if save:
+            plt.savefig(f"{name}-orbit3d.png", dpi=DPI)
         plt.close()
+
+def plot_orbits_2d_onefig(filename, show, save):
+    T, data = get_data(filename)
+    names = list(data.keys())
+    x, y, index = (len(names) // 3) + 1, len(names)//3, 1
+
+    for name in names:
+        X = np.array(data[name]['x'])
+        Y = np.array(data[name]['y'])
+
+        plt.subplot(x, y, index)
+        index += 1
+        plt.title(f"{name}")
+        plt.plot(X, Y)
+
+
+    plt.tight_layout()
+    if show:
+        plt.show()
+
+    if save:
+        plt.savefig(f'data/orbits_flat.png', dpi=DPI)
+    plt.close()
+
+
+def main(filename, show, save):
+    plot_orbits_3d(filename, show, save)
+    plot_orbits_2d_onefig(filename, show, save)
 
 if __name__ == '__main__':
     usage = f"""

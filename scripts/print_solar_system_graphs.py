@@ -126,7 +126,7 @@ def show_positional_error(filename, show=True, save=False):
     T_act, data_act = get_data("solar_system_jpl.log")
     names = list(data_pred.keys())
     x, y, index = (len(names) // 3) + 1, len(names)//3, 1
-    plt.subplot()
+
     for name in names:
 
         X_pred = np.array(data_pred[name]['x'])
@@ -176,7 +176,7 @@ def show_velocity_error(filename, show=True, save=False):
     T_act, data_act = get_data("solar_system_jpl.log")
     names = list(data_pred.keys())
     x, y, index = (len(names) // 3) + 1, len(names)//3, 1
-    plt.subplot()
+
     for name in names:
 
         X_pred = np.array(data_pred[name]['vx'])
