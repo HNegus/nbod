@@ -1,5 +1,3 @@
-// #define GLM_PRECISION_HIGHP_DOUBLE
-
 #include "utils.hpp"
 
 #include "errors.hpp"

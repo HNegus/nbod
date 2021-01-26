@@ -7,6 +7,9 @@ Camera::Camera() : m_zoom_level(1.0), m_translation(0.0, 0.0, 0.0),
 
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* return_struct = glfwGetVideoMode(monitor);
+
+    if (monitor == nullptr) return;
+
     m_screen_width = return_struct->width;
     m_screen_height = return_struct->height;
     m_zoom_ratio = (float) m_screen_width / m_screen_height;
