@@ -22,32 +22,38 @@
 - [X] Finish import/export
 - [X] Make configuration editable
 - [X] Enable planet tracking
+- [X] fps counter
+- [X] timestep control/variable timesteps
+- [X] efficient history
+- [X] Remove body
+- [X] clean shaders
+- [X] remove force from body class
+- [X] requirements.txt
+- [X] executable filename
+- [X] comments below makefile
+- [X] Distinguish between saves and scenes
+- [X] logging data to files
+- [X] clean code
+- [X] clean python files
+- [X] TODOs
+- [X] rename scenes
 
 #### No time
 - [ ] textures
 - [ ] bloom effect
 - [ ] collision detection
 - [ ] 3D??
-- [ ] **visualize direction with arrow and past with line** (important for debugging)
-- [ ] **figure out shader use** (compute shader? what can i do with fragment shaders)
+- [ ] visualize direction with arrow and past with line (important for debugging)
+- [ ] offload computation to gpu (compute shaders?)
+- [ ] parallelisation
 
 #### TODO:
-- [ ] **parallelize**
-- [X] clean code
-- [ ] fps counter
-- [ ] timestep control
-- [ ] Add variable timesteps
-- [ ] control number of calculations per frame
+
 - [ ] Plot system energy (potential + kinetic) *Use relativistic mass*
-- [ ] **logging data to files**
-- [X] Remove body
-- [ ] Make history display more efficient
    - [ ] Add cache?
-- [ ] Add logging capability
-- [ ] add header comments
-- [ ] Distinguish between saves and scenes
-- [ ] statically link everything
+- [ ] add header comments/comment python files
 - [ ] plot center of mass
+- [ ] Add help markers
 
 
 ##### Experiments

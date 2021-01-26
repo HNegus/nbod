@@ -95,7 +95,7 @@ In order to define initial conditions for the simulator you can create a directo
 ```
 -scenes
     - solar_system
-      - world.cfg
+        - world.cfg
 ```
 
 The \*.cfg file **must** be formatted as follows (or the program will hang):
@@ -146,13 +146,10 @@ Change the Makefile to compile with anything other than clang++
 
 # References
 
-Some code OpenGL code is taken from tutorials by [The Cherno](https://www.youtube.com/watch?v=W3gAzLwfIP0&list=PLlrATfBNZ98foTJPJ_Ev03o2oq3-GGOS2)
-The actual n-body interactions are calculated using code by Piet Hut
-
-
-The Cherno
-Piet Hut
-NASA HORIZONS
+- Some code OpenGL code is taken from tutorials by [The Cherno](https://www.youtube.com/watch?v=W3gAzLwfIP0&list=PLlrATfBNZ98foTJPJ_Ev03o2oq3-GGOS2)
+- The actual n-body interactions are calculated using [code by Piet Hut](https://www.ias.edu/ids/~piet/act/comp/algorithms/starter)
+- Initial conditions for the scene 'solar_system' and data used in the experiments are from
+  [NASA's HORIZONS system](https://ssd.jpl.nasa.gov/?horizons) 
 
 ## Notes
 - The simulation is limited to 60fps per second. Uncheck the 'limit framerate'
