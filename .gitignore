@@ -15,4 +15,4 @@ scripts/data
 scripts/bin
 __pycache__
 scripts/lib
-pyenv.cfg
+*pyenv.cfg
