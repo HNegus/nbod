@@ -37,7 +37,7 @@ static GLFWwindow* init() {
     const GLFWvidmode* return_struct = glfwGetVideoMode(monitor);
 
     // window = glfwCreateWindow(1920, 1080, "Hello World", glfwGetPrimaryMonitor(), nullptr);
-    window = glfwCreateWindow(return_struct->width, return_struct->height, "Hello World", nullptr, nullptr);
+    window = glfwCreateWindow(return_struct->width, return_struct->height, "nbod - N-body gravitational simulator", nullptr, nullptr);
 
     if (!window)
     {
