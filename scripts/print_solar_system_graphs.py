@@ -167,7 +167,7 @@ def show_positional_error(filename, show=True, save=False):
         plt.savefig('data/distances.png', dpi=DPI)
     if show:
         plt.show()
-    plt.clf()
+    plt.close()
 
 
 def show_velocity_error(filename, show=True, save=False):
@@ -214,7 +214,7 @@ def show_velocity_error(filename, show=True, save=False):
         plt.savefig('data/velocities.png', dpi=DPI)
     if show:
         plt.show()
-    plt.clf()
+    plt.close()
 
 
 def show_orbits(filename, show=True, save=False):
@@ -250,7 +250,7 @@ def show_orbits(filename, show=True, save=False):
             plt.savefig(f"data/{name}-orbit.png", dpi=DPI)
         if show:
             plt.show()
-        plt.clf()
+        plt.close()
         # if index > 3:
             # exit(0)
 
@@ -281,9 +281,10 @@ Required parameters:
 
 Optional parameters:
 [help]: string - show help
-[show]: int    - show graphs (1) default;
-                 show and save graphs (2);
-                 save graphs (3)
+[show]: int    - (1) DEFAULT: show graphs ;
+                 (0) show nothing;
+                 (2) show and save graphs;
+                 (3) save graphs
 
 Example: python3 {sys.argv[0]} example.log 1
 
@@ -309,6 +310,8 @@ Make this file by running 'download_solar_orbits.py'
     print(show)
     show_plot, save_plot = True, False
 
+    if show == 0:
+        show_plot = False
     if show == 2:
         save_plot = True
     elif show == 3:
