@@ -7,12 +7,12 @@ private:
     inline static unsigned int id_counter = 0;
     std::string m_name;
     vec3 m_position, m_velocity;
-    vec3 m_accelaration, m_jerk;
+    vec3 m_acceleration, m_jerk;
     real m_radius, m_mass;
     Color m_color;
     unsigned int m_id;
     vec3 m_position_old, m_velocity_old;
-    vec3 m_accelaration_old, m_jerk_old;
+    vec3 m_acceleration_old, m_jerk_old;
     std::vector<real> m_history;
 
 public:
@@ -20,50 +20,50 @@ public:
     Body() :
     m_name("body"),
     m_position(0.0), m_velocity(0.0),
-    m_accelaration(0.0), m_jerk(0.0),
+    m_acceleration(0.0), m_jerk(0.0),
     m_radius(1.0), m_mass(1.0), m_color({0.0f, 1.0f, 0.0f, 1.0f}),
     m_id(id_counter++),
     m_position_old(0.0), m_velocity_old(0.0),
-    m_accelaration_old(0.0), m_jerk_old(0.0)
+    m_acceleration_old(0.0), m_jerk_old(0.0)
     {};
 
     Body(std::string name) :
     m_name(name),
     m_position(0.0), m_velocity(0.0),
-    m_accelaration(0.0), m_jerk(0.0),
+    m_acceleration(0.0), m_jerk(0.0),
     m_radius(1.0), m_mass(1.0), m_color({0.0f, 1.0f, 0.0f, 1.0f}),
     m_id(id_counter++),
     m_position_old(0.0), m_velocity_old(0.0),
-    m_accelaration_old(0.0), m_jerk_old(0.0)
+    m_acceleration_old(0.0), m_jerk_old(0.0)
     {};
 
     Body(std::string name, vec3 position, vec3 velocity,
          real radius, real mass) :
     m_name(name),
     m_position(position), m_velocity(velocity),
-    m_accelaration(0.0), m_jerk(0.0),
+    m_acceleration(0.0), m_jerk(0.0),
     m_radius(radius), m_mass(mass), m_color({0.0f, 1.0f, 0.0f, 1.0f}),
     m_id(id_counter++),
     m_position_old(0.0), m_velocity_old(0.0),
-    m_accelaration_old(0.0), m_jerk_old(0.0)
+    m_acceleration_old(0.0), m_jerk_old(0.0)
     {};
 
     Body(std::string name, vec3 position, vec3 velocity,
          real radius, real mass, Color color) :
     m_name(name),
     m_position(position), m_velocity(velocity),
-    m_accelaration(0.0), m_jerk(0.0),
+    m_acceleration(0.0), m_jerk(0.0),
     m_radius(radius), m_mass(mass), m_color(color),
     m_id(id_counter++),
     m_position_old(0.0), m_velocity_old(0.0),
-    m_accelaration_old(0.0), m_jerk_old(0.0)
+    m_acceleration_old(0.0), m_jerk_old(0.0)
     {};
 
     // IDEA constant force on body (constant force vs gravitational/other)
     ~Body() {};
 
 
-    void Evolve(vec3 accelaration, vec3 jerk, real mass);
+    void Evolve(vec3 acceleration, vec3 jerk, real mass);
     void Correct(real dt);
     void Update(real dt);
     void Reset();

@@ -1,25 +1,25 @@
 #include "body.hpp"
 
 
-/* Add to jerk and accelaration. */
-void Body::Evolve(vec3 accelaration, vec3 jerk, real mass) {
-    m_accelaration += G * mass * accelaration;
+/* Add to jerk and acceleration. */
+void Body::Evolve(vec3 acceleration, vec3 jerk, real mass) {
+    m_acceleration += G * mass * acceleration;
     m_jerk += G * mass * jerk;
 }
 
 /* Get more accurate estimate for velocity and position by using taylor series. */
 void Body::Correct(real dt) {
-    m_velocity = m_velocity_old + (m_accelaration_old + m_accelaration) * dt/2.0
+    m_velocity = m_velocity_old + (m_acceleration_old + m_acceleration) * dt/2.0
                                 + (m_jerk_old - m_jerk) * dt * dt/12.0;
     m_position = m_position_old + (m_velocity_old + m_velocity)*dt/2.0
-                                + (m_accelaration_old - m_accelaration)*dt*dt/12.0;
+                                + (m_acceleration_old - m_acceleration)*dt*dt/12.0;
 }
 
-/* Calculate new position and velocity, based on accelaration and jerk. */
+/* Calculate new position and velocity, based on acceleration and jerk. */
 void Body::Update(real dt) {
 
-    m_position += m_velocity * dt + m_accelaration * dt * dt/2.0 + m_jerk * dt * dt * dt/6.0;
-    m_velocity += m_accelaration * dt + m_jerk * dt * dt/2.0;
+    m_position += m_velocity * dt + m_acceleration * dt * dt/2.0 + m_jerk * dt * dt * dt/6.0;
+    m_velocity += m_acceleration * dt + m_jerk * dt * dt/2.0;
 
 }
 
@@ -30,14 +30,14 @@ void Body::SaveLocation() {
     m_history.push_back(m_position.y);
 }
 
-/* Save current parameters and reset accelaration and jerk. */
+/* Save current parameters and reset acceleration and jerk. */
 void Body::Reset() {
     m_position_old = m_position;
     m_velocity_old = m_velocity;
-    m_accelaration_old = m_accelaration;
+    m_acceleration_old = m_acceleration;
     m_jerk_old = m_jerk;
 
-    m_accelaration = vec3(0);
+    m_acceleration = vec3(0);
     m_jerk = vec3(0);
 }
 
